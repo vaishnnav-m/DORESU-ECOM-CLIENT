@@ -1,0 +1,31 @@
+.banner-txt {
+   animation: glitch 1s infinite alternate ease-in-out;
+}
+
+@keyframes glitch {
+   0% {
+      transform: translate(0px, 0px);
+   }
+   25% {
+      transform: translate(5px, 3px);
+   }
+   50% {
+      transform: translate(0px, 0px);
+   }
+   75% {
+      transform: translate(-3px, -5px); 
+   }
+   100% {
+      transform: translate(0px, 0px); 
+   }
+}
+
+
+.productImage div{
+   height: 100% !important;
+}
+
+.productImage div img{
+   height: 100% !important;
+}
+

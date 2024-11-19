@@ -1,0 +1,18 @@
+.button-div div{
+   height: 60px !important; 
+   width: 100% ;
+   font-size: 24px;
+   color: #737373;
+}
+
+.nsm7Bb-HzV7m-LgbsSe-bN97Pc-sM5MNb{
+   column-gap: 40px;
+   align-items: center;
+}
+
+.nsm7Bb-HzV7m-LgbsSe-bN97Pc-sM5MNb div{
+   height: 100% !important;
+   width: 37px !important;
+   margin: 0 !important;
+   display: flex;
+}
