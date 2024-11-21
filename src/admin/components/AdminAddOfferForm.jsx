@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   useAddOfferMutation,
+  useGetCategoriesQuery,
   useLazyGetProdutsQuery,
 } from "../../services/adminFethApi";
 
-function AdminAddOfferForm({ closeModal,isEditing,setIsEditing }) {
+function AdminAddOfferForm({ closeModal, isEditing, setIsEditing }) {
   // ---- Mutations ---- //
   const [addOffer, { isLoading }] = useAddOfferMutation(); // mutation for add new category
   const [getProducts] = useLazyGetProdutsQuery();
+  const { data: categoriesFetched } = useGetCategoriesQuery();
 
   // ---- States ---- //
   const [offer, setOffer] = useState({
@@ -21,6 +23,11 @@ function AdminAddOfferForm({ closeModal,isEditing,setIsEditing }) {
   const [validateError, setValidateError] = useState("");
   const [items, setItems] = useState(null);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
+  const [categories, setCategories] = useState(null);
+
+  useEffect(() => {
+    if (categoriesFetched) setCategories(categoriesFetched);
+  }, [categoriesFetched]);
 
   // ---- Functions ---- //
 
@@ -65,7 +72,7 @@ function AdminAddOfferForm({ closeModal,isEditing,setIsEditing }) {
   // function to handle submit of the form
   async function handleSubmit(e) {
     e.preventDefault();
-    if(!validate())return;
+    if (!validate()) return;
     try {
       if (isEditing) {
         const response = await addOffer(offer).unwrap();
@@ -165,30 +172,48 @@ function AdminAddOfferForm({ closeModal,isEditing,setIsEditing }) {
         </div>
         <div className="flex flex-col gap-2">
           <h2>Applicable Items</h2>
-          <div className="relative group">
-            <input
-              className="w-full border border-black rounded-md px-5 py-2 placeholder:text-[16px] placeholder:text-[#79767C] placeholder:font-thin"
-              placeholder="Search Products"
-              type="text"
-              onBlur={() => setTimeout(() => setDropdownVisible(false), 200)}
-              onChange={productsFetch}
-              value={offer.targetId}
-            />
-            {isDropdownVisible && (
-              <div className="w-full px-3 max-h-[300px] overflow-hidden overflow-y-auto border border-black rounded-lg bg-white absolute flex flex-col gap-5">
-                {items &&
-                  items.map((item) => (
-                    <span
-                      key={item._id}
-                      onClick={() => handletargetId(item._id)}
-                      className="block hover:bg-[#dfdfdf] p-2 cursor-pointer"
-                    >
-                      {item.name}
-                    </span>
+          {offer.offerType === "category" ? (
+            <div className="border border-black rounded-md px-5 py-2">
+              <select
+                name="targetId"
+                onChange={handleChange}
+                value={offer.targetId}
+                className="w-full bg-transparent focus:outline-none"
+              >
+                {categories &&
+                  categories.map((category) => (
+                    <option value={category?._id}>
+                      {category?.categoryName}
+                    </option>
                   ))}
-              </div>
-            )}
-          </div>
+              </select>
+            </div>
+          ) : (
+            <div className="relative group">
+              <input
+                className="w-full border border-black rounded-md px-5 py-2 placeholder:text-[16px] placeholder:text-[#79767C] placeholder:font-thin"
+                placeholder="Search Products"
+                type="text"
+                onBlur={() => setTimeout(() => setDropdownVisible(false), 200)}
+                onChange={productsFetch}
+                value={offer.targetId}
+              />
+              {isDropdownVisible && (
+                <div className="w-full px-3 max-h-[300px] overflow-hidden overflow-y-auto border border-black rounded-lg bg-white absolute flex flex-col gap-5">
+                  {items &&
+                    items.map((item) => (
+                      <span
+                        key={item._id}
+                        onClick={() => handletargetId(item._id)}
+                        className="block hover:bg-[#dfdfdf] p-2 cursor-pointer"
+                      >
+                        {item.name}
+                      </span>
+                    ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
         <div className="flex flex-col gap-2">
           <h2>Start Date</h2>

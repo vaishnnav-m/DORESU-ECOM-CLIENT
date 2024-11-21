@@ -1,6 +1,6 @@
 import Header from "../components/Header";
 import UserProfileAside from "../components/UserProfileAside";
-import { useCancelOrderMutation, useGetOneOrderQuery } from "../../services/userProfile";
+import { useUpdateOrderStatusMutation, useGetOneOrderQuery } from "../../services/userProfile";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 function UserOrderDetails() {
   const { orderId } = useParams();
   const { data,refetch } = useGetOneOrderQuery(orderId);
-  const [cancelOrder] = useCancelOrderMutation();
+  const [updateOrderStatus] = useUpdateOrderStatusMutation();
   const [orderData, setOrderData] = useState(null);
 
   useEffect(() => {
@@ -30,9 +30,9 @@ function UserOrderDetails() {
     return formated;
   }
 
-  async function handleCancel(orderId,itemId,status="Cancel"){
+  async function handleUpdateStatus(orderId,itemId,status){
     try {
-      const response = await cancelOrder({orderId,itemId,status}).unwrap();
+      const response = await updateOrderStatus({orderId,itemId,status}).unwrap();
       if(response){
         toast.success("Order Cancelled", {
           position: "top-right",
@@ -93,11 +93,11 @@ function UserOrderDetails() {
                     </span>
                     <div>
                       {item.status === "Delivered" ? (
-                        <button className="px-5 py-2 rounded-lg bg-orange-300">
+                        <button onClick={() => handleUpdateStatus(orderData._id,item._id,"Returned")} className="px-5 py-2 rounded-lg bg-orange-300">
                           Return Order
                         </button>
-                      ) :item.status !=="Cancel" && (
-                        <button onClick={() => handleCancel(orderData._id,item._id)} className="px-5 py-2 rounded-lg bg-orange-300">
+                      ) :item.status !== "Cancelled" && item.status !== "Returned" && (
+                        <button onClick={() => handleUpdateStatus(orderData._id,item._id,"Cancelled")} className="px-5 py-2 rounded-lg bg-orange-300">
                           Cancel Order
                         </button>
                       )}

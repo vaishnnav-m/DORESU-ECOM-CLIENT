@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Logo from "../assets/Doresu.svg";
 import Profile from "../assets/Shopicons_Filled_Account.svg";
 import Cart from "../assets/Shopicons_Filled_Cart5.svg";
@@ -9,9 +9,13 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useLogoutUserMutation } from "../../services/authApi";
 import { logOut } from "../../store/authSlice";
+import { SearchContext } from "../store/context";
 
 function Header() {
   const [authenticated, setAuthenticated] = useState();
+  const [inputVisible,setInputVisible] = useState(false);
+  // const {query,setQuery} = useContext(SearchContext)
+
   const dispatch = useDispatch();
   // selecter for user authenticated
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -22,6 +26,7 @@ function Header() {
   useEffect(() => {
     setAuthenticated(isAuthenticated);
   }, [isAuthenticated]);
+
 
   function handleLogout() {
     dispatch(logOut());
@@ -63,11 +68,13 @@ function Header() {
         <div>
           <ul className="flex gap-10 text-[#6e6e6e] text-[18px] font-sans font-semibold">
             <li className="flex gap-2 relative ">
-              <input
-                className="hidden max-w-[160px] absolute right-7  translate-y-[7px] px-1 border-b border-b-black bg-transparent focus:outline-none"
+              {inputVisible && <input
+                // value={query}
+                // onChange={(e) => setQuery(e.target.value)}
+                className="max-w-[160px] absolute right-7  translate-y-[7px] px-1 border-b border-b-black bg-transparent focus:outline-none"
                 type="text"
-              />
-              <img className="w-[25px]" src={Search} alt="" />
+              />}
+              <img onClick={() => setInputVisible(true)} className="w-[25px]" src={Search} alt="" />
             </li>
             <li className="hover:scale-110 relative group">
               <button>

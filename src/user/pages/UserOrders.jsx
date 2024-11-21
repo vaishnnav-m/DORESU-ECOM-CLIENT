@@ -41,6 +41,7 @@ function UserOrders() {
         return "text-orange-500";
     }
   }
+  
   return (
     <div className="pt-[200px] flex justify-center">
       <Header />
@@ -50,7 +51,7 @@ function UserOrders() {
           <h2 className="text-[20px] font-bold ">Orders</h2>
           {orders &&
             orders.map((order) => (
-              <div key={order._id}>
+              <div className="w-full" key={order._id}>
                 <div className="w-full px-5 py-2 bg-[#f0f0f0] flex justify-between">
                   <div>
                     <h2 className="font-semibold">OrderId: {order._id}</h2>
@@ -80,7 +81,7 @@ function UserOrders() {
                         <span className="text-[15px]">Colour: White</span>
                       </div>
                       <div className="w-full">
-                        <span className="font-semibold text-[20px]">₹287</span>
+                        <span className="font-semibold text-[20px]">₹{product.price}</span>
                       </div>
                       <div className="w-full text-end px-5">
                         <span className={`${getStyle(product.status)} flex items-center justify-end gap-2`}>

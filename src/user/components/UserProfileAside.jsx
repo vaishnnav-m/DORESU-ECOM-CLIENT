@@ -27,7 +27,7 @@ function UserProfileAside() {
           <i className="fas fa-bag-shopping text-xl text-black"></i>
           <span className="font-semibold text-[20px]">My Orders</span>
         </button>
-        <button className="flex items-center gap-8 cursor-pointer border-b py-5">
+        <button onClick={() => navigate('/wallet')} className="flex items-center gap-8 cursor-pointer border-b py-5">
           <i className="fas fa-wallet text-xl text-black"></i>
           <span className="font-semibold text-[20px]">My Wallet</span>
         </button>

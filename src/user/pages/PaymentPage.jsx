@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import { useGetAddressesQuery } from "../../services/userProfile";
 import {
+  useApplyCouponMutation,
   useGetCartQuery,
   usePlaceOrderMutation,
   useVerifyOrderMutation,
@@ -14,6 +15,7 @@ function PaymentPage() {
   const { data } = useGetAddressesQuery();
   const { data: cart } = useGetCartQuery();
   const [verifyOrder] = useVerifyOrderMutation();
+  const [applyCoupon] = useApplyCouponMutation();
 
   const [placeOrder] = usePlaceOrderMutation();
   const [addresses, setAddresses] = useState([]);
@@ -21,6 +23,10 @@ function PaymentPage() {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [coupon, setCoupon] = useState("");
+  const [totalPriceAfterDiscount, setTotalPriceAfterDiscount] = useState("");
+  const [couponDiscount, setCouponDiscount] = useState("");
+  const [isCouponApplied, setIsCouponApplied] = useState(false);
 
   const navigate = useNavigate();
 
@@ -34,6 +40,7 @@ function PaymentPage() {
     }
     if (cart) {
       setProducts(cart.data.products);
+      setTotalPriceAfterDiscount(cart.data.totalPriceAfterDiscount);
     }
   }, [data, cart]);
 
@@ -44,28 +51,41 @@ function PaymentPage() {
           position: "top-right",
           theme: "dark",
         });
+      const updatedItems = products.map((product) => {
+        const originalPrice = product.price;
+        console.log(product.productId);
+        const offerValue = product.productId?.offer?.offerValue || 0;
+        const priceAfterDiscount = calculatePrice(originalPrice, offerValue);
 
+        return {
+          ...product,
+          price: priceAfterDiscount,
+        };
+      });
       const response = await placeOrder({
         address: selectedAddress,
-        items: products,
+        items: updatedItems,
         paymentMethod,
-        totalPrice: cart.data.totalPrice,
+        couponDiscount,
+        totalPrice: totalPriceAfterDiscount,
         totalQuantity: cart.data.totalQuantity,
+        couponCode: coupon,
       }).unwrap();
+
       if (response) {
         if (paymentMethod === "online") {
           const { razorpayOrderId } = response.data;
           const options = {
             key: "rzp_test_fbT8KO8CYacXGs",
-            amount: cart.data.totalPrice * 100,
+            amount: totalPriceAfterDiscount * 100,
             currency: "INR",
-            name: "Your Store Name",
+            name: "DORESU",
             description: "Order Payment",
             order_id: razorpayOrderId,
             handler: async (paymentResponse) => {
               // to verify payment
               try {
-                console.log("payment response ",paymentResponse);
+                console.log("payment response ", paymentResponse);
                 const response = await verifyOrder({
                   razorpay_order_id: paymentResponse.razorpay_order_id,
                   razorpay_payment_id: paymentResponse.razorpay_payment_id,
@@ -76,7 +96,6 @@ function PaymentPage() {
                   navigate("/success");
                 }
               } catch (error) {
-                console.log("Payment Verification Failed", error);
                 toast.error("Payment Verification Failed", {
                   position: "top-right",
                   theme: "dark",
@@ -101,6 +120,41 @@ function PaymentPage() {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  async function handleCouponSubmit() {
+    try {
+      if (!coupon)
+        return toast.error("Enter a coupon", {
+          position: "top-right",
+          theme: "dark",
+        });
+
+      if (isCouponApplied)
+        return toast.error("Coupon is already applied", {
+          position: "top-right",
+          theme: "dark",
+        });
+
+      const response = await applyCoupon({
+        couponCode: coupon,
+        cartTotal: totalPriceAfterDiscount,
+      }).unwrap();
+      if (response) {
+        setIsCouponApplied(true);
+        setCouponDiscount(response.data.discount);
+        setTotalPriceAfterDiscount(response.data.totalPriceAfterDiscount);
+      }
+    } catch (error) {
+      toast.error(error.data.message, {
+        position: "top-right",
+        theme: "dark",
+      });
+    }
+  }
+
+  function calculatePrice(originalPrice, offerValue) {
+    return Math.floor(originalPrice - (originalPrice * offerValue) / 100);
   }
   return (
     <div className="min-h-screen w-full flex flex-col items-center pt-[200px]">
@@ -129,9 +183,27 @@ function PaymentPage() {
                             <span className="truncate max-w-[230px]">
                               {product.productId.productName}
                             </span>
-                            <span className="pl-[8px] font-semibold text-[20px] cursor-pointer">
-                              ₹ {product.price}
-                            </span>
+                            <div className="flex items-center">
+                              <span className="text-[25px] font-bold mr-3">
+                                ₹{" "}
+                                {product.productId?.offer
+                                  ? calculatePrice(
+                                      product.price,
+                                      product?.productId?.offer.offerValue
+                                    )
+                                  : product.price}
+                              </span>
+                              {product.productId?.offer && (
+                                <span>
+                                  <span className="text-[#8A8A8A] text-[18px] line-through">
+                                    ₹{product?.price}
+                                  </span>
+                                  <span className="text-green-600 ml-2">
+                                    {product?.productId?.offer.offerValue}% off
+                                  </span>
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </td>
@@ -232,8 +304,10 @@ function PaymentPage() {
                   </span>
                 </div>
                 <div className="w-full flex justify-between">
-                  <span className="text-[#8A8A8A]">Discount (-0%)</span>
-                  <span className="font-semibold text-red-500">- ₹ 0</span>
+                  <span className="text-[#8A8A8A]">Discount</span>
+                  <span className="font-semibold text-red-500">
+                    - ₹ {cart?.data.totalPrice - totalPriceAfterDiscount}
+                  </span>
                 </div>
                 <div className="w-full flex justify-between">
                   <span className="text-[#8A8A8A]">Delivery Fee</span>
@@ -243,33 +317,37 @@ function PaymentPage() {
                   <span className="text-[#8A8A8A]">Items</span>
                   <span className="font-semibold">3</span>
                 </div>
-                <div className="w-full flex justify-between">
-                  <span className="text-[#8A8A8A]">GST</span>
-                  <span className="font-semibold">₹0</span>
-                </div>
               </div>
               <div className="w-full border-t flex justify-between pt-3">
                 <span className="font-semibold">Total</span>
                 <span className="font-semibold text-[20px]">
-                  ₹ {cart?.data.totalPrice}
+                  ₹ {totalPriceAfterDiscount}
                 </span>
               </div>
               <div className="w-full flex gap-5 relative">
                 <div className="flex-1 flex 3 rounded-full bg-[#F5F5F5]">
                   <input
-                    name="promo"
                     className="w-full px-5 h-full bg-transparent focus:outline-none peer"
                     type="text"
+                    name="coupon"
+                    id="coupon"
+                    value={coupon}
+                    onChange={(e) => setCoupon(e.target.value)}
                   />
-                  <label
-                    htmlFor="promo"
-                    className="absolute left-5 top-1/2 -translate-y-1/2 flex gap-3 items-center text-[12px] text-[#8A8A8A] peer-focus:hidden"
-                  >
-                    <i className="fas fa-tag text-[16px]" />
-                    Do you have a promo code ?
-                  </label>
+                  {!coupon && (
+                    <label
+                      htmlFor="coupon"
+                      className="absolute left-5 top-1/2 -translate-y-1/2 flex gap-3 items-center text-[12px] text-[#8A8A8A] peer-focus:hidden"
+                    >
+                      <i className="fas fa-tag text-[16px]" />
+                      Do you have a coupon code ?
+                    </label>
+                  )}
                 </div>
-                <button className="py-2 px-5 bg-black text-white rounded-full">
+                <button
+                  onClick={handleCouponSubmit}
+                  className="py-2 px-5 bg-black text-white rounded-full"
+                >
                   Apply
                 </button>
               </div>

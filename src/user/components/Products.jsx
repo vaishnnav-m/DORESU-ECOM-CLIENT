@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
-function Products({ filters, sortOption, productLimit, load }) {
+function Products({ filters, sortOption, productLimit, query, load }) {
   // states
   const limit = productLimit || 8;
   const [hasMore, setHasMore] = useState(true);
@@ -41,6 +41,7 @@ function Products({ filters, sortOption, productLimit, load }) {
         category: filters.categories,
         priceRange: filters.priceRange,
         sortOption,
+        // query
       }).unwrap();
 
       if (response) {
@@ -115,21 +116,20 @@ function Products({ filters, sortOption, productLimit, load }) {
   }, [wishListData]);
 
   function calculatePrice(originalPrice, offerValue) {
-    console.log(originalPrice, products);
     return Math.floor(originalPrice - (originalPrice * offerValue) / 100);
   }
 
   return (
-    <div className="w-full">
-      <div className="grid grid-cols-4 gap-5 py-8 text-[25px]">
-        {isProductsSuccess &&
+    <div className="w-full h-full">
+      <div className={`w-full h-full grid grid-cols-${products.length?"4":"1"} gap-5 py-8 text-[25px]`}>
+        {products.length ? (
           products.map((product) => {
             return (
               <Link to={`/productDetail/${product._id}`} key={product._id}>
                 <div className="flex flex-col items-center max-w-[320px] py-2 px-4 shadow-md rounded-lg">
                   <div className="w-[280px] h-[280px] rounded-xl overflow-hidden">
                     <img
-                      className="w-full h-full "
+                      className="w-full h-full"
                       src={product.gallery[0]}
                       alt=""
                     />
@@ -155,8 +155,12 @@ function Products({ filters, sortOption, productLimit, load }) {
                             )}
                           </span>
                           <span className="text-[15px] translate-y-1">
-                            <span className="text-[#484848] line-through">₹{product.variants[0].price}</span>
-                            <span className="text-green-600 ml-2">{product?.offer.offerValue}% off</span>
+                            <span className="text-[#484848] line-through">
+                              ₹{product.variants[0].price}
+                            </span>
+                            <span className="text-green-600 ml-2">
+                              {product?.offer.offerValue}% off
+                            </span>
                           </span>
                         </div>
                       ) : (
@@ -189,7 +193,12 @@ function Products({ filters, sortOption, productLimit, load }) {
                 </div>
               </Link>
             );
-          })}
+          })
+        ) : (
+          <div className="w-full flex justify-center items-center">
+            <span>No Products !</span>
+          </div>
+        )}
       </div>
       {hasMore && <div ref={endRef}>Loading...</div>}
     </div>

@@ -71,6 +71,7 @@ const adminFetchApi = adminApi.injectEndpoints({
         method: "POST",
         body: credentials,
       }),
+      invalidatesTags: ["getProducts"]
     }),
     // query to get products
     getProduts: builder.query({
@@ -127,6 +128,7 @@ const adminFetchApi = adminApi.injectEndpoints({
         method: "POST",
         body: credentials,
       }),
+      invalidatesTags: ["getOffers"],
     }),
     // query for fetch offers
     getOffers: builder.query({
@@ -153,6 +155,22 @@ const adminFetchApi = adminApi.injectEndpoints({
       }),
       invalidatesTags: ["getOffers"],
     }),
+    // mutation to add the coupon
+    addCoupon: builder.mutation({
+      query: (credentials) => ({
+        url: "/addCoupon",
+        method: "POST",
+        body: credentials,
+      }),
+      invalidatesTags: ["getCoupons"],
+    }),
+    // query to fetch all coupons
+    getCoupons: builder.query({
+      query: () => ({
+        url: "/getCoupons",
+      }),
+      providesTags: ["getCoupons"],
+    })
   }),
   overrideExisting: false,
 });
@@ -177,4 +195,6 @@ export const {
   useGetOffersQuery,
   useUpdateOfferStatusMutation,
   useUpdateOfferMutation,
+  useAddCouponMutation,
+  useGetCouponsQuery,
 } = adminFetchApi;

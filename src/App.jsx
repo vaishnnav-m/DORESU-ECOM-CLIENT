@@ -33,6 +33,8 @@ import OrderSuccess from "./user/pages/OrderSuccess";
 import UserOrders from "./user/pages/UserOrders";
 import UserOrderDetails from "./user/pages/UserOrderDetails";
 import WishList from "./user/pages/WishList";
+import WalletPage from "./user/pages/WalletPage";
+import Context from "./user/store/context";
 
 function App() {
   return (
@@ -62,7 +64,9 @@ function App() {
             path="/all"
             element={
               <ProtectedRoutes>
-                <AllProducts />
+                <Context>
+                  <AllProducts />
+                </Context>
               </ProtectedRoutes>
             }
           />
@@ -171,6 +175,14 @@ function App() {
             element={
               <ProtectedRoutes>
                 <UserOrderDetails />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="/wallet"
+            element={
+              <ProtectedRoutes>
+                <WalletPage />
               </ProtectedRoutes>
             }
           />

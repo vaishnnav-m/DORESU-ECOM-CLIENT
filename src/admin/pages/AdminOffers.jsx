@@ -28,7 +28,7 @@ function AdminOffers() {
     "Start Date",
     "End Date",
     "isActive",
-    "Action"
+    // "Action"
   ];
   const buttonConfigs = [
     {
@@ -39,12 +39,12 @@ function AdminOffers() {
         <i className={`fas ${isActive ? "fa-toggle-on" : "fa-toggle-off"}`}></i>
       ),
     },
-    {
-      label: "Edit",
-      action: handleEdit,
-      styles: "text-[25px]",
-      icon: () => <i className="fas fa-edit"></i>,
-    },
+    // {
+    //   label: "Edit",
+    //   action: handleEdit,
+    //   styles: "text-[25px]",
+    //   icon: () => <i className="fas fa-edit"></i>,
+    // },
   ];
   const mainButton = {
     name: "Add Offer",

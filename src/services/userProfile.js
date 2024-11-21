@@ -80,11 +80,16 @@ export const userProfileApi = api.injectEndpoints({
         url:`/api/getOneOrder/${orderId}`
       }),
     }),
-    cancelOrder:builder.mutation({
+    updateOrderStatus:builder.mutation({
       query:(credentials) =>({
-        url:'/api/cancelOrder',
+        url:'/api/order/updateStatus',
         method:'PATCH',
         body:credentials
+      })
+    }),
+    getWallet:builder.query({
+      query:() => ({
+        url:'/api/getWallet'
       })
     })
   }),
@@ -103,5 +108,6 @@ export const {
   useDeleteAddressMutation,
   useGetUserOrderHistoriesQuery,
   useGetOneOrderQuery,
-  useCancelOrderMutation
+  useUpdateOrderStatusMutation,
+  useGetWalletQuery
 } = userProfileApi;

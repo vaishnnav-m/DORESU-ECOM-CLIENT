@@ -4,7 +4,7 @@ export const userProductsApi = api.injectEndpoints({
   endpoints: (builder) => ({
     // query to get produts
     getProuducts: builder.query({
-      query: ({ offset, limit, category , priceRange,sortOption }) => ({
+      query: ({ offset, limit, category , priceRange,sortOption, query }) => ({
         url: `/api/getProducts?offset=${offset}&limit=${limit}&category=${encodeURIComponent(category)}&priceRange=${encodeURIComponent(priceRange)}&sortOption=${sortOption}`,
       }),
     }),    
@@ -13,6 +13,12 @@ export const userProductsApi = api.injectEndpoints({
         url: `/api/getProduct/${id}`,
       }),
       providesTags:["userGetProductDetail"]
+    }),
+    //query to get categories
+    getCategories: builder.query({
+      query: () => ({
+        url: "/api/getCategories",
+      }),
     }),
     addToCart: builder.mutation({
       query: (credentials) => ({
@@ -70,7 +76,13 @@ export const userProductsApi = api.injectEndpoints({
         url: "/api/wishList/get",
       }),
     }),
-
+    applyCoupon:builder.mutation({
+      query:(credentials) => ({
+        url:'/api/applyCoupon',
+        method:'POST',
+        body:credentials
+      })
+    })
   }),
   overrideExisting: false,
 });
@@ -85,5 +97,7 @@ export const {
   usePlaceOrderMutation,
   useVerifyOrderMutation,
   useAddWishListMutation,
-  useGetWishListQuery
+  useGetWishListQuery,
+  useApplyCouponMutation,
+  useGetCategoriesQuery
 } = userProductsApi;

@@ -1,18 +1,22 @@
 import { useEffect, useState } from "react";
-import { useGetCartQuery, useRemoveCartProductMutation, useUpdateCartMutation } from "../../services/userProductsApi";
+import {
+  useGetCartQuery,
+  useRemoveCartProductMutation,
+  useUpdateCartMutation,
+} from "../../services/userProductsApi";
 import { ToastContainer } from "react-toastify";
 import Header from "../components/Header";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-
 function CartPage() {
-  const { data: cart, isSuccess,refetch } = useGetCartQuery();
+  const { data: cart, isSuccess, refetch } = useGetCartQuery();
   const [updateCart] = useUpdateCartMutation();
   const [removeCartProduct] = useRemoveCartProductMutation();
 
   const [cartData, setCartData] = useState({});
   const [products, setProducts] = useState([]);
+  const [totalPrice,setTotalPrice] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,25 +27,25 @@ function CartPage() {
     }
   }, [isSuccess, cart]);
 
-  async function updateCartQuantity(productId,newQuantity){
+  async function updateCartQuantity(productId, newQuantity) {
     try {
-      const response = await updateCart({productId,newQuantity}).unwrap();
-      if(response){
+      const response = await updateCart({ productId, newQuantity }).unwrap();
+      if (response) {
         refetch();
       }
     } catch (error) {
-      toast.error(error.data.message,{
+      toast.error(error.data.message, {
         position: "top-right",
         theme: "dark",
-      })
+      });
     }
   }
 
   async function handleQuantity(productId, newQuantity) {
-    if(newQuantity > 5){
+    if (newQuantity > 5) {
       return console.log("max limit reached");
     }
-    if(newQuantity < 1){
+    if (newQuantity < 1) {
       return console.log("can't be negative");
     }
     setProducts((prev) =>
@@ -51,28 +55,30 @@ function CartPage() {
           : product
       )
     );
-    await updateCartQuantity(productId,newQuantity)
+    await updateCartQuantity(productId, newQuantity);
   }
 
   async function handleRemove(productId) {
     try {
-      const response = await removeCartProduct({productId}).unwrap();
-      if(response){
+      const response = await removeCartProduct({ productId }).unwrap();
+      if (response) {
         toast.success(response.message, {
           position: "top-right",
           theme: "dark",
         });
         refetch();
       }
-      
     } catch (error) {
-      toast.error(error.data.message,{
+      toast.error(error.data.message, {
         position: "top-right",
         theme: "dark",
-      })
+      });
     }
   }
-  console.log(products);
+
+  function calculatePrice(originalPrice, offerValue) {
+    return Math.floor(originalPrice - (originalPrice * offerValue) / 100);
+  }
   return (
     <div className="min-h-screen w-full flex flex-col items-center pt-[200px]">
       <Header />
@@ -105,27 +111,67 @@ function CartPage() {
                                 size: {product.size}
                               </span>
                             </div>
-                            <span onClick={() => handleRemove(product.productId._id)} className="pl-[8px] cursor-pointer">
+                            <span
+                              onClick={() =>
+                                handleRemove(product.productId._id)
+                              }
+                              className="pl-[8px] cursor-pointer"
+                            >
                               <i className="fas fa-x"></i> <span>Remove</span>
                             </span>
                           </div>
                         </div>
                       </td>
                       <td className="px-8 py-4 ">
-                        <span className="text-[25px] font-bold">
-                        ₹ {product.price}
+                        <span className="text-[25px] font-bold mr-3">
+                          ₹{" "}
+                          {product.productId?.offer
+                            ? calculatePrice(
+                                product.price,
+                                product?.productId?.offer.offerValue
+                              )
+                            : product.price}
                         </span>
+                        {product.productId?.offer && <span>
+                          <span className="text-[#8A8A8A] text-[18px] line-through">
+                            ₹{product?.price}
+                          </span>
+                          <span className="text-green-600 ml-2">
+                            {product?.productId?.offer.offerValue}% off
+                          </span>
+                        </span>}
                       </td>
                       <td className="px-8 py-4 ">
                         <div className="flex items-center gap-4">
-                          <i onClick={() => handleQuantity(product.productId._id,product.quantity - 1)} className="fas fa-minus cursor-pointer"></i>
+                          <i
+                            onClick={() =>
+                              handleQuantity(
+                                product.productId._id,
+                                product.quantity - 1
+                              )
+                            }
+                            className="fas fa-minus cursor-pointer"
+                          ></i>
                           <input
                             className="w-[72px] h-[38px] px- text-center border border-black"
                             type="text"
                             value={product.quantity}
-                            onChange={(e) => handleQuantity(product.productId._id,Number(e.target.value))}
+                            onChange={(e) =>
+                              handleQuantity(
+                                product.productId._id,
+                                Number(e.target.value)
+                              )
+                            }
                           />
-                          <i onClick={() => handleQuantity(product.productId._id,product.quantity + 1)} className="fas fa-plus cursor-pointer"></i>
+                          <i
+                            onClick={() =>
+                              handleQuantity(
+                                product.productId._id,
+                                product.quantity + 1
+                              )
+                            }
+                            className="fas fa-plus cursor-pointer"
+                          ></i>
                         </div>
                       </td>
                     </tr>
@@ -153,9 +199,12 @@ function CartPage() {
         </div>
         <div className="border border-black flex flex-col rounded-xl gap-10 p-10">
           <span className="text-[25px] font-semibold">
-            Sub Total ({cartData.totalQuantity} item):₹ {cartData.totalPrice}
+            Sub Total ({cartData.totalQuantity} item):₹ {cartData.totalPriceAfterDiscount}
           </span>
-          <button onClick={() => navigate('/payment')} className="bg-black text-white px-5 text-2xl py-2 rounded-lg">
+          <button
+            onClick={() => navigate("/payment")}
+            className="bg-black text-white px-5 text-2xl py-2 rounded-lg"
+          >
             Check Out
           </button>
         </div>
