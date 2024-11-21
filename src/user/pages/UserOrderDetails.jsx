@@ -15,7 +15,6 @@ function UserOrderDetails() {
     if (data) setOrderData(data.data);
   }, [data]);
 
-  console.log(data?.data);
 
   // function to create date
   function createDate(timeStamp) {

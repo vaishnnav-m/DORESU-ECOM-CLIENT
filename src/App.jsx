@@ -35,6 +35,7 @@ import UserOrderDetails from "./user/pages/UserOrderDetails";
 import WishList from "./user/pages/WishList";
 import WalletPage from "./user/pages/WalletPage";
 import Context from "./user/store/context";
+import AdminSalesReportPage from "./admin/pages/AdminSalesReportPage";
 
 function App() {
   return (
@@ -282,6 +283,15 @@ function App() {
             element={
               <AdminProtetedRoutes>
                 <AdminOrderList />
+              </AdminProtetedRoutes>
+            }
+          />
+          {/* admin dashboard */}
+          <Route
+            path="/admin/salesReport"
+            element={
+              <AdminProtetedRoutes>
+                <AdminSalesReportPage />
               </AdminProtetedRoutes>
             }
           />

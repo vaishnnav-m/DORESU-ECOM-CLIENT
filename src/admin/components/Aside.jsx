@@ -63,6 +63,15 @@ function Aside() {
           >
             <Link to="/admin/catagories">Catagories</Link>
           </li>
+          <li
+            className={
+              location.pathname === "/admin/salesReport"
+                ? "bg-black text-white"
+                : ""
+            }
+          >
+            <Link to="/admin/salesReport">Sales Report</Link>
+          </li>
         </ul>
       </nav>
     </aside>

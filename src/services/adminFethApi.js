@@ -107,8 +107,8 @@ const adminFetchApi = adminApi.injectEndpoints({
     }),
     // query to get order histories
     getOrderHistories: builder.query({
-      query: () => ({
-        url: "/getOrderHistories",
+      query: ({ filter, startDate, endDate }) => ({
+        url: `/getOrderHistories?startDate=${startDate}&endDate=${endDate}&filter=${filter}`,
       }),
       providesTags: ["getOrders"],
     }),
@@ -189,7 +189,7 @@ export const {
   useUpdateProductStatusMutation,
   useGetProductQuery,
   useEditProductMutation,
-  useGetOrderHistoriesQuery,
+  useLazyGetOrderHistoriesQuery,
   useUpdateOrderStatusMutation,
   useAddOfferMutation,
   useGetOffersQuery,

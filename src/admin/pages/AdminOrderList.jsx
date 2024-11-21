@@ -1,21 +1,34 @@
 import React, { useEffect, useState } from "react";
 import Aside from "../components/Aside";
 import Header from "../components/Header";
-import { useGetOrderHistoriesQuery } from "../../services/adminFethApi";
+import { useLazyGetOrderHistoriesQuery } from "../../services/adminFethApi";
 import AdminOrderDetail from "../components/AdminOrderDetail";
 
 function AdminOrderList() {
-  const { data } = useGetOrderHistoriesQuery();
+  const [getOrderHistories] = useLazyGetOrderHistoriesQuery();
   const [histories, setHistories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selected, setSelected] = useState(null);
+  const [filter,setFilter] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+
+  async function fetchOrders() {
+    try {
+      const response = await getOrderHistories({ filter, startDate, endDate }).unwrap();
+      if (response) {
+        console.log(response);
+        setHistories(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   useEffect(() => {
-    console.log("working");
-    if (data) {
-      setHistories(data.data);
-    }
-  }, [data, setHistories]);
+    fetchOrders();
+  }, [filter]);
 
   function createAddress(address) {
     return (
