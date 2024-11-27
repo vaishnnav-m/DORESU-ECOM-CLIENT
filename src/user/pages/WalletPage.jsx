@@ -24,7 +24,7 @@ function WalletPage() {
 
     return formated;
   }
-
+  
   function getAmount(history) {
     if (history.type === "Credit") {
       return "+" + Math.round(history.amount);
@@ -37,7 +37,9 @@ function WalletPage() {
     <div className="pt-[200px] flex justify-center">
       <Header />
       <main className="w-[70%] flex gap-10">
-        <UserProfileAside />
+        <div className="w-[340px] h-full">
+          <UserProfileAside />
+        </div>
         <div className="flex flex-col items-center gap-11 border px-10 py-5 flex-1">
           <h2 className="text-[20px] font-bold uppercase">my wallet</h2>
           <div className="w-full flex gap-20 max-w-[90%]">
@@ -48,26 +50,8 @@ function WalletPage() {
               <div className="w-full shadow-lg border p-3 flex flex-col items-center gap-5">
                 <h3 className="text-[20px] font-semibold">My Balance</h3>
                 <h1 className="text-[44px] text-green-500 font-bold">
-                  ₹ {wallet && Math.round(wallet.balance)}
+                  ₹ {wallet && Math.round(wallet.balance) || 0}
                 </h1>
-                <div className="w-full px-5 font-medium flex flex-col gap-3">
-                  {/* <h3 className="text-[18px] font-semibold">Histories</h3> */}
-                  <div className="w-full flex bg-[#e4e4e4] rounded-lg p-5">
-                    {wallet &&
-                      wallet.histories.map((history) => (
-                        <div className="w-full flex justify-between">
-                          <span>{createDate(history.date)}</span>
-                          <span
-                            className={`text-${
-                              history.type === "Credit" ? "green" : "red"
-                            }-500`}
-                          >
-                            {getAmount(history)}
-                          </span>
-                        </div>
-                      ))}
-                  </div>
-                </div>
               </div>
             </div>
             <div className="border shadow-lg p-5 flex flex-col gap-3">
@@ -97,7 +81,26 @@ function WalletPage() {
                 </button>
               </div>
             </div>
+            
           </div>
+          <div className="w-full flex flex-col gap-5 bg-[#e4e4e4] rounded-lg p-5">
+                  {wallet &&
+                    wallet.histories.map((history) => (
+                      <div key={history._id} className="w-full flex items-center justify-between">
+                        <div className="flex flex-col">
+                          <span>{history.remark}</span>
+                          <span className="text-[#4a4a4a] text-[14px]">{createDate(history.date)}</span>
+                        </div>
+                        <span
+                          className={`text-${
+                            history.type === "Credit" ? "green" : "red"
+                          }-500`}
+                        >
+                          {getAmount(history)}
+                        </span>
+                      </div>
+                    ))}
+                </div>
         </div>
       </main>
     </div>

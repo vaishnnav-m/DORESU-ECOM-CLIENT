@@ -12,14 +12,18 @@ function AdminOrderList() {
   const [filter,setFilter] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [page,setPage] = useState(1);
+  const [totalPages,setTotalPages] = useState(0);
+
+  const limit = 10;
 
 
   async function fetchOrders() {
     try {
-      const response = await getOrderHistories({ filter, startDate, endDate }).unwrap();
+      const response = await getOrderHistories({ filter, startDate, endDate, page, limit }).unwrap();
       if (response) {
-        console.log(response);
-        setHistories(response.data);
+        setTotalPages(response.data.totalPages)
+        setHistories(response.data.orders);
       }
     } catch (error) {
       console.log(error);
@@ -28,7 +32,7 @@ function AdminOrderList() {
 
   useEffect(() => {
     fetchOrders();
-  }, [filter]);
+  }, [filter,page]);
 
   function createAddress(address) {
     return (
@@ -155,6 +159,13 @@ function AdminOrderList() {
                 ))}
             </tbody>
           </table>
+          <div className="flex justify-center pt-2">
+            <div className="bg-white">
+              <button className={`px-5 py-2 border-[2px] ${page == 1 && "hidden"}`} onClick={() => setPage((prev) => prev-1)}><i className="fas fa-arrow-left"/></button>
+              <button disabled className="px-5 py-2 border-[2px]">{page} / {totalPages}</button>
+              <button className={`px-5 py-2 border-[2px] ${totalPages === page && "hidden"}`} onClick={() => setPage((prev) => prev+1)} ><i className="fas fa-arrow-right"/></button>
+            </div>
+          </div>
         </div>
         {isModalOpen && (
           <div className="absolute inset-0 z-[999] bg-[#00000057] flex justify-center items-center ">

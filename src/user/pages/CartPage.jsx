@@ -16,7 +16,7 @@ function CartPage() {
 
   const [cartData, setCartData] = useState({});
   const [products, setProducts] = useState([]);
-  const [totalPrice,setTotalPrice] = useState(null);
+  const [totalPrice, setTotalPrice] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -79,6 +79,28 @@ function CartPage() {
   function calculatePrice(originalPrice, offerValue) {
     return Math.floor(originalPrice - (originalPrice * offerValue) / 100);
   }
+
+  async function handleCheckout() {
+    try {
+      await refetch();
+      const invalidProducts = cart.data.products.filter(
+        (product) => product.quantityLeft === 0
+      );
+      if (invalidProducts.length > 0) {
+        return toast.error("insufficient quantity", {
+          position: "top-right",
+          theme: "dark",
+        });
+      }
+      navigate("/payment")
+    } catch (error) {
+      toast.error(error, {
+        position: "top-right",
+        theme: "dark",
+      });
+    }
+  }
+
   return (
     <div className="min-h-screen w-full flex flex-col items-center pt-[200px]">
       <Header />
@@ -132,14 +154,16 @@ function CartPage() {
                               )
                             : product.price}
                         </span>
-                        {product.productId?.offer && <span>
-                          <span className="text-[#8A8A8A] text-[18px] line-through">
-                            ₹{product?.price}
+                        {product.productId?.offer && (
+                          <span>
+                            <span className="text-[#8A8A8A] text-[18px] line-through">
+                              ₹{product?.price}
+                            </span>
+                            <span className="text-green-600 ml-2">
+                              {product?.productId?.offer.offerValue}% off
+                            </span>
                           </span>
-                          <span className="text-green-600 ml-2">
-                            {product?.productId?.offer.offerValue}% off
-                          </span>
-                        </span>}
+                        )}
                       </td>
                       <td className="px-8 py-4 ">
                         <div className="flex items-center gap-4">
@@ -199,10 +223,11 @@ function CartPage() {
         </div>
         <div className="border border-black flex flex-col rounded-xl gap-10 p-10">
           <span className="text-[25px] font-semibold">
-            Sub Total ({cartData.totalQuantity} item):₹ {cartData.totalPriceAfterDiscount}
+            Sub Total ({cartData.totalQuantity} item):₹{" "}
+            {cartData.totalPriceAfterDiscount}
           </span>
           <button
-            onClick={() => navigate("/payment")}
+            onClick={handleCheckout}
             className="bg-black text-white px-5 text-2xl py-2 rounded-lg"
           >
             Check Out

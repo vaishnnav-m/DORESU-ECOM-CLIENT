@@ -14,7 +14,7 @@ import { SearchContext } from "../store/context";
 function Header() {
   const [authenticated, setAuthenticated] = useState();
   const [inputVisible,setInputVisible] = useState(false);
-  // const {query,setQuery} = useContext(SearchContext)
+  const {query,setQuery} = useContext(SearchContext)
 
   const dispatch = useDispatch();
   // selecter for user authenticated
@@ -69,12 +69,12 @@ function Header() {
           <ul className="flex gap-10 text-[#6e6e6e] text-[18px] font-sans font-semibold">
             <li className="flex gap-2 relative ">
               {inputVisible && <input
-                // value={query}
-                // onChange={(e) => setQuery(e.target.value)}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
                 className="max-w-[160px] absolute right-7  translate-y-[7px] px-1 border-b border-b-black bg-transparent focus:outline-none"
                 type="text"
               />}
-              <img onClick={() => setInputVisible(true)} className="w-[25px]" src={Search} alt="" />
+              <img onClick={() => setInputVisible(!inputVisible)} className="w-[25px]" src={Search} alt="" />
             </li>
             <li className="hover:scale-110 relative group">
               <button>

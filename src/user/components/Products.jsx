@@ -41,7 +41,7 @@ function Products({ filters, sortOption, productLimit, query, load }) {
         category: filters.categories,
         priceRange: filters.priceRange,
         sortOption,
-        // query
+        query
       }).unwrap();
 
       if (response) {
@@ -69,7 +69,7 @@ function Products({ filters, sortOption, productLimit, query, load }) {
     setHasMore(true);
     setIsIntersecting(false);
     fetchProducts(offset.current, true);
-  }, [filters, sortOption]);
+  }, [filters, sortOption, query]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -121,7 +121,7 @@ function Products({ filters, sortOption, productLimit, query, load }) {
 
   return (
     <div className="w-full h-full">
-      <div className={`w-full h-full grid grid-cols-${products.length?"4":"1"} gap-5 py-8 text-[25px]`}>
+      <div className={`w-full h-full grid grid-cols-4 gap-5 py-8 text-[25px]`}>
         {products.length ? (
           products.map((product) => {
             return (

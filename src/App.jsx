@@ -42,260 +42,260 @@ function App() {
     <>
       <ToastContainer />
       <Router>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route
-            path="/signup"
-            element={
-              <PublicRoute>
-                <Signup />
-              </PublicRoute>
-            }
-          />
-          <Route path="/verifyOtp/:userId" element={<OTPverify />} />
-          <Route
-            path="/login"
-            element={
-              <PublicRoute>
-                <Login />
-              </PublicRoute>
-            }
-          />{" "}
-          <Route
-            path="/all"
-            element={
-              <ProtectedRoutes>
-                <Context>
+        <Context>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route
+              path="/signup"
+              element={
+                <PublicRoute>
+                  <Signup />
+                </PublicRoute>
+              }
+            />
+            <Route path="/verifyOtp/:userId" element={<OTPverify />} />
+            <Route
+              path="/login"
+              element={
+                <PublicRoute>
+                  <Login />
+                </PublicRoute>
+              }
+            />{" "}
+            <Route
+              path="/all"
+              element={
+                <ProtectedRoutes>
                   <AllProducts />
-                </Context>
-              </ProtectedRoutes>
-            }
-          />
-          {/* product detail */}
-          <Route
-            path="/productDetail/:productId"
-            element={
-              <ProtectedRoutes>
-                <ProductDetail />
-              </ProtectedRoutes>
-            }
-          />
-          {/* cart page */}
-          <Route
-            path="/cart"
-            element={
-              <ProtectedRoutes>
-                <CartPage />
-              </ProtectedRoutes>
-            }
-          />
-          {/* user wishlist page */}
-          <Route
-            path="/wishList"
-            element={
-              <ProtectedRoutes>
-                <WishList />
-              </ProtectedRoutes>
-            }
-          />
-          {/* payment page */}
-          <Route
-            path="/payment"
-            element={
-              <ProtectedRoutes>
-                <PaymentPage />
-              </ProtectedRoutes>
-            }
-          />
-          {/* payment page */}
-          <Route
-            path="/success"
-            element={
-              <ProtectedRoutes>
-                <OrderSuccess />
-              </ProtectedRoutes>
-            }
-          />
-          {/* user profile page */}
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoutes>
-                <UserProfile />
-              </ProtectedRoutes>
-            }
-          />
-          {/* user Reset page */}
-          <Route
-            path="/profile/resetPassword/:userId"
-            element={
-              <ProtectedRoutes>
-                <ResetPassword />
-              </ProtectedRoutes>
-            }
-          />
-          {/* user manage address page */}
-          <Route
-            path="/profile/address"
-            element={
-              <ProtectedRoutes>
-                <Address />
-              </ProtectedRoutes>
-            }
-          />
-          {/* user add address page */}
-          <Route
-            path="/profile/addAddress"
-            element={
-              <ProtectedRoutes>
-                <AddAddress />
-              </ProtectedRoutes>
-            }
-          />
-          {/* user edit address page */}
-          <Route
-            path="/profile/editAddress/:addressId"
-            element={
-              <ProtectedRoutes>
-                <EditAddress />
-              </ProtectedRoutes>
-            }
-          />
-          {/* user orders page */}
-          <Route
-            path="/profile/orders"
-            element={
-              <ProtectedRoutes>
-                <UserOrders />
-              </ProtectedRoutes>
-            }
-          />
-          {/* user order detail page */}
-          <Route
-            path="/profile/orderDetail/:orderId"
-            element={
-              <ProtectedRoutes>
-                <UserOrderDetails />
-              </ProtectedRoutes>
-            }
-          />
-          <Route
-            path="/wallet"
-            element={
-              <ProtectedRoutes>
-                <WalletPage />
-              </ProtectedRoutes>
-            }
-          />
-          {/* admin login */}
-          <Route
-            path="/admin/login"
-            element={
-              <AdminPublicRoutes>
-                <AdminLogin />
-              </AdminPublicRoutes>
-            }
-          />
-          {/* admin dashboard */}
-          <Route
-            path="/admin"
-            element={
-              <AdminProtetedRoutes>
-                <AdminDashboard />
-              </AdminProtetedRoutes>
-            }
-          />
-          {/* admin products */}
-          <Route
-            path="/admin/products"
-            element={
-              <AdminProtetedRoutes>
-                <AdminProducts />
-              </AdminProtetedRoutes>
-            }
-          />
-          {/* admin add products */}
-          <Route
-            path="/admin/addProducts"
-            element={
-              <AdminProtetedRoutes>
-                <AdminAddProduct />
-              </AdminProtetedRoutes>
-            }
-          />
-          {/* admin edit product */}
-          <Route
-            path="/admin/editProduct/:productId"
-            element={
-              <AdminProtetedRoutes>
-                <AdminEditProduct />
-              </AdminProtetedRoutes>
-            }
-          />
-          {/* admin users */}
-          <Route
-            path="/admin/users"
-            element={
-              <AdminProtetedRoutes>
-                <AdminUsers />
-              </AdminProtetedRoutes>
-            }
-          />
-          {/* admin add categories */}
-          <Route
-            path="/admin/addCatagories"
-            element={
-              <AdminProtetedRoutes>
-                <AdminAddCatagories />
-              </AdminProtetedRoutes>
-            }
-          />
-          {/* admin categories */}
-          <Route
-            path="/admin/catagories"
-            element={
-              <AdminProtetedRoutes>
-                <AdminCatagories />
-              </AdminProtetedRoutes>
-            }
-          />
-          {/* admin offers */}
-          <Route
-            path="/admin/offers"
-            element={
-              <AdminProtetedRoutes>
-                <AdminOffers />
-              </AdminProtetedRoutes>
-            }
-          />
-          {/* admin cupons */}
-          <Route
-            path="/admin/cupons"
-            element={
-              <AdminProtetedRoutes>
-                <AdminCoupons />
-              </AdminProtetedRoutes>
-            }
-          />
-          {/* admin dashboard */}
-          <Route
-            path="/admin/orders"
-            element={
-              <AdminProtetedRoutes>
-                <AdminOrderList />
-              </AdminProtetedRoutes>
-            }
-          />
-          {/* admin dashboard */}
-          <Route
-            path="/admin/salesReport"
-            element={
-              <AdminProtetedRoutes>
-                <AdminSalesReportPage />
-              </AdminProtetedRoutes>
-            }
-          />
-        </Routes>
+                </ProtectedRoutes>
+              }
+            />
+            {/* product detail */}
+            <Route
+              path="/productDetail/:productId"
+              element={
+                <ProtectedRoutes>
+                  <ProductDetail />
+                </ProtectedRoutes>
+              }
+            />
+            {/* cart page */}
+            <Route
+              path="/cart"
+              element={
+                <ProtectedRoutes>
+                  <CartPage />
+                </ProtectedRoutes>
+              }
+            />
+            {/* user wishlist page */}
+            <Route
+              path="/wishList"
+              element={
+                <ProtectedRoutes>
+                  <WishList />
+                </ProtectedRoutes>
+              }
+            />
+            {/* payment page */}
+            <Route
+              path="/payment"
+              element={
+                <ProtectedRoutes>
+                  <PaymentPage />
+                </ProtectedRoutes>
+              }
+            />
+            {/* payment page */}
+            <Route
+              path="/success"
+              element={
+                <ProtectedRoutes>
+                  <OrderSuccess />
+                </ProtectedRoutes>
+              }
+            />
+            {/* user profile page */}
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoutes>
+                  <UserProfile />
+                </ProtectedRoutes>
+              }
+            />
+            {/* user Reset page */}
+            <Route
+              path="/profile/resetPassword/:userId"
+              element={
+                <ProtectedRoutes>
+                  <ResetPassword />
+                </ProtectedRoutes>
+              }
+            />
+            {/* user manage address page */}
+            <Route
+              path="/profile/address"
+              element={
+                <ProtectedRoutes>
+                  <Address />
+                </ProtectedRoutes>
+              }
+            />
+            {/* user add address page */}
+            <Route
+              path="/profile/addAddress"
+              element={
+                <ProtectedRoutes>
+                  <AddAddress />
+                </ProtectedRoutes>
+              }
+            />
+            {/* user edit address page */}
+            <Route
+              path="/profile/editAddress/:addressId"
+              element={
+                <ProtectedRoutes>
+                  <EditAddress />
+                </ProtectedRoutes>
+              }
+            />
+            {/* user orders page */}
+            <Route
+              path="/profile/orders"
+              element={
+                <ProtectedRoutes>
+                  <UserOrders />
+                </ProtectedRoutes>
+              }
+            />
+            {/* user order detail page */}
+            <Route
+              path="/profile/orderDetail/:orderId"
+              element={
+                <ProtectedRoutes>
+                  <UserOrderDetails />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path="/wallet"
+              element={
+                <ProtectedRoutes>
+                  <WalletPage />
+                </ProtectedRoutes>
+              }
+            />
+            {/* admin login */}
+            <Route
+              path="/admin/login"
+              element={
+                <AdminPublicRoutes>
+                  <AdminLogin />
+                </AdminPublicRoutes>
+              }
+            />
+            {/* admin dashboard */}
+            <Route
+              path="/admin"
+              element={
+                <AdminProtetedRoutes>
+                  <AdminDashboard />
+                </AdminProtetedRoutes>
+              }
+            />
+            {/* admin products */}
+            <Route
+              path="/admin/products"
+              element={
+                <AdminProtetedRoutes>
+                  <AdminProducts />
+                </AdminProtetedRoutes>
+              }
+            />
+            {/* admin add products */}
+            <Route
+              path="/admin/addProducts"
+              element={
+                <AdminProtetedRoutes>
+                  <AdminAddProduct />
+                </AdminProtetedRoutes>
+              }
+            />
+            {/* admin edit product */}
+            <Route
+              path="/admin/editProduct/:productId"
+              element={
+                <AdminProtetedRoutes>
+                  <AdminEditProduct />
+                </AdminProtetedRoutes>
+              }
+            />
+            {/* admin users */}
+            <Route
+              path="/admin/users"
+              element={
+                <AdminProtetedRoutes>
+                  <AdminUsers />
+                </AdminProtetedRoutes>
+              }
+            />
+            {/* admin add categories */}
+            <Route
+              path="/admin/addCatagories"
+              element={
+                <AdminProtetedRoutes>
+                  <AdminAddCatagories />
+                </AdminProtetedRoutes>
+              }
+            />
+            {/* admin categories */}
+            <Route
+              path="/admin/catagories"
+              element={
+                <AdminProtetedRoutes>
+                  <AdminCatagories />
+                </AdminProtetedRoutes>
+              }
+            />
+            {/* admin offers */}
+            <Route
+              path="/admin/offers"
+              element={
+                <AdminProtetedRoutes>
+                  <AdminOffers />
+                </AdminProtetedRoutes>
+              }
+            />
+            {/* admin cupons */}
+            <Route
+              path="/admin/cupons"
+              element={
+                <AdminProtetedRoutes>
+                  <AdminCoupons />
+                </AdminProtetedRoutes>
+              }
+            />
+            {/* admin dashboard */}
+            <Route
+              path="/admin/orders"
+              element={
+                <AdminProtetedRoutes>
+                  <AdminOrderList />
+                </AdminProtetedRoutes>
+              }
+            />
+            {/* admin dashboard */}
+            <Route
+              path="/admin/salesReport"
+              element={
+                <AdminProtetedRoutes>
+                  <AdminSalesReportPage />
+                </AdminProtetedRoutes>
+              }
+            />
+          </Routes>
+        </Context>
       </Router>
     </>
   );

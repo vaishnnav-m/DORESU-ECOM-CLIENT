@@ -83,21 +83,39 @@ function AddProductForm() {
   function handleChange(e) {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value.trim(),
     });
   }
+
+
+  // const varientsValidateSchema = Yup.array().of(
+  //   Yup.object({
+  //     size: Yup.string().required("Size is required"),
+  //     stock: Yup.string()
+  //       .required("Stock is required")
+  //       .min(0, "Stock cannot be negative"),
+  //     price: Yup.string().required("Price is required"),
+  //   })
+  // );
+
+  // const validateVarients = (variant) => {
+  //   if(!variant.size)
+  //     return false
+  //   if(!variant.stock || variant.stock < 0)
+  //     return false
+  //   if(!variant.price)
+  //     return false
+  // }
 
   // validate schema
   const validateSchema = Yup.object({
     productName: Yup.string().required("Product Name is Required"),
     description: Yup.string().required("Descritption is Required"),
     category: Yup.string().required("category is Required"),
-    variants: Yup.array()
-      .min(2, "At least one variant is required")
-      .required("variant is Required"),
     image: Yup.array()
       .min(3, "At least Three image is required")
       .required("Image is Required"),
+    // variants:varientsValidateSchema
   });
 
 
@@ -105,9 +123,10 @@ function AddProductForm() {
   async function handdleSubmit(e) {
     try {
       e.preventDefault();
-      console.log(formData);
+
       formData.variants = [...variants];
       await validateSchema.validate(formData, { abortEarly: false });
+
       const payload = new FormData();
       payload.append("productName", formData.productName);
       payload.append("description", formData.description);
@@ -143,6 +162,7 @@ function AddProductForm() {
       setProfileImage(null);
       setThumbnail([]);
     } catch (errors) {
+      console.log(errors.inner);
       if (errors.inner) {
         const newErrors = {};
         errors.inner.forEach((error) => {

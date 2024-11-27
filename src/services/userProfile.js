@@ -71,9 +71,10 @@ export const userProfileApi = api.injectEndpoints({
       }),
     }),
     getUserOrderHistories:builder.query({
-      query:() => ({
-        url:'/api/getUserOrderHistories'
+      query:({page,limit}) => ({
+        url:`/api/getUserOrderHistories?page=${page}&limit=${limit}`
       }),
+      providesTags:['userGetOrders']
     }),
     getOneOrder:builder.query({
       query:(orderId) => ({
@@ -85,7 +86,8 @@ export const userProfileApi = api.injectEndpoints({
         url:'/api/order/updateStatus',
         method:'PATCH',
         body:credentials
-      })
+      }),
+      invalidatesTags:['userGetOrders']
     }),
     getWallet:builder.query({
       query:() => ({
@@ -106,7 +108,7 @@ export const {
   useGetOneAddressQuery,
   useUpdateAddressMutation,
   useDeleteAddressMutation,
-  useGetUserOrderHistoriesQuery,
+  useLazyGetUserOrderHistoriesQuery,
   useGetOneOrderQuery,
   useUpdateOrderStatusMutation,
   useGetWalletQuery

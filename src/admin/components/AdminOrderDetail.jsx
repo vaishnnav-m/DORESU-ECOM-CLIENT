@@ -1,9 +1,19 @@
 import { useUpdateOrderStatusMutation } from "../../services/adminFethApi";
 import { toast } from "react-toastify";
+import ConfirmModal from "./ConfirmModal";
+import { useState } from "react";
 
 function AdminOrderDetail({ order, date, address, handleModal }) {
   const statuses = ["Pending", "Shipped", "Delivered", "Cancelled"];
   const [updateOrderStatus] = useUpdateOrderStatusMutation();
+
+  // states
+  const [modal, setModal] = useState(false);
+  const [modalHeading, setModalHeading] = useState("");
+  const [modalText, setModalText] = useState("");
+  const [buttonConfigsModal, setButtonCofigsModal] = useState([]);
+  
+  const mainIcon =   <i className="fas fa-question text-3xl"></i>
 
   // to set style
   function getStyle(status) {
@@ -41,6 +51,27 @@ function AdminOrderDetail({ order, date, address, handleModal }) {
         theme: "dark",
       });
     }
+  }
+
+  // function to handle modal
+  const handleModalOpen = (status,itemId,orderId) => {
+    setModalHeading("Change Order Status");
+      setModalText(
+        `Are you sure to make the order status to ${status}`
+      );
+      setButtonCofigsModal([
+        {
+          name: "Cancel",
+          action: () => setModal(false),
+          styles: "px-4 py-2  bg-gray-200 text-sm mr-4 rounded-lg",
+        },
+        {
+          name: "Continue",
+          action: () => handleStatus(status,itemId,orderId),
+          styles: "px-4 py-2 text-sm mr-4 rounded-lg border",
+        },
+      ]);
+      setModal(true)
   }
 
   return (
@@ -98,16 +129,16 @@ function AdminOrderDetail({ order, date, address, handleModal }) {
                   <span
                     className={`${getStyle(item.status)} rounded-lg px-3 py-2`}
                   >
-                    {item.status} <i className="fas fa-angle-down" />
+                    {item.status} {item.status !== "Cancelled" && <i className="fas fa-angle-down" />}
                   </span>
-                  <div className="absolute z-[999] bg-white left-4 py-5 px-3 shadow-xl hidden flex-col gap-2 group-hover:flex">
+                  {item.status !== "Cancelled" && <div className="absolute z-[999] bg-white left-4 py-5 px-3 shadow-xl hidden flex-col gap-2 group-hover:flex">
                     {statuses.map(
                       (status, index) =>
                         status !== item.status && (
                           <span
                             key={index}
                             onClick={() =>
-                              handleStatus(status, item._id, order._id)
+                              handleModalOpen(status, item._id, order._id)
                             }
                             className={` ${getStyle(
                               status
@@ -117,13 +148,21 @@ function AdminOrderDetail({ order, date, address, handleModal }) {
                           </span>
                         )
                     )}
-                  </div>
+                  </div>}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      {modal && (
+        <ConfirmModal
+          text={modalText}
+          heading={modalHeading}
+          buttonConfigs={buttonConfigsModal}
+          mainIcon={mainIcon}
+        />
+      )}
     </div>
   );
 }

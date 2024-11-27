@@ -6,6 +6,7 @@ import {
   useGetCartQuery,
   usePlaceOrderMutation,
   useVerifyOrderMutation,
+  useUserGetCouponsQuery,
 } from "../../services/userProductsApi";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +17,7 @@ function PaymentPage() {
   const { data: cart } = useGetCartQuery();
   const [verifyOrder] = useVerifyOrderMutation();
   const [applyCoupon] = useApplyCouponMutation();
+  const { data: couponsData } = useUserGetCouponsQuery();
 
   const [placeOrder] = usePlaceOrderMutation();
   const [addresses, setAddresses] = useState([]);
@@ -23,6 +25,8 @@ function PaymentPage() {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showCoupons, setShowCoupons] = useState(false);
+  const [coupons, setCoupons] = useState([]);
   const [coupon, setCoupon] = useState("");
   const [totalPriceAfterDiscount, setTotalPriceAfterDiscount] = useState("");
   const [couponDiscount, setCouponDiscount] = useState("");
@@ -42,7 +46,10 @@ function PaymentPage() {
       setProducts(cart.data.products);
       setTotalPriceAfterDiscount(cart.data.totalPriceAfterDiscount);
     }
-  }, [data, cart]);
+    if (couponsData) {
+      setCoupons(couponsData.data);
+    }
+  }, [data, cart, couponsData]);
 
   async function handleOrder() {
     try {
@@ -294,7 +301,7 @@ function PaymentPage() {
             </div>
           </div>
           <div className="flex-1 flex flex-col gap-10">
-            <div className="border border-[#8A8A8A] rounded-xl flex flex-col items-start gap-5 px-8 py-2">
+            <div className="relative border border-[#8A8A8A] rounded-xl flex flex-col items-start gap-5 px-8 py-2">
               <h2 className="text-[20px] font-semibold">Order Summary</h2>
               <div className="w-full flex flex-col gap-3">
                 <div className="w-full flex justify-between">
@@ -325,7 +332,7 @@ function PaymentPage() {
                 </span>
               </div>
               <div className="w-full flex gap-5 relative">
-                <div className="flex-1 flex 3 rounded-full bg-[#F5F5F5]">
+                <div className="flex-1 flex rounded-full bg-[#F5F5F5]">
                   <input
                     className="w-full px-5 h-full bg-transparent focus:outline-none peer"
                     type="text"
@@ -351,6 +358,35 @@ function PaymentPage() {
                   Apply
                 </button>
               </div>
+              <span onClick={() => setShowCoupons(!showCoupons)} className="underline font-semibold cursor-pointer">Show All Coupons</span>
+              {showCoupons && (
+                <table className="absolut w-full flex flex-col gap-3 bottom-0 border bg-white py-5 px-5">
+                  <tr className="w-full flex justify-between uppercase font-bold">
+                    <td>Select</td>
+                    <td>Coupon Code</td>
+                    <td className="break-words max-w-[80px]">minimum amount</td>
+                    <td>Discount Value</td>
+                  </tr>
+                  {coupons.map((cpn) => (
+                    <tr className="w-full flex justify-between px-3">
+                      <td>
+                        <input
+                          onChange={(e) => {
+                            setShowCoupons(false)
+                            setCoupon(e.target.value)}}
+                          type="radio"
+                          name="coupon"
+                          checked={coupon === cpn.couponCode}
+                          value={cpn.couponCode}
+                        />
+                      </td>
+                      <td>{cpn.couponCode}</td>
+                      <td>{cpn.minPurchaseAmount}RS</td>
+                      <td>{cpn.discountValue}% -OFF</td>
+                    </tr>
+                  ))}
+                </table>
+              )}
             </div>
             <div className="border border-[#8A8A8A] rounded-xl flex flex-col items-start gap-5 px-8 py-2  font-semibold">
               <div className="flex flex-col gap-2">

@@ -1,28 +1,47 @@
 import React, { useEffect, useState } from "react";
 import Aside from "../components/Aside";
 import Header from "../components/Header";
-import { useLazyGetOrderHistoriesQuery } from "../../services/adminFethApi";
+import { useLazyDownloadExcelReportQuery, useLazyDownloadPDFReportQuery, useLazyGetOrderHistoriesQuery } from "../../services/adminFethApi";
 
 function AdminSalesReportPage() {
   const [getOrderHistories] = useLazyGetOrderHistoriesQuery();
+  const [pdfDownload] = useLazyDownloadPDFReportQuery()
+  const [excelDownload] = useLazyDownloadExcelReportQuery();
+
+  // states
   const [histories, setHistories] = useState([]);
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [totalProducts, setTotalProducts] = useState(0);
-  const [filter,setFilter] = useState("");
+  const [filter, setFilter] = useState("month");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [page,setPage] = useState(1);
+  const [totalPages,setTotalPages] = useState(0);
 
+  const limit = 10;
 
   async function fetchOrders() {
     try {
-      const response = await getOrderHistories({ filter, startDate, endDate }).unwrap();
+      const response = await getOrderHistories({
+        filter,
+        startDate,
+        endDate,
+        page,
+        limit
+      }).unwrap();
       if (response) {
-        console.log(response);
-        setHistories(response.data);
-  
+        setHistories(response.data.orders);
+
         // Calculate totals here
-        const totalRevenue = response.data.reduce((acc, order) => acc + order.totalPrice, 0);
-        const totalProducts = response.data.reduce((acc, order) => acc + order.items.length, 0);
+        const totalRevenue = response.data.orders.reduce(
+          (acc, order) => acc + order.totalPrice,
+          0
+        );
+        const totalProducts = response.data.orders.reduce(
+          (acc, order) => acc + order.items.length,
+          0
+        );
+        setTotalPages(response.data.totalPages)
         setTotalRevenue(totalRevenue);
         setTotalProducts(totalProducts);
       }
@@ -33,7 +52,7 @@ function AdminSalesReportPage() {
 
   useEffect(() => {
     fetchOrders();
-  }, [filter]);
+  }, [filter, startDate, endDate,page]);
 
   // function to create date
   function createDate(timeStamp) {
@@ -48,7 +67,53 @@ function AdminSalesReportPage() {
     return formated;
   }
 
-  console.log(filter);
+  async function handlePdfDownload (){
+    try {
+      const response = await pdfDownload({
+        filter,
+        startDate,
+        endDate,
+      }).unwrap();
+
+      const blob = new Blob([response],{
+        type:"application/pdf"
+      });
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `DORESU-Sales-Report.pdf`
+      link.click();
+      window.URL.revokeObjectURL(url);
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function handleXLDownload (){
+    try {
+      const response = await excelDownload({
+        filter,
+        startDate,
+        endDate,
+      }).unwrap();
+
+      const blob = new Blob([response],{
+        type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      });
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `DORESU-Sales-Report.xlsx`
+      link.click();
+      window.URL.revokeObjectURL(url);
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <div className="bg-[#E7E7E3] flex min-h-screen relative">
       <Aside />
@@ -84,20 +149,46 @@ function AdminSalesReportPage() {
             </div>
           </div>
           <div>
-            <div className="w-full flex px-5 mb-3"></div>
             <table className="min-w-full text-left table-fixed divide-y divide-gray-200 bg-white rounded-2xl">
               <thead>
                 <tr>
-                  <td colSpan="5" className="p-2 flex items-center gap-5">
-                    <div className="w-fit rounded-lg bg-white border p-3">
-                      <select onChange={(e) => setFilter(e.target.value)} className="bg-transparent focus:outline-none"  >
-                        <option value="today">Today</option>
-                        <option value="week">This Week</option>
-                        <option value="month">This Month</option>
-                        <option value="custom">Custom</option>
-                      </select>
+                  <td colSpan="6" className="p-2">
+                    <div className="w-full flex justify-between">
+                      <div className="flex items-center gap-5">
+                        <div className="w-fit rounded-lg bg-white border p-3">
+                          <select
+                            onChange={(e) => setFilter(e.target.value)}
+                            value={filter}
+                            className="bg-transparent focus:outline-none"
+                          >
+                            <option value="today">Today</option>
+                            <option value="week">This Week</option>
+                            <option value="month">This Month</option>
+                            <option value="custom">Custom</option>
+                          </select>
+                        </div>
+                        {filter === "custom" && (
+                          <>
+                            <input
+                              type="date"
+                              value={startDate}
+                              onChange={(e) => setStartDate(e.target.value)}
+                              className="p-2 ml-3 border rounded"
+                            />
+                            <input
+                              type="date"
+                              value={endDate}
+                              onChange={(e) => setEndDate(e.target.value)}
+                              className="p-2 ml-3 border rounded"
+                            />
+                          </>
+                        )}
+                      </div>
+                      <div className="flex gap-5">
+                        <button onClick={handlePdfDownload} className="px-3 py-2 rounded-lg  bg-[#d4d4d4] border">Download (PDF)</button>
+                        <button onClick={handleXLDownload} className="px-3 py-2 rounded-lg bg-[#d4d4d4] border">Download (Excel)</button>
+                      </div>
                     </div>
-                      <button  className="h-fit px-3 py-2 rounded-lg bg-black text-white">Apply Filter</button>
                   </td>
                 </tr>
                 <tr>
@@ -147,6 +238,13 @@ function AdminSalesReportPage() {
                   ))}
               </tbody>
             </table>
+            <div className="flex justify-center pt-2">
+            <div className="bg-white">
+              <button className={`px-5 py-2 border-[2px] ${page == 1 && "hidden"}`} onClick={() => setPage((prev) => prev-1)}><i className="fas fa-arrow-left"/></button>
+              <button disabled className="px-5 py-2 border-[2px]">{page} / {totalPages}</button>
+              <button className={`px-5 py-2 border-[2px] ${totalPages === page && "hidden"}`} onClick={() => setPage((prev) => prev+1)} ><i className="fas fa-arrow-right"/></button>
+            </div>
+          </div>
           </div>
         </div>
       </main>

@@ -47,7 +47,6 @@ function SignupForm() {
   // function to handdle submit of the form
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       await validateSchema.validate(formData, { abortEarly: false });
       await signupUser(formData).unwrap();
@@ -73,7 +72,7 @@ function SignupForm() {
   const onChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value.trim(),
     });
   };
 

@@ -1,19 +1,35 @@
 import Header from "../components/Header";
 import UserProfileAside from "../components/UserProfileAside";
-import { useGetUserOrderHistoriesQuery } from "../../services/userProfile";
+import { useLazyGetUserOrderHistoriesQuery } from "../../services/userProfile";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function UserOrders() {
-  const { data } = useGetUserOrderHistoriesQuery();
+  const [getOrderHistories] = useLazyGetUserOrderHistoriesQuery();
   const [orders, setOrders] = useState(null);
+  const [page,setPage] = useState(1);
+  const [totalPages,setTotalPages] = useState(0);
+
+  const limit = 5;
 
   const navigate = useNavigate();
 
+  async function fetchOrders(){
+    try {
+      const response = await getOrderHistories({page,limit}).unwrap();
+      if(response){
+        setTotalPages(response.data.totalPages);
+        setOrders(response.data.orders);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   // useEffect to set Orders
   useEffect(() => {
-    if (data) setOrders(data.data);
-  }, [data]);
+    fetchOrders();
+  }, [page]);
 
   // function to create date
   function createDate(timeStamp) {
@@ -46,7 +62,9 @@ function UserOrders() {
     <div className="pt-[200px] flex justify-center">
       <Header />
       <main className="w-[70%] flex gap-10">
-        <UserProfileAside />
+        <div className="w-[340px] h-full">
+          <UserProfileAside />
+        </div>
         <div className="flex flex-col items-center gap-11 border px-10 py-5 flex-1">
           <h2 className="text-[20px] font-bold ">Orders</h2>
           {orders &&
@@ -98,6 +116,13 @@ function UserOrders() {
                 </div>
               </div>
             ))}
+                <div className="flex justify-center pt-2">
+                  <div className="bg-white">
+                    <button className={`px-5 py-2 border-[2px] ${page == 1 && "hidden"}`} onClick={() => setPage((prev) => prev-1)}><i className="fas fa-arrow-left"/></button>
+                    <button disabled className="px-5 py-2 border-[2px]">{page} / {totalPages}</button>
+                    <button className={`px-5 py-2 border-[2px] ${totalPages === page && "hidden"}`} onClick={() => setPage((prev) => prev+1)} ><i className="fas fa-arrow-right"/></button>
+                  </div>
+                </div>
         </div>
       </main>
     </div>

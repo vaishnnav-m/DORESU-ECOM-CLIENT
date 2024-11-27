@@ -11,8 +11,8 @@ function AllProducts() {
   });
   const [categories, setCategories] = useState(null);
   const [sortOption, setSortOption] = useState("");
+  
   const {query,setQuery} = useContext(SearchContext);
-
   const { data: categoriesData } = useGetCategoriesQuery();
 
 

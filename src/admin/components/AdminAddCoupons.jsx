@@ -1,8 +1,15 @@
-import React, { useState } from "react";
-import { useAddCouponMutation } from "../../services/adminFethApi";
+import React, { useEffect, useState } from "react";
+import {
+  useAddCouponMutation,
+  useEditCouponsMutation,
+} from "../../services/adminFethApi";
+import { toast } from "react-toastify";
 
-function AdminAddCoupons({ closeModal }) {
+
+function AdminAddCoupons({ closeModal, editing }) {
   const [addCoupon, { isLoading }] = useAddCouponMutation();
+  const [editCoupon, { isLoading: isEditing }] = useEditCouponsMutation();
+
   const [coupon, setCoupon] = useState({
     couponCode: "",
     discountValue: "",
@@ -14,6 +21,15 @@ function AdminAddCoupons({ closeModal }) {
   });
   const [validateError, setValidateError] = useState("");
 
+  useEffect(() => {
+    if (editing)
+      setCoupon({
+        ...editing,
+        startDate: new Date(editing.startDate).toISOString().split("T")[0],
+        endDate: new Date(editing.endDate).toISOString().split("T")[0],
+      });
+  }, [editing]);
+
   // function to handdle form change
   function handleChange(e) {
     setCoupon({
@@ -24,7 +40,7 @@ function AdminAddCoupons({ closeModal }) {
 
   // function to validate form
   function validate() {
-    if (!coupon?.couponCode || coupon.couponCode.length === 0) {
+    if (!coupon?.couponCode.trim() || coupon.couponCode.length === 0) {
       setValidateError("coupon code is needed");
       return false;
     }
@@ -32,7 +48,10 @@ function AdminAddCoupons({ closeModal }) {
       setValidateError("Discount value is needed");
       return false;
     }
-    if (!coupon?.minPurchaseAmount || coupon.minPurchaseAmount.length === 0) {
+    if (
+      !coupon?.minPurchaseAmount ||
+      coupon.minPurchaseAmount.length === 0
+    ) {
       setValidateError("Minimum purchase is needed");
       return false;
     }
@@ -61,22 +80,28 @@ function AdminAddCoupons({ closeModal }) {
     e.preventDefault();
     if (!validate()) return;
     try {
-      const response = await addCoupon(coupon).unwrap();
+      let response;
+      if (editing) {
+        console.log(coupon);
+        response = await editCoupon({...coupon,couponId:coupon._id}).unwrap();
+      } else {
+        response = await addCoupon(coupon).unwrap();
+      }
       if (response) {
-        setCoupon({
-          couponCode: "",
-          discountValue: "",
-          minPurchaseAmount: "",
-          maxDiscount: "",
-          usageLimit: "",
-          startDate: "",
-          endDate: "",
+        toast.success(response.message, {
+          position: "top-right",
+          theme: "dark",
         });
+        closeModal();
       }
     } catch (error) {
-      console.log(error);
+      toast.error(error.data.message, {
+        position: "top-right",
+        theme: "dark",
+      });
     }
   }
+  
   return (
     <div className="absolute inset-0 z-[999] bg-[#00000077] flex justify-center items-center">
       <form
@@ -171,7 +196,7 @@ function AdminAddCoupons({ closeModal }) {
           type="submit"
           className="w-full h-[60px] rounded-lg bg-black text-[27px] text-white"
         >
-          {isLoading ? "Saving..." : "Save"}
+          {isLoading || isEditing ? "Saving..." : "Save"}
         </button>
         {validateError && <span className="text-red-500">{validateError}</span>}
       </form>

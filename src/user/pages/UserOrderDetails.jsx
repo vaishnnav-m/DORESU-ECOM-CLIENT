@@ -1,20 +1,31 @@
 import Header from "../components/Header";
 import UserProfileAside from "../components/UserProfileAside";
-import { useUpdateOrderStatusMutation, useGetOneOrderQuery } from "../../services/userProfile";
+import {
+  useUpdateOrderStatusMutation,
+  useGetOneOrderQuery,
+} from "../../services/userProfile";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import UserConfirmModal from "../components/UserConfirmModal";
 
 function UserOrderDetails() {
   const { orderId } = useParams();
-  const { data,refetch } = useGetOneOrderQuery(orderId);
+  const { data, refetch } = useGetOneOrderQuery(orderId);
   const [updateOrderStatus] = useUpdateOrderStatusMutation();
+
+  // states
   const [orderData, setOrderData] = useState(null);
+  const [modal, setModal] = useState(false);
+  const [modalHeading, setModalHeading] = useState("");
+  const [modalText, setModalText] = useState("");
+  const [buttonConfigsModal, setButtonCofigsModal] = useState([]);
+  
+  const mainIcon =   <i className="fas fa-question text-3xl"></i>
 
   useEffect(() => {
     if (data) setOrderData(data.data);
   }, [data]);
-
 
   // function to create date
   function createDate(timeStamp) {
@@ -29,30 +40,75 @@ function UserOrderDetails() {
     return formated;
   }
 
-  async function handleUpdateStatus(orderId,itemId,status){
+  // function to handle update status
+  async function handleUpdateStatus(orderId, itemId, status) {
     try {
-      const response = await updateOrderStatus({orderId,itemId,status}).unwrap();
-      if(response){
+      const response = await updateOrderStatus({
+        orderId,
+        itemId,
+        status,
+      }).unwrap();
+      if (response) {
         toast.success("Order Cancelled", {
           position: "top-right",
           theme: "dark",
         });
         refetch();
       }
-      
     } catch (error) {
-      toast.error(error.data.message,{
+      toast.error(error.data.message, {
         position: "top-right",
         theme: "dark",
-      })
+      });
     }
+  }
+
+  // function to set style
+  function getStyle(status) {
+    switch (status) {
+      case "Pending":
+        return "text-red-500";
+      case "Shipped":
+        return "text-blue-500";
+      case "Delivered":
+        return "text-green-500";
+      case "Cancelled":
+        return "text-orange-500";
+    }
+  }
+
+
+  // function to handle modal
+  const handleModalOpen = (orderId, itemId, status) => {
+    setModalHeading("Change Order Status");
+      setModalText(
+        `Are you sure to ${status === "Cancelled"? "cancel":"Return"} the order`
+      );
+      setButtonCofigsModal([
+        {
+          name: "Cancel",
+          action: () => setModal(false),
+          styles: "px-4 py-2  bg-gray-200 text-sm mr-4 rounded-lg",
+        },
+        {
+          name: "Continue",
+          action: () => {
+            handleUpdateStatus(orderId, itemId, status)
+            setModal(false)
+          },
+          styles: "px-4 py-2 text-sm mr-4 rounded-lg border",
+        },
+      ]);
+      setModal(true)
   }
 
   return (
     <div className="pt-[200px] flex justify-center">
       <Header />
       <main className="w-[70%] flex gap-10">
-        <UserProfileAside />
+        <div className="w-[340px] h-full">
+          <UserProfileAside />
+        </div>
         <div className="flex flex-col items-center gap-11 border px-10 py-5 flex-1">
           <h2 className="text-[20px] font-bold ">Order Dtails</h2>
           <div className="w-full border-b">
@@ -62,8 +118,15 @@ function UserOrderDetails() {
                 className="w-full flex flex-col gap-4 px-5 py-7"
               >
                 <div className="w-full px-5 py-2 bg-[#f0f0f0] flex justify-between">
-                  <div>
-                    <span>Order Status: {item.status} </span>
+                  <div className="flex gap-2">
+                    <span>Order Status: </span>
+                    <span
+                      className={`${getStyle(
+                        item.status
+                      )} flex items-center justify-end gap-1`}
+                    >
+                      <i className="fas fa-circle text-[5px]" /> {item.status}
+                    </span>
                   </div>
                   <div>
                     <span>Order Id: {orderData?._id} </span>
@@ -92,13 +155,34 @@ function UserOrderDetails() {
                     </span>
                     <div>
                       {item.status === "Delivered" ? (
-                        <button onClick={() => handleUpdateStatus(orderData._id,item._id,"Returned")} className="px-5 py-2 rounded-lg bg-orange-300">
+                        <button
+                          onClick={() =>
+                            handleModalOpen(
+                              orderData._id,
+                              item._id,
+                              "Returned"
+                            )
+                          }
+                          className="px-5 py-2 rounded-lg bg-orange-300"
+                        >
                           Return Order
                         </button>
-                      ) :item.status !== "Cancelled" && item.status !== "Returned" && (
-                        <button onClick={() => handleUpdateStatus(orderData._id,item._id,"Cancelled")} className="px-5 py-2 rounded-lg bg-orange-300">
-                          Cancel Order
-                        </button>
+                      ) : (
+                        item.status !== "Cancelled" &&
+                        item.status !== "Returned" && (
+                          <button
+                            onClick={() =>
+                              handleModalOpen(
+                                orderData._id,
+                                item._id,
+                                "Cancelled"
+                              )
+                            }
+                            className="px-5 py-2 rounded-lg bg-orange-300"
+                          >
+                            Cancel Order
+                          </button>
+                        )
                       )}
                     </div>
                   </div>
@@ -112,13 +196,13 @@ function UserOrderDetails() {
               <span className="text-[#737373]">
                 Order Date: {createDate(orderData?.createdAt)}
               </span>
+              {/* for future order tracking */}
               {/* <span className="flex flex-col px-4 gap-2 text-green-400">
                   <i className="far fa-circle text-[8px]" />
                   <i className="far fa-circle text-[8px]" />
                   <i className="far fa-circle text-[8px]" />
                   <span>
                     <i className="far fa-circle-check text-[16px] -translate-x-1" />
-
                     <span className="text-black">
                       <span>Delivered On Aug 13</span>
                       <span className="block text-[15px] pl-4">
@@ -155,6 +239,14 @@ function UserOrderDetails() {
           </div>
         </div>
       </main>
+      {modal && (
+        <UserConfirmModal
+          text={modalText}
+          heading={modalHeading}
+          buttonConfigs={buttonConfigsModal}
+          mainIcon={mainIcon}
+        />
+      )}
     </div>
   );
 }

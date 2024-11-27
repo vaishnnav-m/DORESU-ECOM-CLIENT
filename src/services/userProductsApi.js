@@ -5,7 +5,7 @@ export const userProductsApi = api.injectEndpoints({
     // query to get produts
     getProuducts: builder.query({
       query: ({ offset, limit, category , priceRange,sortOption, query }) => ({
-        url: `/api/getProducts?offset=${offset}&limit=${limit}&category=${encodeURIComponent(category)}&priceRange=${encodeURIComponent(priceRange)}&sortOption=${sortOption}`,
+        url: `/api/getProducts?offset=${offset}&limit=${limit}&query=${query}&category=${encodeURIComponent(category)}&priceRange=${encodeURIComponent(priceRange)}&sortOption=${sortOption}`,
       }),
     }),    
     getProduct: builder.query({
@@ -76,13 +76,18 @@ export const userProductsApi = api.injectEndpoints({
         url: "/api/wishList/get",
       }),
     }),
+    userGetCoupons:builder.query({
+      query:() => ({
+        url:'/api/getCoupons'
+      })
+    }),
     applyCoupon:builder.mutation({
       query:(credentials) => ({
         url:'/api/applyCoupon',
         method:'POST',
         body:credentials
       })
-    })
+    }),
   }),
   overrideExisting: false,
 });
@@ -99,5 +104,6 @@ export const {
   useAddWishListMutation,
   useGetWishListQuery,
   useApplyCouponMutation,
-  useGetCategoriesQuery
+  useGetCategoriesQuery,
+  useUserGetCouponsQuery
 } = userProductsApi;

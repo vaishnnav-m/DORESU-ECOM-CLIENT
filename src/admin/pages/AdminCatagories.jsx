@@ -33,9 +33,9 @@ function AdminCatagories() {
   ];
 
   // ---- Mutations ---- //
-  const { data } = useGetCategoriesQuery();// to get categories
+  const { data } = useGetCategoriesQuery(); // to get categories
   const [updateCategoryStatus] = useUpdateCategoryStatusMutation(); // to update status of category
-  
+
   // ---- Functions ---- //
 
   // function to update status of the category
@@ -58,7 +58,7 @@ function AdminCatagories() {
     addcategory,
     { error: addError, isError, isLoading, data: addSuccess },
   ] = useAddCategoryMutation(); // mutation for add new category
-  const [updateCategory, { data: editSuccess }] = useUpdateCategoryMutation();// mutation for update category
+  const [updateCategory, { data: editSuccess }] = useUpdateCategoryMutation(); // mutation for update category
 
   // ---- States ---- //
   const [category, setCategory] = useState({
@@ -72,7 +72,6 @@ function AdminCatagories() {
 
   // function to validate form
   function validate() {
-
     if (!category?.categoryName || category.categoryName.length === 0) {
       setValidateError("Category name is needed");
       return false;
@@ -89,11 +88,8 @@ function AdminCatagories() {
   // function to handleEditing
   async function handleEdit(category) {
     try {
-      const confirmEdit = window.confirm("Are you sure you want to edit this category?");
-    if (confirmEdit) {
-        setIsEditing(true);
-        setCategory(category);
-    }
+      setIsEditing(true);
+      setCategory(category);
     } catch (error) {
       console.log(error);
     }
@@ -106,7 +102,7 @@ function AdminCatagories() {
       [e.target.name]: e.target.value,
     });
   }
-  
+
   // function to handle submit of the form
   async function handleSubmit(e) {
     e.preventDefault();
@@ -114,17 +110,16 @@ function AdminCatagories() {
 
     if (isEditing) {
       await updateCategory(category).unwrap();
-      if(editSuccess){
+      if (editSuccess) {
         setCategory({ categoryName: "", description: "" });
-        setIsEditing(false)
-      } 
-    }else{
+        setIsEditing(false);
+      }
+    } else {
       await addcategory(category).unwrap();
       if (addSuccess) {
         setCategory({ categoryName: "", description: "" });
       }
     }
-
   }
 
   return (
@@ -195,7 +190,9 @@ function AdminCatagories() {
             {editSuccess && (
               <span className="text-green-500">{editSuccess.message}</span>
             )}
-            {addSuccess && <span className="text-green-500">{addSuccess.message}</span>}
+            {addSuccess && (
+              <span className="text-green-500">{addSuccess.message}</span>
+            )}
           </form>
         </div>
       </main>

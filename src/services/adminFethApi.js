@@ -71,7 +71,7 @@ const adminFetchApi = adminApi.injectEndpoints({
         method: "POST",
         body: credentials,
       }),
-      invalidatesTags: ["getProducts"]
+      invalidatesTags: ["getProducts"],
     }),
     // query to get products
     getProduts: builder.query({
@@ -107,8 +107,8 @@ const adminFetchApi = adminApi.injectEndpoints({
     }),
     // query to get order histories
     getOrderHistories: builder.query({
-      query: ({ filter, startDate, endDate }) => ({
-        url: `/getOrderHistories?startDate=${startDate}&endDate=${endDate}&filter=${filter}`,
+      query: ({ filter, startDate, endDate, page, limit }) => ({
+        url: `/getOrderHistories?startDate=${startDate}&endDate=${endDate}&filter=${filter}&page=${page}&limit=${limit}`,
       }),
       providesTags: ["getOrders"],
     }),
@@ -170,7 +170,30 @@ const adminFetchApi = adminApi.injectEndpoints({
         url: "/getCoupons",
       }),
       providesTags: ["getCoupons"],
-    })
+    }),
+    // mutation to edit coupons
+    editCoupons: builder.mutation({
+      query: (credentials) => ({
+        url: "/editCoupon",
+        method: "PUT",
+        body: credentials,
+      }),
+      invalidatesTags: ["getCoupons"],
+    }),
+    downloadPDFReport: builder.query({
+      query: ({ filter, startDate, endDate }) => ({
+        url: `salesReportPdf/?startDate=${startDate}&endDate=${endDate}&filter=${filter}`,
+        method: "GET",
+        responseHandler: (response) => response.blob(),
+      }),
+    }),
+    downloadExcelReport: builder.query({
+      query: ({ filter, startDate, endDate }) => ({
+        url: `salesReportExcel/?startDate=${startDate}&endDate=${endDate}&filter=${filter}`,
+        method: "GET",
+        responseHandler: (response) => response.blob(),
+      }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -197,4 +220,7 @@ export const {
   useUpdateOfferMutation,
   useAddCouponMutation,
   useGetCouponsQuery,
+  useEditCouponsMutation,
+  useLazyDownloadPDFReportQuery,
+  useLazyDownloadExcelReportQuery,
 } = adminFetchApi;

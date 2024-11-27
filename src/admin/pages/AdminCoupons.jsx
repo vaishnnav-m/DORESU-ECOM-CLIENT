@@ -8,6 +8,7 @@ import { useGetCouponsQuery } from "../../services/adminFethApi";
 function AdminCoupons() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [coupons,setCoupons] = useState([])
+  const [editing,setEditing] = useState(null);
 
   // mutations
   const {data:couponsFetched} = useGetCouponsQuery();
@@ -34,7 +35,7 @@ function AdminCoupons() {
     "Start Date",
     "End Date",
     "isActive",
-    // "Action"
+    "Action"
   ];
 
   const buttonConfigs = [
@@ -46,12 +47,12 @@ function AdminCoupons() {
         <i className={`fas ${isActive ? "fa-toggle-on" : "fa-toggle-off"}`}></i>
       ),
     },
-    // {
-    //   label: "Edit",
-    //   action: handleEdit,
-    //   styles: "text-[25px]",
-    //   icon: () => <i className="fas fa-edit"></i>,
-    // },
+    {
+      label: "Edit",
+      action: handleEdit,
+      styles: "text-[25px]",
+      icon: () => <i className="fas fa-edit"></i>,
+    },
   ];
   
   const mainButton = {
@@ -75,6 +76,10 @@ function AdminCoupons() {
    console.log('coupon :>> ', coupon);
   }
 
+  async function handleEdit (coupon){
+    setEditing(coupon)
+    setIsModalOpen(true)
+  }
 
   return (
     <div className="bg-[#E7E7E3] flex min-h-screen relative">
@@ -101,7 +106,7 @@ function AdminCoupons() {
         </div>
       </main>
       {isModalOpen && (
-        <AdminAddCoupons closeModal={() => setIsModalOpen(false)} />
+        <AdminAddCoupons editing={editing}  closeModal={() => setIsModalOpen(false)} />
       )}
     </div>
   );

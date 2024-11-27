@@ -67,7 +67,9 @@ function Address() {
     <div className="pt-[200px] flex justify-center">
       <Header />
       <main className="w-[70%] flex gap-10">
-        <UserProfileAside />
+      <div className="w-[340px] h-full">
+          <UserProfileAside />
+        </div>
         <div className="flex flex-col items-center border rounded-lg gap-10 px-10 py-5 flex-1">
           <h2 className="text-[20px] font-bold">Manage Addresses</h2>
           <div className="w-full">
