@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
+import { useAddAddressMutation, useUpdateAddressMutation } from "../../services/userProfile";
+import { toast } from "react-toastify";
 
-function CheckoutAddress({ closeModal, address, setAddress }) {
+function CheckoutAddress({ closeModal, editingAddress, refetch }) {
+  const [addAdress,{isLoading:isAdding}] = useAddAddressMutation();
+  const [updateAddress,{isLoading:isEditting}] = useUpdateAddressMutation();
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
-    if (address) setFormData(address);
-  }, [address]);
+    if (editingAddress) setFormData(editingAddress);
+  }, [editingAddress]);
 
   function handleChange(e){
    setFormData((prev) => ({
@@ -14,8 +18,29 @@ function CheckoutAddress({ closeModal, address, setAddress }) {
    }))
   }
 
-  function handleSubmit(){
-   setAddress(formData);
+  async function handleSubmit(e){
+    e.preventDefault();
+   try {
+     let response 
+     if(editingAddress){
+      response = await updateAddress(formData).unwrap();
+     }else{
+      response = await addAdress(formData).unwrap();
+     }
+     if(response){
+      toast.success("address saved successfully", {
+        position: "top-right",
+        theme: "dark",
+      });
+      refetch();
+      closeModal();
+    }
+   } catch (error) {
+    toast.error("Unexpected error", {
+      position: "top-right",
+      theme: "dark",
+    });
+   }
   }
 
   return (
@@ -151,7 +176,7 @@ function CheckoutAddress({ closeModal, address, setAddress }) {
           type="submit"
           className="w-full h-[55px] rounded-lg bg-black text-[27px] text-white"
         >
-          save
+         {isAdding || isEditting ? "Saving":"Save"}
         </button>
       </form>
     </div>

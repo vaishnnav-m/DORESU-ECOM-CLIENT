@@ -33,11 +33,11 @@ function AdminAddOfferForm({ closeModal, isEditing, setIsEditing }) {
 
   // function to validate form
   function validate() {
-    if (!offer?.offerName || offer.offerName.length === 0) {
+    if (!offer?.offerName.trim() || offer.offerName.length === 0) {
       setValidateError("offer name is needed");
       return false;
     }
-    if (!offer?.offerType || offer.offerType.length === 0) {
+    if (!offer?.offerType.trim() || offer.offerType.length === 0) {
       setValidateError("Offer type is needed");
       return false;
     }

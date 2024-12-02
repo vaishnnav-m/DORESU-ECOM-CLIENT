@@ -72,7 +72,7 @@ function AdminOrderList() {
     return formated;
   }
 
-  // functionto handle action
+  // function to handle action
   function handleAction(order) {
     setSelected(order);
     setIsModalOpen(true);

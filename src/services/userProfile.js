@@ -93,6 +93,13 @@ export const userProfileApi = api.injectEndpoints({
       query:() => ({
         url:'/api/getWallet'
       })
+    }),
+    downloadInvoice:builder.query({
+      query:(orderId) => ({
+        url:`/api/downloadInvoice/${orderId}`,
+        method: "GET",
+        responseHandler: (response) => response.blob(),
+      })
     })
   }),
   overrideExisting: false,
@@ -111,5 +118,6 @@ export const {
   useLazyGetUserOrderHistoriesQuery,
   useGetOneOrderQuery,
   useUpdateOrderStatusMutation,
-  useGetWalletQuery
+  useGetWalletQuery,
+  useLazyDownloadInvoiceQuery
 } = userProfileApi;

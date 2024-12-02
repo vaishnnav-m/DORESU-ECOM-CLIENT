@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import CheckoutAddress from "../components/CheckoutAddress";
 
 function PaymentPage() {
-  const { data } = useGetAddressesQuery();
+  const { data, refetch } = useGetAddressesQuery();
   const { data: cart } = useGetCartQuery();
   const [verifyOrder] = useVerifyOrderMutation();
   const [applyCoupon] = useApplyCouponMutation();
@@ -31,6 +31,7 @@ function PaymentPage() {
   const [totalPriceAfterDiscount, setTotalPriceAfterDiscount] = useState("");
   const [couponDiscount, setCouponDiscount] = useState("");
   const [isCouponApplied, setIsCouponApplied] = useState(false);
+  const [editingAddress,setEdittingAddress] = useState(null);
 
   const navigate = useNavigate();
 
@@ -58,6 +59,12 @@ function PaymentPage() {
           position: "top-right",
           theme: "dark",
         });
+        if(paymentMethod === "COD" && totalPriceAfterDiscount >= 1000){
+          return toast.error("Cash On Delivery is only available for payment uner 1000 RS", {
+            position: "top-right",
+            theme: "dark",
+          });
+        }
       const updatedItems = products.map((product) => {
         const originalPrice = product.price;
         console.log(product.productId);
@@ -250,7 +257,10 @@ function PaymentPage() {
                         address.state +
                         "," +
                         address.pincode}
-                      <i className="fas fa-pen pl-3 text-[15px] cursor-pointer" />
+                      <i onClick={() => {
+                        setIsModalOpen(true)
+                        setEdittingAddress(address)
+                        }} className="fas fa-pen pl-3 text-[15px] cursor-pointer" />
                       {/* <span className="underline text-black cursor-pointer pl-2">Edit Address</span> */}
                     </span>
                   </div>
@@ -414,9 +424,12 @@ function PaymentPage() {
         </div>
         {isModalOpen && (
           <CheckoutAddress
-            closeModal={() => setIsModalOpen(false)}
-            address={selectedAddress}
-            setAddress={(address) => setSelectedAddress(address)}
+            closeModal={() => {
+              setIsModalOpen(false)
+              setEdittingAddress(null)
+            }}
+            editingAddress={editingAddress}
+            refetch={refetch}
           />
         )}
       </main>

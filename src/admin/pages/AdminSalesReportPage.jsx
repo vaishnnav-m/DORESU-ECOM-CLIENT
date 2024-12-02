@@ -67,29 +67,29 @@ function AdminSalesReportPage() {
     return formated;
   }
 
-  async function handlePdfDownload (){
-    try {
-      const response = await pdfDownload({
-        filter,
-        startDate,
-        endDate,
-      }).unwrap();
+    async function handlePdfDownload (){
+      try {
+        const response = await pdfDownload({
+          filter,
+          startDate,
+          endDate,
+        }).unwrap();
 
-      const blob = new Blob([response],{
-        type:"application/pdf"
-      });
-      const url = window.URL.createObjectURL(blob);
+        const blob = new Blob([response],{
+          type:"application/pdf"
+        });
+        const url = window.URL.createObjectURL(blob);
 
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `DORESU-Sales-Report.pdf`
-      link.click();
-      window.URL.revokeObjectURL(url);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `DORESU-Sales-Report.pdf`
+        link.click();
+        window.URL.revokeObjectURL(url);
 
-    } catch (error) {
-      console.log(error);
+      } catch (error) {
+        console.log(error);
+      }
     }
-  }
 
   async function handleXLDownload (){
     try {

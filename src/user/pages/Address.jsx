@@ -8,15 +8,22 @@ import {
   useGetAddressesQuery,
   useUpdateDefaultAddressMutation,
 } from "../../services/userProfile";
+import UserConfirmModal from "../components/UserConfirmModal";
 
 function Address() {
   const navigate = useNavigate();
-  const { data, isLoading, error, refetch } = useGetAddressesQuery();
+  const { data, refetch } = useGetAddressesQuery();
   const [updateDefaultAddress, { data: updateData }] =
     useUpdateDefaultAddressMutation();
   const [deleteAddress] = useDeleteAddressMutation();
-  const [addresses, setAddresses] = useState([]);
 
+  const [addresses, setAddresses] = useState([]);
+  const [modal, setModal] = useState(false);
+  const [modalHeading, setModalHeading] = useState("");
+  const [modalText, setModalText] = useState("");
+  const [buttonConfigsModal, setButtonCofigsModal] = useState([]);
+
+  const mainIcon = <i className="fas fa-x text-red-500 text-3xl"></i>;
 
   useEffect(() => {
     if (data) {
@@ -46,28 +53,52 @@ function Address() {
 
   const handleDelete = async (addressId) => {
     try {
-      const response = deleteAddress({addressId}).unwrap();
+      const response = deleteAddress({ addressId }).unwrap();
       if (response) {
+        await refetch();
         toast.success("Address deleted successfully", {
           position: "top-right",
           theme: "dark",
         });
-        refetch();
       }
-      
     } catch (error) {
       toast.error("Unexpected error", {
         position: "top-right",
         theme: "dark",
       });
     }
-  }
+  };
+
+  // function to handle modal
+  const handleModalOpen = (addressId) => {
+    setModalHeading("Change Order Status");
+    setModalText(
+      "Are you sure to delete the address.If you delete this you can't retrieve it"
+    );
+    setButtonCofigsModal([
+      {
+        name: "Cancel",
+        action: () => setModal(false),
+        styles: "px-4 py-2  bg-gray-200 text-sm mr-4 rounded-lg",
+      },
+      {
+        name: "Continue",
+        action: () => {
+          handleDelete(addressId);
+          setModal(false);
+        },
+        styles:
+          "px-4 py-2 bg-red-200 text-red-900 text-sm mr-4 rounded-lg border",
+      },
+    ]);
+    setModal(true);
+  };
 
   return (
     <div className="pt-[200px] flex justify-center">
       <Header />
       <main className="w-[70%] flex gap-10">
-      <div className="w-[340px] h-full">
+        <div className="w-[340px] h-full">
           <UserProfileAside />
         </div>
         <div className="flex flex-col items-center border rounded-lg gap-10 px-10 py-5 flex-1">
@@ -125,7 +156,10 @@ function Address() {
                   Edit
                 </button>
                 {!address.isDefault && (
-                  <button onClick={() => handleDelete(address._id)} className="px-5 py-3 bg-black rounded-lg text-white">
+                  <button
+                    onClick={() => handleModalOpen(address._id)}
+                    className="px-5 py-3 bg-black rounded-lg text-white"
+                  >
                     Delete
                   </button>
                 )}
@@ -134,6 +168,14 @@ function Address() {
           ))}
         </div>
       </main>
+      {modal && (
+        <UserConfirmModal
+          text={modalText}
+          heading={modalHeading}
+          buttonConfigs={buttonConfigsModal}
+          mainIcon={mainIcon}
+        />
+      )}
     </div>
   );
 }

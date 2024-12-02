@@ -27,6 +27,7 @@ function EditProductForm() {
           image:[]
         }); 
         setVariants(product.variants)
+        setThumbnail(product.gallery)
       }
     }, [isProductFetchSuccess, productData]);
  

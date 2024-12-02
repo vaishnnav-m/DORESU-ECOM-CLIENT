@@ -84,11 +84,32 @@ function AdminDashboard() {
                   <span className="text-[14px]">999 sales</span>
                 </div>
               </div>
-            </div>
-            <div className="px-5">
-              <button className="px-6 py-2 rounded-xl bg-black text-white">
-                Report
-              </button>
+              <div className="p-5 text-[16px] font-semibold flex items-center justify-between">
+                <div className="flex gap-2 items-center">
+                  <div className="w-[64px] h-[64px] bg-[#c8c8c8] rounded-xl"></div>
+                  <div className="flex flex-col">
+                    <span>Lorem Ipsum</span>
+                    <span className="text-[14px]">₹126.500</span>
+                  </div>
+                </div>
+                <div>
+                  <span className="font-bold block">₹126.50</span>
+                  <span className="text-[14px]">999 sales</span>
+                </div>
+              </div>
+              <div className="p-5 text-[16px] font-semibold flex items-center justify-between">
+                <div className="flex gap-2 items-center">
+                  <div className="w-[64px] h-[64px] bg-[#c8c8c8] rounded-xl"></div>
+                  <div className="flex flex-col">
+                    <span>Lorem Ipsum</span>
+                    <span className="text-[14px]">₹126.500</span>
+                  </div>
+                </div>
+                <div>
+                  <span className="font-bold block">₹126.50</span>
+                  <span className="text-[14px]">999 sales</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

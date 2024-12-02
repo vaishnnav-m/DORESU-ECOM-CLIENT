@@ -11,8 +11,8 @@ function UserProfileAside() {
           <i className="far fa-user text-xl"></i>
         </div>
         <div>
-          <span className="font-semibold text-[18px] block">Vaishnnav</span>
-          <span className="text-[#8a8a8a]">vaishnnav58@gmail.com</span>
+          <span className="font-semibold text-[18px] block">User</span>
+          <span className="text-[#8a8a8a]">user@gmail.com</span>
         </div>
       </div>
       <div className="w-full h-full border px-8 py-3 text-[#8a8a8a] rounded-lg">
