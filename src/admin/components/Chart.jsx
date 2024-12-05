@@ -1,10 +1,11 @@
-import { Line } from "react-chartjs-2";
+import { Bar, Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
+  BarElement,
   Title,
   Legend,
   Tooltip,
@@ -15,34 +16,34 @@ ChartJS.register(
   LinearScale,
   PointElement,
   LineElement,
+  BarElement,
   Title,
   Legend,
   Tooltip
 );
 
-function Chart() {
-  const options = {};
+function Chart({ labels, salesPerday, graphType }) {
+  console.log(labels, salesPerday);
   const data = {
-    labels: [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Sataurday",
-    ],
+    labels,
     datasets: [
       {
         label: "Sales Graph",
-        data: [100, 300, 100, 400, 700, 900, 4000],
+        data: salesPerday,
         borderColor: "blue",
-        backgroundColor:'blue'
+        backgroundColor: "blue",
+        tension: graphType ==='Line' ? 0.4 : '',
       },
     ],
   };
 
-  return <Line options={options} data={data} />;
+  const options = {};
+
+  if(graphType === 'Bar'){
+    return <Bar options={options} data={data} />
+  }else if(graphType === 'Line'){
+    return <Line options={options} data={data} />;
+  }
 }
 
 export default Chart;

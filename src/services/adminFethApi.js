@@ -108,7 +108,11 @@ const adminFetchApi = adminApi.injectEndpoints({
     // query to get order histories
     getOrderHistories: builder.query({
       query: ({ filter, startDate, endDate, page, limit }) => ({
-        url: `/getOrderHistories?startDate=${startDate}&endDate=${endDate}&filter=${filter}&page=${page}&limit=${limit}`,
+        url: `/getOrderHistories?startDate=${
+          startDate ? startDate : ""
+        }&endDate=${endDate ? startDate : ""}&filter=${
+          filter ? filter : ""
+        }&page=${page}&limit=${limit}`,
       }),
       providesTags: ["getOrders"],
     }),
@@ -194,6 +198,17 @@ const adminFetchApi = adminApi.injectEndpoints({
         responseHandler: (response) => response.blob(),
       }),
     }),
+    getDashboardData: builder.query({
+      query: () => ({
+        url: "/getDashboardData",
+      }),
+    }),
+    getChartData: builder.query({
+      query: ({ filter }) => ({
+        url: `getChartData/?filter=${filter}`,
+        method: "GET",
+      }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -223,4 +238,6 @@ export const {
   useEditCouponsMutation,
   useLazyDownloadPDFReportQuery,
   useLazyDownloadExcelReportQuery,
+  useGetDashboardDataQuery,
+  useLazyGetChartDataQuery
 } = adminFetchApi;
