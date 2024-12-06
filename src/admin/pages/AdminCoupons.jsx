@@ -3,15 +3,17 @@ import Header from "../components/Header";
 import Aside from "../components/Aside";
 import AdminAddCoupons from "../components/AdminAddCoupons";
 import Table from "../components/Table";
-import { useGetCouponsQuery } from "../../services/adminFethApi";
+import { useGetCouponsQuery, useUpdateCouponStatusMutation } from "../../services/adminFethApi";
 
 function AdminCoupons() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [confirmModal,isConfirmModal] = useState(false)
   const [coupons,setCoupons] = useState([])
   const [editing,setEditing] = useState(null);
 
-  // mutations
-  const {data:couponsFetched} = useGetCouponsQuery();
+  // mutations && queries
+  const {data:couponsFetched,refetch} = useGetCouponsQuery();
+  const [editStatus] = useUpdateCouponStatusMutation();
 
   // table cofigs
   const columns = [
@@ -73,7 +75,16 @@ function AdminCoupons() {
   // functions
   // function to update status of the category
   async function handleStatus(coupon) {
-   console.log('coupon :>> ', coupon);
+   try {
+    const couponId = coupon._id;
+    const response = await editStatus({couponId}).unwrap();
+    if(response){
+      refetch();
+      console.log("success");
+    }
+   } catch (error) {
+    console.log(error);
+   }
   }
 
   async function handleEdit (coupon){

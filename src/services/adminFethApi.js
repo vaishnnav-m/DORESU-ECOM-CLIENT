@@ -184,6 +184,13 @@ const adminFetchApi = adminApi.injectEndpoints({
       }),
       invalidatesTags: ["getCoupons"],
     }),
+    updateCouponStatus:builder.mutation({
+      query:(credentials) => ({
+        url:'/updateCouponStatus',
+        method:'PATCH',
+        body:credentials
+      })
+    }),
     downloadPDFReport: builder.query({
       query: ({ filter, startDate, endDate }) => ({
         url: `salesReportPdf/?startDate=${startDate}&endDate=${endDate}&filter=${filter}`,
@@ -236,6 +243,7 @@ export const {
   useAddCouponMutation,
   useGetCouponsQuery,
   useEditCouponsMutation,
+  useUpdateCouponStatusMutation,
   useLazyDownloadPDFReportQuery,
   useLazyDownloadExcelReportQuery,
   useGetDashboardDataQuery,

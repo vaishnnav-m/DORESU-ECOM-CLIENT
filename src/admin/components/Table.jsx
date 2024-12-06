@@ -7,7 +7,6 @@ function Table({
   imageConfigs,
   mainButton,
 }) {
-console.log("data",data);
   return (
       <table className="min-w-full text-left divide-y divide-gray-200 bg-white rounded-2xl overflow-hidden">
         <thead>

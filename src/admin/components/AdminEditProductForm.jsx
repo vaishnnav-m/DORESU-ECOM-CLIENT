@@ -15,30 +15,51 @@ function EditProductForm() {
 
    const { productId } = useParams();
    const { data: productData, isSuccess:isProductFetchSuccess } = useGetProductQuery(productId);
-
-   useEffect(() => {
-      if (isProductFetchSuccess && productData) {
-        const product = productData.data
-        setFormData({
-          productName: product.productName,
-          description: product.description,
-          category: product.category,
-          variants:product.variants,
-          image:[]
-        }); 
-        setVariants(product.variants)
-        setThumbnail(product.gallery)
-      }
-    }, [isProductFetchSuccess, productData]);
- 
-  //--------------> Image drop zone <-------------------//
-  // States
+   // States
   const [profileImage, setProfileImage] = useState(null); // to display image
   const [thumbnail, setThumbnail] = useState([]); // for small images
   // variant adding
   const [variants, setVariants] = useState([
     { size: "", stock: "", price: "" },
   ]);
+
+   useEffect(() => {
+    const convertUrlToFile = async (url, fileName) => {
+      console.log('url :>> ', url);
+      const response = await fetch(url);
+      const blob = await response.blob();
+      return new File([blob], fileName, { type: blob.type });
+    };
+  
+    const setupFormData = async () => {
+      if (isProductFetchSuccess && productData) {
+        const product = productData.data;
+  
+        // Convert gallery URLs to File objects
+        const galleryFiles = await Promise.all(
+          product.gallery.map((item) =>
+            convertUrlToFile(item.url, item.file)
+          )
+        );
+  
+        setFormData({
+          productName: product.productName,
+          description: product.description,
+          category: product.category,
+          variants: product.variants,
+          image: galleryFiles,
+        });
+        setVariants(product.variants);
+        setThumbnail(product.gallery);
+        setProfileImage(product.gallery[0]);
+      }
+    };
+  
+    setupFormData();
+    }, [isProductFetchSuccess, productData]);
+ 
+  //--------------> Image drop zone <-------------------//
+  
   const handleChangeVariant = (index, e) => {
     const { name, value } = e.target;
     const updatedVariants = [...variants];
@@ -126,6 +147,8 @@ function EditProductForm() {
       .required("variant is Required"),
   });
 
+  console.log('formData :>> ', formData);
+
   // function handle submit
   async function handdleSubmit(e) {
     try {
@@ -143,7 +166,7 @@ function EditProductForm() {
         payload.append(`variants[${index}][price]`, variant.price);
       });
       formData.image.forEach((file) => {
-        console.log(file);
+        console.log('file :>> ', file);
         payload.append("file", file);
       });
       const response = await editProduct(payload).unwrap();
@@ -154,7 +177,7 @@ function EditProductForm() {
           theme: "dark",
         });
       }
-
+      
       setFormData({
         productName: productData.productName,
         description: productData.description,
@@ -206,7 +229,7 @@ function EditProductForm() {
   }
 
   // function to set cropped images
-  function setCropedImage(croppedFile) {
+  function setCropedImage(croppedFile) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
     const imageUrl = URL.createObjectURL(croppedFile);
     setProfileImage(imageUrl);
 
