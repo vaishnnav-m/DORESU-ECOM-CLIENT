@@ -152,7 +152,7 @@ function LandingPage() {
               categories: "All",
               priceRange: "All",
             }}
-            load={false}
+            load={true}
           />
         </div>
       </section>
