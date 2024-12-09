@@ -121,13 +121,13 @@ function Products({ filters, sortOption, productLimit, query, load }) {
 
   return (
     <div className="w-full h-full">
-      <div className={`w-full h-full grid grid-cols-4 gap-5 py-8 text-[25px]`}>
+      <div className={`w-full h-full grid 2xl:grid-cols-4 md:grid-cols-3 gap-5 py-8 text-[25px]`}>
         {products.length ? (
           products.map((product) => {
             return (
               <Link to={`/productDetail/${product._id}`} key={product._id}>
-                <div className="flex flex-col items-center max-w-[320px] py-2 px-4 shadow-md rounded-lg">
-                  <div className="w-[280px] h-[280px] rounded-xl overflow-hidden">
+                <div className="flex flex-col items-center xl:max-w-[320px] lg:max-w-[250px] py-2 px-4 shadow-md rounded-lg">
+                  <div className="xl:min-w-[280px] xl:min-h-[280px] lg:w-[200px] lg:max-h-[200px] rounded-xl overflow-hidden">
                     <img
                       className="w-full h-full"
                       src={product.gallery[0]}

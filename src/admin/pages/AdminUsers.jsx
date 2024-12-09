@@ -6,7 +6,8 @@ import { useGetUsersQuery, useUpdateUserMutation } from "../../services/adminFet
 import Table from "../components/Table";
 
 function AdminUsers() {
-  const { data, isSuccess} = useGetUsersQuery();
+  const { data } = useGetUsersQuery();
+  console.log(data);
   const headings = [
     "User Id",
     "User Name",
@@ -57,7 +58,7 @@ function AdminUsers() {
           <Table
             pageName="User Management"
             headings={headings}
-            data={isSuccess && data}
+            data={data && data}
             columns={columns}
             buttonConfigs={buttonConfigs}
           />

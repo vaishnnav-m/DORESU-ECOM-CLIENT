@@ -133,6 +133,10 @@ function PaymentPage() {
       }
     } catch (error) {
       console.log(error);
+      toast.error("Payment Failed", {
+        position: "top-right",
+        theme: "dark",
+      });
     }
   }
 

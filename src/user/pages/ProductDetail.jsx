@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import ReactImageMagnify from "react-image-magnify";
+// import ReactImageMagnify from "react-image-magnify";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import 'react-inner-image-zoom/lib/InnerImageZoom/styles.css'
+import InnerImageZoom from 'react-inner-image-zoom'
+import "./pageStyles.css";
+
 import Header from "../components/Header";
 import stars from "../assets/stars.svg";
 import {
@@ -8,8 +14,6 @@ import {
   useGetProductQuery,
 } from "../../services/userProductsApi";
 import "./pageStyles.css";
-import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
 import Products from "../components/Products";
 
 function ProductDetail() {
@@ -96,8 +100,8 @@ function ProductDetail() {
                 ))}
               </div>
               <div className="flex-1 flex flex-col gap-6">
-                <div className="flex justify-center min-w-full h-[472px] border">
-                  <ReactImageMagnify
+                <div className="flex overflow-hidden justify-center min-w-full h-[472px] border">
+                  {/* <ReactImageMagnify
                     {...{
                       smallImage: {
                         alt: "main image",
@@ -118,7 +122,8 @@ function ProductDetail() {
                       },
                       enlargedImagePosition: "beside",
                     }}
-                  />
+                  /> */}
+                  <InnerImageZoom  className="object-contain min-w-full min-h-[472px]" src={mainImage} />
                 </div>
                 <div className="w-full flex gap-5 text-20px] font-bold">
                   <button

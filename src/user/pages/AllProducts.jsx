@@ -38,7 +38,7 @@ function AllProducts() {
     <div>
         <Header />
         <main className="w-full flex px-5 pt-36 justify-center">
-          <div className="w-[15%] ">
+          <div className="w-[15%] lg:block hidden">
             {/* filter by categories */}
             <h2 className="text-[20px] font-bold">Filter by categories</h2>
             <form
