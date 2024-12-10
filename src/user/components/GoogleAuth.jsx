@@ -10,6 +10,14 @@ import { toast } from "react-toastify";
 function GoogleAuth() {
   const dispatch = useDispatch();
   const [googleAuth, { data, isLoading, isError}] = useGoogleAuthMutation();
+
+  useEffect(() => {
+    // Disable auto-login or signed-in session behavior with Google
+    if (window.google && window.google.accounts && window.google.accounts.id) {
+      window.google.accounts.id.disableAutoSelect();
+    }
+  }, []);
+
   useEffect(() => {
 
     if(data){
