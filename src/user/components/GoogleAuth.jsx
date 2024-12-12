@@ -56,6 +56,7 @@ function GoogleAuth() {
   return (
     <div className="button-div">
       <GoogleLogin
+        width="100%"
         logo_alignment="center"
         onSuccess={(credentials) => googleAuth(credentials)}
       />
