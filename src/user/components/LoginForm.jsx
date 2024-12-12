@@ -12,6 +12,7 @@ function LoginForm() {
     email: "",
     password: "",
   });
+  const [showPassword,setShowPassword] = useState(false);
   const navigate = useNavigate();
   const [loginUser, { isLoading, isError, isSuccess, error: authError }] =
     useLoginUserMutation();
@@ -67,11 +68,12 @@ function LoginForm() {
             value={formData.password}
             name="password"
             className="w-full h-full rounded-lg  px-5 mb-1"
-            type="password"
+            type={showPassword?"text":"password"}
           />
           <img
             className="absolute right-3 top-1/2 -translate-y-1/2"
             src={EyeBtn}
+            onClick={() => setShowPassword((prev) => !prev)}
             alt=""
           />
           <span className="text-[#737373] text-[17px] font-medium">

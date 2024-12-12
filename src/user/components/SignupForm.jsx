@@ -16,6 +16,8 @@ function SignupForm() {
     confirmPassword: "",
   });
   const [error, setError] = useState({});
+  const [showPassword,setShowPassword] = useState(false);
+
   const navigate = useNavigate();
 
   const [
@@ -149,7 +151,7 @@ function SignupForm() {
             name="password"
             value={formData.password}
             className="w-full h-full rounded-lg px-5"
-            type="password"
+            type={showPassword?"text":"password"}
             onChange={onChange}
           />
           {error.password && (
@@ -158,6 +160,7 @@ function SignupForm() {
           <img
             className="absolute right-3 top-1/2 -translate-y-1/2"
             src={EyeBtn}
+            onClick={() => setShowPassword((prev) => !prev)}
             alt=""
           />
         </div>
@@ -169,7 +172,7 @@ function SignupForm() {
             name="confirmPassword"
             value={formData.confirmPassword}
             className="w-full h-full rounded-lg px-5"
-            type="password"
+            type={showPassword?"text":"password"}
             onChange={onChange}
           />
           {error.confirmPassword && (
@@ -178,6 +181,7 @@ function SignupForm() {
           <img
             className="absolute right-3 top-1/2 -translate-y-1/2"
             src={EyeBtn}
+            onClick={() => setShowPassword((prev) => !prev)}
             alt=""
           />
         </div>
