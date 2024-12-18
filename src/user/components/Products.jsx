@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
-function Products({ filters, sortOption, productLimit, query, load }) {
+function Products({ filters, sortOption = '', productLimit, query = '', load }) {
   // states
   const limit = productLimit || 8;
   const [hasMore, setHasMore] = useState(true);
@@ -126,8 +126,8 @@ function Products({ filters, sortOption, productLimit, query, load }) {
           products.map((product) => {
             return (
               <Link to={`/productDetail/${product._id}`} key={product._id}>
-                <div className="flex flex-col items-center xl:max-w-[320px] lg:max-w-[250px] py-2 px-4 shadow-md rounded-lg">
-                  <div className="xl:min-w-[280px] xl:min-h-[280px] lg:w-[200px] lg:max-h-[200px] rounded-xl overflow-hidden">
+                <div className="flex flex-col items-center min-h-full xl:max-w-[320px] lg:max-w-[250px] py-2 px-4 shadow-md rounded-lg">
+                  <div className="xl:min-w-[280px] xl:min-h-[280px] lg:w-[225px] lg:min-h-[200px] lg:max-h-[200px] rounded-xl overflow-hidden">
                     <img
                       className="w-full h-full"
                       src={product.gallery[0]}
@@ -136,7 +136,7 @@ function Products({ filters, sortOption, productLimit, query, load }) {
                   </div>
                   <div className="w-full flex px-2 py-4 gap-4">
                     <div className="flex-1 flex flex-col gap-2 text-[#484848]">
-                      <span className="text-[15px] font-bold truncate max-w-[188px]">
+                      <span className="text-[15px] font-bold truncate xl:max-w-[188px] max-w-[125px]">
                         {product.productName}
                       </span>
                       <span className="text-[13px]">
@@ -158,7 +158,7 @@ function Products({ filters, sortOption, productLimit, query, load }) {
                             <span className="text-[#484848] line-through">
                               ₹{product.variants[0].price}
                             </span>
-                            <span className="text-green-600 ml-2">
+                            <span className="text-green-600 ml-2 xl:inline hidden">
                               {product?.offer.offerValue}% off
                             </span>
                           </span>
@@ -170,7 +170,13 @@ function Products({ filters, sortOption, productLimit, query, load }) {
                       )}
                     </div>
                     <div className="min-h-full flex flex-col justify-between pt-[10px] ">
-                      <img src={stars} alt="" />
+                      <div className="flex text-[#fca120] gap-[3px] text-[11px]">
+                        <i className="fas fa-star"></i>
+                        <i className="fas fa-star"></i>
+                        <i className="fas fa-star"></i>
+                        <i className="fas fa-star"></i>
+                        <i className="far fa-star"></i>
+                      </div>
                       <div className="flex gap-4">
                         <img src={cart} alt="" />
                         <i
@@ -200,7 +206,7 @@ function Products({ filters, sortOption, productLimit, query, load }) {
           </div>
         )}
       </div>
-      {hasMore && <div ref={endRef}>Loading...</div>}
+      {(hasMore && load) && <div ref={endRef}>Loading...</div>}
     </div>
   );
 }

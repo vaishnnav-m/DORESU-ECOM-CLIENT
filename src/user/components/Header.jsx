@@ -16,6 +16,7 @@ function Header() {
   const [inputVisible, setInputVisible] = useState(false);
   const { query, setQuery } = useContext(SearchContext);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [showButton, setShowButton] = useState(false);
 
   const dispatch = useDispatch();
   // selecter for user authenticated
@@ -27,6 +28,12 @@ function Header() {
   useEffect(() => {
     setAuthenticated(isAuthenticated);
   }, [isAuthenticated]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setShowButton(true);
+    }, 3000);
+  });
 
   function handleLogout() {
     dispatch(logOut());
@@ -51,6 +58,16 @@ function Header() {
                 <li className="hover:bg-[#ececec]">
                   <Link to="/all">All Products</Link>
                 </li>
+                {authenticated && (
+                  <li className="hover:scale-110">
+                    <Link to="/profile">Profile</Link>
+                  </li>
+                )}
+                {!authenticated && (
+                  <li className="hover:scale-110">
+                    <Link to="/login">Login</Link>
+                  </li>
+                )}
                 <li className="hover:bg-[#ececec]">
                   <Link>About</Link>
                 </li>
@@ -61,7 +78,11 @@ function Header() {
             )}
           </div>
           <div className="relative">
-            <img className="xl:w-[200px] md:w-[150px] w-[90px]" src={Logo} alt="" />
+            <img
+              className="xl:w-[200px] md:w-[150px] w-[90px]"
+              src={Logo}
+              alt=""
+            />
             <img
               className="animate-shirt lg:w-[40px] w-[35px] md:block absolute right-0 lg:top-1/2 top-[47%] hidden"
               src={Tshirt}
@@ -71,7 +92,11 @@ function Header() {
         </div>
 
         <div>
-          <ul className={`lg:flex gap-10 lg:gap-6 ${inputVisible && "lg:-translate-x-10"} text-[#6e6e6e] text-[18px] hidden font-sans font-semibold`}>
+          <ul
+            className={`lg:flex gap-10 lg:gap-6 ${
+              inputVisible && "lg:-translate-x-10"
+            } text-[#6e6e6e] text-[18px] hidden font-sans font-semibold`}
+          >
             <li className="hover:scale-110">
               <Link to="/">Home</Link>
             </li>
@@ -107,9 +132,9 @@ function Header() {
             </li>
             <li className="hover:scale-110 hidden lg:flex lg:flex-col relative group">
               <button>
-                <img className="xl:w-[25px] w-[20px]"  src={Profile} alt="" />
+                <img className="xl:w-[25px] w-[20px]" src={Profile} alt="" />
               </button>
-              <ul className="w-[200px] absolute z-50 top-[30px] text-center left-1/2 -translate-x-1/2 -translate-y-[30px] bg-white shadow-xl opacity-0 pointer-events-none hover:opacity-100 group-hover:translate-y-0 group-focus:translate-y-0 group-hover:opacity-100 group-focus:opacity-100 group-hover:pointer-events-auto group-focus:pointer-events-auto transition-all duration-300 ease-in-out">
+              <ul className="w-[200px] absolute z-50 top-[25px] text-center left-1/2 -translate-x-1/2 -translate-y-[30px] bg-white shadow-xl opacity-0 pointer-events-none hover:opacity-100 group-hover:translate-y-0 group-focus:translate-y-0 group-hover:opacity-100 group-focus:opacity-100 group-hover:pointer-events-auto group-focus:pointer-events-auto transition-all duration-300 ease-in-out">
                 <li className="hover:bg-[#ececec] py-2 cursor-pointer">
                   {authenticated ? (
                     <Link to="/profile">Profile</Link>
@@ -133,10 +158,26 @@ function Header() {
             </li>
             <li className="hover:scale-110">
               <Link to="/cart">
-                <img className="xl:w-[25px] lg:w-[20px] md:w-[20px] w-[18px]" src={Cart} alt="" />
+                <img
+                  className="xl:w-[25px] lg:w-[20px] md:w-[20px] w-[18px]"
+                  src={Cart}
+                  alt="cart"
+                />
               </Link>
             </li>
           </ul>
+          {!authenticated && (
+            <div
+              className={`lg:hidden md:right-16 md:px-5 px-4 md:text-[1.13rem] text-[0.9rem] py-2 absolute right-6 bg-white shadow-lg ${
+                showButton ? "opacity-1 scale-100" : "opacity-0 scale-50"
+              } ransform transition-all duration-300 ease-in-out`}
+            >
+              <span className="font-bold text-black text-md">
+                {" "}
+                <Link to="/login">Login</Link>
+              </span>
+            </div>
+          )}
         </div>
       </nav>
     </header>

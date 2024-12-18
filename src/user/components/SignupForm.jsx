@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import EyeBtn from "../assets/Group.svg";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useSignupUserMutation } from "../../services/authApi";
@@ -17,6 +16,7 @@ function SignupForm() {
   });
   const [error, setError] = useState({});
   const [showPassword,setShowPassword] = useState(false);
+  const [showCPassword,setShowCPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -157,11 +157,9 @@ function SignupForm() {
           {error.password && (
             <span className="text-red-600">{error.password}</span>
           )}
-          <img
-            className="absolute right-3 top-1/2 -translate-y-1/2"
-            src={EyeBtn}
+          <i
+            className={`far fa-${showPassword?"eye-slash":"eye"} absolute right-3 top-1/2 -translate-y-1/2`}
             onClick={() => setShowPassword((prev) => !prev)}
-            alt=""
           />
         </div>
         <div className="w-full border text-right  border-[#8A8A8A] h-[55px] rounded-lg relative">
@@ -172,17 +170,15 @@ function SignupForm() {
             name="confirmPassword"
             value={formData.confirmPassword}
             className="w-full h-full rounded-lg px-5"
-            type={showPassword?"text":"password"}
+            type={showCPassword?"text":"password"}
             onChange={onChange}
           />
           {error.confirmPassword && (
             <span className="text-red-600">{error.confirmPassword}</span>
           )}
-          <img
-            className="absolute right-3 top-1/2 -translate-y-1/2"
-            src={EyeBtn}
-            onClick={() => setShowPassword((prev) => !prev)}
-            alt=""
+          <i
+            className={`far fa-${showCPassword?"eye-slash":"eye"} absolute right-3 top-1/2 -translate-y-1/2`}
+            onClick={() => setShowCPassword((prev) => !prev)}
           />
         </div>
 
