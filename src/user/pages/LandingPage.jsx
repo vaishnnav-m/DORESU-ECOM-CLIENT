@@ -77,7 +77,7 @@ function LandingPage() {
   return (
     <div>
       <Header />
-      <main className="md:px-[15%] px-[10%] md:py-28 py-24 flex flex-col items-center md:gap-20 gap-5">
+      <main className="md:px-[15%] px-[10%] md:py-28 pt-24 flex flex-col items-center md:gap-20 gap-5">
         <div className="grid grid-cols-3 md:gap-10 gap-4 w-full">
           <div>
             <img className="w-full" src={card1} alt="" />
@@ -105,9 +105,9 @@ function LandingPage() {
       </main>
 
       <section className="bg-gradient-to-t from-[#E2E2E2] to-white w-full flex justify-center">
-        <div className="2xl:max-w-[60%] xl:max-w-[70%] max-w-[83%] flex justify-between py-5 lg:px-16">
-          <div className="flex-1 flex flex-col justify-between lg:gap-5 2xl:py-10 xl:py-5 lg:py-3">
-            <div className="flex flex-col xl:gap-[30px] lg:gap-6 xl:py-3">
+        <div className="2xl:max-w-[60%] xl:max-w-[70%] max-w-[83%] flex justify-between md:flex-row flex-col-reverse gap-5 py-5 lg:px-16">
+          <div className="flex-1 flex flex-col justify-between lg:gap-5 gap-5 2xl:py-10 xl:py-5 lg:py-3 md:py-3">
+            <div className="flex flex-col xl:gap-[30px] lg:gap-6 gap-3 xl:py-3">
               <h2 className="text-[40px] font-volkhov text-[#484848]">
                 Deals Of The Day
               </h2>
@@ -123,24 +123,24 @@ function LandingPage() {
 
             <div className="flex gap-5">
               <div className="text-center flex flex-col gap-3">
-                <div className="xl:px-3 xl:min-w-[60px] xl:h-[70px] lg:min-w-[55px] lg:min-h-[65px]  rounded-lg flex  justify-center items-center bg-white shadow-lg">
-                  <span className="font-digital text-[#484848] xl:text-[40px] lg:text-[35px]">
+                <div className="xl:px-3 xl:min-w-[60px] xl:h-[70px] lg:min-w-[55px] lg:min-h-[65px] min-h-[60px] min-w-[50px] rounded-lg flex  justify-center items-center bg-white shadow-lg">
+                  <span className="font-digital text-[#484848] xl:text-[40px] lg:text-[35px] text-[30px]">
                     {String(time.days).padStart(2, "0")}
                   </span>
                 </div>
                 <span className="text-[14px]">Days</span>
               </div>
               <div className="text-center flex flex-col gap-3">
-                <div className="xl:px-3 xl:min-w-[60px] xl:h-[70px] lg:min-w-[55px] lg:min-h-[65px]  rounded-lg flex  justify-center items-center bg-white shadow-lg">
-                  <span className="font-digital text-[#484848] xl:text-[40px] lg:text-[35px]">
+                <div className="xl:px-3 xl:min-w-[60px] xl:h-[70px] lg:min-w-[55px] lg:min-h-[65px] min-h-[60px] min-w-[50px] rounded-lg flex  justify-center items-center bg-white shadow-lg">
+                  <span className="font-digital text-[#484848] xl:text-[40px] lg:text-[35px] text-[30px]">
                     {String(time.hours).padStart(2, "0")}
                   </span>
                 </div>
                 <span className="text-[14px]">Hr</span>
               </div>
               <div className="text-center flex flex-col gap-3">
-                <div className="xl:px-3 xl:min-w-[60px] xl:h-[70px] lg:min-w-[55px] lg:min-h-[65px]  rounded-lg flex  justify-center items-center bg-white shadow-lg">
-                  <span className="font-digital text-[#484848] xl:text-[40px] lg:text-[35px]">
+                <div className="xl:px-3 xl:min-w-[60px] xl:h-[70px] lg:min-w-[55px] lg:min-h-[65px] min-h-[60px] min-w-[50px] rounded-lg flex  justify-center items-center bg-white shadow-lg">
+                  <span className="font-digital text-[#484848] xl:text-[40px] lg:text-[35px] text-[30px]">
                     {String(time.minutes).padStart(2, "0")}
                   </span>
                 </div>
@@ -148,8 +148,8 @@ function LandingPage() {
               </div>
 
               <div className="text-center flex flex-col gap-3">
-                <div className="xl:px-3 xl:min-w-[60px] xl:h-[70px] lg:min-w-[55px] lg:min-h-[65px]  rounded-lg flex  justify-center items-center bg-white shadow-lg">
-                  <span className="font-digital text-[#484848] xl:text-[40px] lg:text-[35px]">
+                <div className="xl:px-3 xl:min-w-[60px] xl:h-[70px] lg:min-w-[55px] lg:min-h-[65px] min-h-[60px] min-w-[50px]  rounded-lg flex  justify-center items-center bg-white shadow-lg">
+                  <span className="font-digital text-[#484848] xl:text-[40px] lg:text-[35px] text-[30px]">
                     {String(time.seconds).padStart(2, "0")}
                   </span>
                 </div>
@@ -158,16 +158,16 @@ function LandingPage() {
             </div>
           </div>
 
-          <div className="flex-1 flex flex-col items-end">
+          <div className="flex-1 flex flex-col md:items-end items-center">
             <div className="rounded-xl overflow-hidden relative xl:w-[84%] lg:w-[90%]">
               <img className="w-full h-full" src={banner2img} alt="" />
-              <div className="w-[137px] h-[78px] bg-white absolute left-5 bottom-5 text-center flex flex-col justify-between py-3">
-                <span className="text-[12px]">
+              <div className="lg:w-[137px] lg:h-[78px] md:w-[110px] md:h-[65px] bg-white absolute left-5 bottom-5 text-center flex flex-col justify-between py-3">
+                <span className="lg:text-[12px] text-[9px]">
                   01{" "}
                   <hr className="w-[20px] h-[2px] bg-black inline-block -translate-y-[4px]" />{" "}
                   Spring Sale
                 </span>
-                <span className="text-[20px]">30% OFF</span>
+                <span className="lg:text-[20px] text-[17px]">30% OFF</span>
               </div>
             </div>
             <div className="flex gap-5 w-full py-3 justify-center">
@@ -181,7 +181,7 @@ function LandingPage() {
       </section>
 
       <section className="pt-[79px] flex flex-col items-center ">
-        <div className="text-center xl:max-w-[30%] lg:max-w-[41%]">
+        <div className="text-center xl:max-w-[30%] lg:max-w-[41%] md:max-w-[70%] max-w-[83%]">
           <h2 className="text-[40px] font-volkhov text-[#484848] xl:mb-[45px] lg:mb-[24px]">
             New Arrivals
           </h2>
@@ -191,21 +191,21 @@ function LandingPage() {
             sollicitudin
           </span>
         </div>
-        <div className="xl:max-w-[70%] max-w-[80%]">
-          <div className="w-full flex  gap-5 pt-14 2xl:px-[50px] xl:px-[40px] lg:px-[30px]">
-            <button className="flex-1 uppercase 2xl:px-[70px] xl:px-[50px] py-3 min-w-fit text-white text-[13px] bg-black rounded-lg">
+        <div className="xl:w-[70%] w-[80%]">
+          <div className="hide-scroll w-full flex  gap-5 pt-14 2xl:px-[50px] xl:px-[40px] lg:px-[30px] overflow-hidden overflow-x-auto">
+            <button className="flex-1 uppercase 2xl:px-[70px] xl:px-[50px] px-[8px] py-3 min-w-fit text-white text-[13px] bg-black rounded-lg">
               Men's Fashion
             </button>
-            <button className="flex-1 uppercase 2xl:px-[70px] xl:px-[50px] py-3 min-w-fit text-[#8A8A8A] text-[13px] bg-[#FAFAFA] rounded-lg">
+            <button className="flex-1 uppercase 2xl:px-[70px] xl:px-[50px] px-[8px] py-3 min-w-fit text-[#8A8A8A] text-[13px] bg-[#FAFAFA] rounded-lg">
               T-shirts
             </button>
-            <button className="flex-1 uppercase 2xl:px-[70px] xl:px-[50px] py-3 min-w-fit text-[#8A8A8A] text-[13px] bg-[#FAFAFA] rounded-lg">
+            <button className="flex-1 uppercase 2xl:px-[70px] xl:px-[50px] px-[8px] py-3 min-w-fit text-[#8A8A8A] text-[13px] bg-[#FAFAFA] rounded-lg">
               Shirts
             </button>
-            <button className="flex-1 uppercase 2xl:px-[70px] xl:px-[50px] py-3 min-w-fit text-[#8A8A8A] text-[13px] bg-[#FAFAFA] rounded-lg">
+            <button className="flex-1 uppercase 2xl:px-[70px] xl:px-[50px] px-[8px] py-3 min-w-fit text-[#8A8A8A] text-[13px] bg-[#FAFAFA] rounded-lg">
               Hoodies
             </button>
-            <button className="flex-1 uppercase 2xl:px-[70px] xl:px-[50px] py-3 min-w-fit text-[#8A8A8A] text-[13px] bg-[#FAFAFA] rounded-lg">
+            <button className="flex-1 uppercase 2xl:px-[70px] xl:px-[50px] px-[8px] py-3 min-w-fit text-[#8A8A8A] text-[13px] bg-[#FAFAFA] rounded-lg">
               Hoodies
             </button>
           </div>
