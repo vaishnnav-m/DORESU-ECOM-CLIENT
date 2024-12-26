@@ -62,22 +62,11 @@ function App() {
                 </PublicRoute>
               }
             />{" "}
-            <Route
-              path="/all"
-              element={
-                <PublicRoute>
-                  <AllProducts />
-                </PublicRoute>
-              }
-            />
+            <Route path="/all" element={<AllProducts />} />
             {/* product detail */}
             <Route
               path="/productDetail/:productId"
-              element={
-                <PublicRoute>
-                  <ProductDetail />
-                </PublicRoute>
-              }
+              element={<ProductDetail />}
             />
             {/* cart page */}
             <Route
