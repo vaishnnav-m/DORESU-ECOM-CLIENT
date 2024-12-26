@@ -5,7 +5,7 @@ import Cart from "../assets/Shopicons_Filled_Cart5.svg";
 import Search from "../assets/Vector.svg";
 import Tshirt from "../assets/black-t-shirt-is-hanging-hanger-with-word-dope-it_1340-38184-removebg-preview.png";
 import "./header.css";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useLogoutUserMutation } from "../../services/authApi";
 import { logOut } from "../../store/authSlice";
@@ -18,6 +18,7 @@ function Header() {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [showButton, setShowButton] = useState(false);
 
+  const location = useLocation();
   const dispatch = useDispatch();
   // selecter for user authenticated
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -34,9 +35,9 @@ function Header() {
       setShowButton(true);
     }, 3000);
     () => {
-      clearTimeout(timer)
-    }
-  },[showButton]);
+      clearTimeout(timer);
+    };
+  }, [showButton]);
 
   function handleLogout() {
     dispatch(logOut());
@@ -68,23 +69,41 @@ function Header() {
               inputVisible && "lg:-translate-x-10"
             } text-[#6e6e6e] text-[18px] hidden font-sans font-semibold`}
           >
-            <li className="hover:scale-110">
-              <Link to="/">Home</Link>
+            <li className="custm-underline">
+              <Link className={location.pathname === '/' && 'active'} to="/">Home</Link>
             </li>
-            <li className="hover:scale-110">
-              <Link to="/all">All Products</Link>
+            <li className="custm-underline">
+              <Link className={location.pathname === '/all' && 'active'} to="/all">All Products</Link>
             </li>
-            <li className="hover:scale-110">
-              <Link>About</Link>
+            <li className="custm-underline">
+              <Link className={location.pathname === '/about' && 'active'}>About</Link>
             </li>
-            <li className="hover:scale-110">
-              <Link>Contact Us</Link>
+            <li className="custm-underline">
+              <Link className={location.pathname === '/contactus' && 'active'}>Contact Us</Link>
             </li>
           </ul>
         </div>
 
         <div>
           <ul className="flex items-center md:gap-10 lg:gap-6 gap-5 text-[#6e6e6e] text-[18px] font-sans font-semibold">
+            {location.pathname === "/all" && (
+              <li className="flex gap-2 relative ">
+                {inputVisible && (
+                  <input
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    className="md:max-w-[160px] max-w-[100px] absolute md:right-7 right-4 -translate-y-1  md:translate-y-[7px] px-1 border-b border-b-black bg-transparent focus:outline-none"
+                    type="text"
+                  />
+                )}
+                <img
+                  onClick={() => setInputVisible(!inputVisible)}
+                  className="xl:w-[25px] lg:w-[20px] md:w-[18px] w-[16px]"
+                  src={Search}
+                  alt=""
+                />
+              </li>
+            )}
             <li className="hover:scale-110 hidden lg:flex lg:flex-col relative group">
               <button>
                 <img className="xl:w-[25px] w-[20px]" src={Profile} alt="" />
@@ -124,63 +143,70 @@ function Header() {
               <div className="lg:hidden">
                 <i
                   onClick={() => {
-                    setIsMenuVisible((prev) => !prev)
-                    isMenuVisible?setShowButton(false):setShowButton(true)
+                    setIsMenuVisible((prev) => !prev);
+                    isMenuVisible ? setShowButton(false) : setShowButton(true);
                   }}
                   className="fas fa-bars text-[#484848] md:text-[20px] text-[16px]"
                 ></i>
-                  <ul style={isMenuVisible ? {pointerEvents:'all'} :{pointerEvents:'none'}} className="flex overflow-hidden w-[150px] items-center flex-col gap-1 bg-transparent text-[#6e6e6e] absolute right-2 font-sans font-semibold">
+                <ul
+                  style={
+                    isMenuVisible
+                      ? { pointerEvents: "all" }
+                      : { pointerEvents: "none" }
+                  }
+                  className="flex overflow-hidden w-[150px] items-center flex-col gap-1 bg-transparent text-[#6e6e6e] absolute right-2 font-sans font-semibold"
+                >
+                  <li
+                    className={`bg-white w-full py-3 px-3 rounded-lg shadow-lg ${
+                      isMenuVisible ? "translate-x-0" : "translate-x-[100%]"
+                    } transform transition-all duration-[500ms] ease-in-out`}
+                  >
+                    <Link to="/">Home</Link>
+                  </li>
+                  <li
+                    className={`bg-white w-full py-3 px-3 rounded-lg shadow-lg ${
+                      isMenuVisible ? "translate-x-0" : "translate-x-[100%]"
+                    } transform transition-all duration-[550ms] ease-in-out`}
+                  >
+                    <Link to="/all">All Products</Link>
+                  </li>
+                  {authenticated && (
                     <li
                       className={`bg-white w-full py-3 px-3 rounded-lg shadow-lg ${
                         isMenuVisible ? "translate-x-0" : "translate-x-[100%]"
-                      } transform transition-all duration-[500ms] ease-in-out`}
+                      } transform transition-all duration-[600ms] ease-in-out`}
                     >
-                      <Link to="/">Home</Link>
+                      <Link to="/profile">Profile</Link>
                     </li>
+                  )}
+                  {!authenticated && (
                     <li
                       className={`bg-white w-full py-3 px-3 rounded-lg shadow-lg ${
                         isMenuVisible ? "translate-x-0" : "translate-x-[100%]"
-                      } transform transition-all duration-[550ms] ease-in-out`}
+                      } transform transition-all duration-[650ms] ease-in-out`}
                     >
-                      <Link to="/all">All Products</Link>
+                      <Link to="/login">Login</Link>
                     </li>
-                    {authenticated && (
-                      <li
-                        className={`bg-white w-full py-3 px-3 rounded-lg shadow-lg ${
-                          isMenuVisible ? "translate-x-0" : "translate-x-[100%]"
-                        } transform transition-all duration-[600ms] ease-in-out`}
-                      >
-                        <Link to="/profile">Profile</Link>
-                      </li>
-                    )}
-                    {!authenticated && (
-                      <li
-                        className={`bg-white w-full py-3 px-3 rounded-lg shadow-lg ${
-                          isMenuVisible ? "translate-x-0" : "translate-x-[100%]"
-                        } transform transition-all duration-[650ms] ease-in-out`}
-                      >
-                        <Link to="/login">Login</Link>
-                      </li>
-                    )}
-                    <li
-                      className={`bg-white w-full py-3 px-3 rounded-lg shadow-lg ${
-                        isMenuVisible ? "translate-x-0" : "translate-x-[100%]"
-                      } transform transition-all duration-[700ms] ease-in-out`}
-                    >
-                      <Link>About</Link>
-                    </li>
-                    <li
-                      className={`bg-white w-full py-3 px-3 rounded-lg shadow-lg ${
-                        isMenuVisible ? "translate-x-0" : "translate-x-[100%]"
-                      } transform transition-all duration-[750ms] ease-in-out`}
-                    >
-                      <Link>Contact Us</Link>
-                    </li>
-                  </ul>
+                  )}
+                  <li
+                    className={`bg-white w-full py-3 px-3 rounded-lg shadow-lg ${
+                      isMenuVisible ? "translate-x-0" : "translate-x-[100%]"
+                    } transform transition-all duration-[700ms] ease-in-out`}
+                  >
+                    <Link>About</Link>
+                  </li>
+                  <li
+                    className={`bg-white w-full py-3 px-3 rounded-lg shadow-lg ${
+                      isMenuVisible ? "translate-x-0" : "translate-x-[100%]"
+                    } transform transition-all duration-[750ms] ease-in-out`}
+                  >
+                    <Link>Contact Us</Link>
+                  </li>
+                </ul>
               </div>
             </li>
           </ul>
-          {(!authenticated && !isMenuVisible) && (
+          {!authenticated && !isMenuVisible && (
             <div
               className={`lg:hidden md:right-16 md:px-5 px-4 md:text-[1.13rem] text-[0.9rem] py-2 absolute right-6 bg-white shadow-lg ${
                 showButton ? "opacity-1 scale-100" : "opacity-0 scale-50"

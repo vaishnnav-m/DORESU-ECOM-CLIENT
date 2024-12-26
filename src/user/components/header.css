@@ -20,3 +20,22 @@
       transform: rotate(0deg); 
    }
 }
+
+.custm-underline{
+   position: relative;
+   display: inline-block;
+}
+.custm-underline a::after{
+   content: '';
+   height: 2px;
+   width: 0;
+   background-color: rgb(110 110 110);
+   position: absolute;
+   bottom: 0;
+   left: 0;
+   transition: width 0.3s ease-in ;
+}
+
+.custm-underline a.active::after{
+   width: 100%;
+}

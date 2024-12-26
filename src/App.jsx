@@ -65,18 +65,18 @@ function App() {
             <Route
               path="/all"
               element={
-                <ProtectedRoutes>
+                <PublicRoute>
                   <AllProducts />
-                </ProtectedRoutes>
+                </PublicRoute>
               }
             />
             {/* product detail */}
             <Route
               path="/productDetail/:productId"
               element={
-                <ProtectedRoutes>
+                <PublicRoute>
                   <ProductDetail />
-                </ProtectedRoutes>
+                </PublicRoute>
               }
             />
             {/* cart page */}
