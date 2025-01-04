@@ -23,8 +23,7 @@ function Header() {
   // selecter for user authenticated
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   // logout mutation hook
-  const [logoutUser, { isLoading, isError, error, isSuccess }] =
-    useLogoutUserMutation();
+  const [logoutUser, { isLoading }] = useLogoutUserMutation();
   // useffect to set updated authenticated
   useEffect(() => {
     setAuthenticated(isAuthenticated);
@@ -44,7 +43,6 @@ function Header() {
     return logoutUser();
   }
   if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Error :{error.message}</p>;
   return (
     <header className="md:h-[100px] h-[60px] w-full fixed top-0 z-[9999]">
       <nav className="w-full h-full flex justify-between items-center xl:px-[100px] 2xl:px-[200px] lg:px-[30px] md:px-10 px-5 bg-gradient-to-b from-[#D9D9D9] to-white">
@@ -70,16 +68,27 @@ function Header() {
             } text-[#6e6e6e] text-[18px] hidden font-sans font-semibold`}
           >
             <li className="custm-underline">
-              <Link className={location.pathname === '/' && 'active'} to="/">Home</Link>
+              <Link className={location.pathname === "/" && "active"} to="/">
+                Home
+              </Link>
             </li>
             <li className="custm-underline">
-              <Link className={location.pathname === '/all' && 'active'} to="/all">All Products</Link>
+              <Link
+                className={location.pathname === "/all" && "active"}
+                to="/all"
+              >
+                All Products
+              </Link>
             </li>
             <li className="custm-underline">
-              <Link className={location.pathname === '/about' && 'active'}>About</Link>
+              <Link className={location.pathname === "/about" && "active"}>
+                About
+              </Link>
             </li>
             <li className="custm-underline">
-              <Link className={location.pathname === '/contactus' && 'active'}>Contact Us</Link>
+              <Link className={location.pathname === "/contactus" && "active"}>
+                Contact Us
+              </Link>
             </li>
           </ul>
         </div>

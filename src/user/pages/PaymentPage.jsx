@@ -110,10 +110,12 @@ function PaymentPage() {
                   navigate("/success");
                 }
               } catch (error) {
+                
                 toast.error("Payment Verification Failed", {
                   position: "top-right",
                   theme: "dark",
                 });
+                navigate('/profile/orders');
               }
             },
             prefill: {
@@ -124,6 +126,15 @@ function PaymentPage() {
             theme: {
               color: "#3399cc",
             },
+            modal: {
+              ondismiss: () => {
+                toast.error("Payment Cancelled", {
+                  position: "top-right",
+                  theme: "dark",
+                });
+                navigate('/profile/orders');
+              },
+            },
           };
           const rzp = new Razorpay(options);
           rzp.open();
@@ -133,6 +144,7 @@ function PaymentPage() {
       }
     } catch (error) {
       console.log(error);
+      navigate('/profile/orders');
       toast.error("Payment Failed", {
         position: "top-right",
         theme: "dark",
