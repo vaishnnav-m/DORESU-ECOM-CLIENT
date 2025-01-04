@@ -62,7 +62,7 @@ function CartPage() {
     try {
       const response = await removeCartProduct({ productId }).unwrap();
       if (response) {
-        toast.success(response.message, {
+        toast.success("Item removed successfully", {
           position: "top-right",
           theme: "dark",
         });
