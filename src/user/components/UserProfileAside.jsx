@@ -1,9 +1,21 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
+import { logOut } from "../../store/authSlice";
+import { useLogoutUserMutation } from "../../services/authApi";
 
 function UserProfileAside() {
+    const [logoutUser, { isLoading }] = useLogoutUserMutation();
+
   const navigate = useNavigate();
   const location = useLocation();
+
+  const dispatch = useDispatch();
+
+   function handleLogout() {
+      dispatch(logOut());
+      return logoutUser();
+    }
   return (
     <div className="flex flex-col gap-10">
       <div className="w-full border flex gap-5 px-5 py-2 rounded-lg">
@@ -48,7 +60,7 @@ function UserProfileAside() {
           <i className="fas fa-wallet text-xl text-black"></i>
           <span className="font-semibold xl:text-[20px]">My Wallet</span>
         </button>
-        <button className="w-full flex items-center gap-8 cursor-pointer py-5">
+        <button onClick={handleLogout} className="w-full flex items-center gap-8 cursor-pointer py-5">
           <i className="fas fa-right-from-bracket text-xl text-black"></i>
           <span className="font-semibold xl:text-[20px]">Logout</span>
         </button>

@@ -299,14 +299,15 @@ function PaymentPage() {
                 </span>
               </div>
               <div>
-                <div className="px-5 py-2 flex gap-5 font-semibold">
+                {/* Wallet payment if need uncommant it */}
+                {/* <div className="px-5 py-2 flex gap-5 font-semibold">
                   <input
                     type="radio"
                     name="paymentMethod"
                     onChange={() => setPaymentMethod("wallet")}
                   />
                   Wallet
-                </div>
+                </div> */}
                 <div className="px-5 py-2 flex gap-5 font-semibold">
                   <input
                     type="radio"

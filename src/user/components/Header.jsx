@@ -122,7 +122,7 @@ function Header() {
                   {authenticated ? (
                     <Link to="/profile">Profile</Link>
                   ) : (
-                    <Link to="/signup">Sinup</Link>
+                    <Link to="/signup">Signup</Link>
                   )}
                 </li>
                 <li className="hover:bg-[#ececec] py-2 cursor-pointer">

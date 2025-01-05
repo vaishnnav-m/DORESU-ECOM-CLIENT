@@ -18,7 +18,6 @@ function UserOrderDetails() {
   const [verifyOrder] = useVerifyOrderMutation();
   const [downloadInvoice] = useLazyDownloadInvoiceQuery();
 
-
   // states
   const [orderData, setOrderData] = useState(null);
   const [modal, setModal] = useState(false);
@@ -84,10 +83,12 @@ function UserOrderDetails() {
 
   // function to handle modal
   const handleModalOpen = (orderId, itemId, status) => {
-    setModalHeading("Change Order Status");
+    setModalHeading(
+      `${status === "Cancelled" ? "Cancel" : "Return"} Order Status`
+    );
     setModalText(
       `Are you sure to ${
-        status === "Cancelled" ? "cancel" : "Return"
+        status === "Cancelled" ? "Cancel" : "Return"
       } the order`
     );
     setButtonCofigsModal([
@@ -108,60 +109,59 @@ function UserOrderDetails() {
     setModal(true);
   };
 
+  async function repayment() {
+    const { razorpayOrderId, totalPrice } = orderData;
+    const options = {
+      key: "rzp_test_fbT8KO8CYacXGs",
+      amount: totalPrice * 100,
+      currency: "INR",
+      name: "DORESU",
+      description: "Order Payment",
+      order_id: razorpayOrderId,
+      handler: async (paymentResponse) => {
+        // to verify payment
+        try {
+          console.log("payment response ", paymentResponse);
+          const response = await verifyOrder({
+            razorpay_order_id: paymentResponse.razorpay_order_id,
+            razorpay_payment_id: paymentResponse.razorpay_payment_id,
+            razorpay_signature: paymentResponse.razorpay_signature,
+          }).unwrap();
 
-  async function repayment(){
-    const { razorpayOrderId,totalPrice } = orderData;
-          const options = {
-            key: "rzp_test_fbT8KO8CYacXGs",
-            amount: totalPrice * 100,
-            currency: "INR",
-            name: "DORESU",
-            description: "Order Payment",
-            order_id: razorpayOrderId,
-            handler: async (paymentResponse) => {
-              // to verify payment
-              try {
-                console.log("payment response ", paymentResponse);
-                const response = await verifyOrder({
-                  razorpay_order_id: paymentResponse.razorpay_order_id,
-                  razorpay_payment_id: paymentResponse.razorpay_payment_id,
-                  razorpay_signature: paymentResponse.razorpay_signature,
-                }).unwrap();
-
-                if (response) {
-                  navigate("/success");
-                }
-              } catch (error) {
-                toast.error("Payment Verification Failed", {
-                  position: "top-right",
-                  theme: "dark",
-                });
-              }
-            },
-            prefill: {
-              name: "Customer Name",
-              email: "customer@example.com",
-              contact: "9999999999",
-            },
-            theme: {
-              color: "#3399cc",
-            },
-          };
-          const rzp = new Razorpay(options);
-          rzp.open();
+          if (response) {
+            navigate("/success");
+          }
+        } catch (error) {
+          toast.error("Payment Verification Failed", {
+            position: "top-right",
+            theme: "dark",
+          });
+        }
+      },
+      prefill: {
+        name: "Customer Name",
+        email: "customer@example.com",
+        contact: "9999999999",
+      },
+      theme: {
+        color: "#3399cc",
+      },
+    };
+    const rzp = new Razorpay(options);
+    rzp.open();
   }
 
-  async function handleDdownloadInvoice(){
+  async function handleDdownloadInvoice() {
     try {
       const response = await downloadInvoice(orderId).unwrap();
-      const blob = new Blob([response],{
-        type:"application/pdf"
+      const blob = new Blob([response], {
+        type: "application/pdf",
       });
       const url = window.URL.createObjectURL(blob);
 
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
-      link.download = `invoice-${orderId}.pdf `
+      link.download = `invoice-${orderId}.pdf `;
       link.click();
       window.URL.revokeObjectURL(url);
     } catch (error) {
@@ -300,7 +300,10 @@ function UserOrderDetails() {
                   </span>
                   {orderData?.paymentStatus !== "Paid" &&
                     orderData?.paymentMethod === "online" && (
-                      <button onClick={repayment} className="px-4 py-2 bg-black text-white">
+                      <button
+                        onClick={repayment}
+                        className="px-4 py-2 bg-black text-white"
+                      >
                         Retry Payment
                       </button>
                     )}
@@ -325,7 +328,12 @@ function UserOrderDetails() {
                 </div>
               </div>
               <div className="w-full flex justify-center">
-                <button onClick={handleDdownloadInvoice} className="px-4 py-2 bg-black text-white rounded-lg">Download Invoice</button>
+                <button
+                  onClick={handleDdownloadInvoice}
+                  className="px-4 py-2 bg-black text-white rounded-lg"
+                >
+                  Download Invoice
+                </button>
               </div>
             </>
           )}
