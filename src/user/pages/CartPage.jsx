@@ -93,7 +93,7 @@ function CartPage() {
       const invalidProducts = cart.data.products.filter(
         (product) => product.quantityLeft === 0
       );
-      if (invalidProducts.length > 0) {
+      if (invalidProducts?.length > 0) {
         return toast.error("insufficient quantity", {
           position: "top-right",
           theme: "dark",
@@ -116,7 +116,7 @@ function CartPage() {
           <table className="w-full table-fixed">
             {isSuccess && (
               <tbody>
-                {products.length > 0 ? (
+                {products?.length > 0 ? (
                   products.map((product, index) => (
                     <tr
                       key={index}
