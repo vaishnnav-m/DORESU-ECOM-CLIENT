@@ -16,7 +16,6 @@ function CartPage() {
 
   const [cartData, setCartData] = useState({});
   const [products, setProducts] = useState([]);
-  const [totalPrice, setTotalPrice] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,15 +24,17 @@ function CartPage() {
       setCartData(cart.data);
       setProducts(cart.data.products);
     }
-  }, [isSuccess, cart]);
+  }, [cart]);
 
   async function updateCartQuantity(productId, newQuantity) {
+    const previousProducts = [...products];
     try {
       const response = await updateCart({ productId, newQuantity }).unwrap();
       if (response) {
         refetch();
       }
     } catch (error) {
+      setProducts(previousProducts)
       toast.error(error.data.message, {
         position: "top-right",
         theme: "dark",
@@ -43,10 +44,16 @@ function CartPage() {
 
   async function handleQuantity(productId, newQuantity) {
     if (newQuantity > 5) {
-      return console.log("max limit reached");
+      return toast.error("max limit reached", {
+        position: "top-right",
+        theme: "dark",
+      });
     }
     if (newQuantity < 1) {
-      return console.log("can't be negative");
+      return toast.error("Atleast one product is needed", {
+        position: "top-right",
+        theme: "dark",
+      });
     }
     setProducts((prev) =>
       prev.map((product) =>
@@ -180,12 +187,7 @@ function CartPage() {
                             className="w-[72px] h-[38px] px- text-center border border-black"
                             type="text"
                             value={product.quantity}
-                            onChange={(e) =>
-                              handleQuantity(
-                                product.productId._id,
-                                Number(e.target.value)
-                              )
-                            }
+                            disabled
                           />
                           <i
                             onClick={() =>

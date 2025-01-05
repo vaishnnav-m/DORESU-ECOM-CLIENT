@@ -55,7 +55,8 @@ export const userProductsApi = api.injectEndpoints({
         url:'/api/placeOrder',
         method:"POST",
         body:credentials
-      })
+      }),
+      invalidatesTags:['getCart']
     }),
     verifyOrder:builder.mutation({
       query:(credentials) => ({

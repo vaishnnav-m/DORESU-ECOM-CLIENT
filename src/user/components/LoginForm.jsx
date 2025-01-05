@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Google from "../assets/Google.svg";
-import EyeBtn from "../assets/Group.svg";
 import { useLoginUserMutation } from "../../services/authApi";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../../store/authSlice";

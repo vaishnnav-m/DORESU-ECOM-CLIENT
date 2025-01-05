@@ -10,6 +10,7 @@ function AdminLoginForm() {
       email: "",
       password: "",
     });
+    const [showPassword,setShowPassword] = useState(false);
     const navigate = useNavigate();
     const [loginUser, { isLoading, isError, isSuccess, error: authError }] =
     useLoginAdminMutation();
@@ -20,7 +21,6 @@ function AdminLoginForm() {
       try {
         e.preventDefault();
         const response = await loginUser(formData).unwrap();
-        console.log("response is:",response);
         if (response && response.accessToken) {
           localStorage.setItem("adminToken",response.accessToken)
           dispatch(setAdminCredentials(response.accessToken));
@@ -57,25 +57,24 @@ function AdminLoginForm() {
       </div>
 
       <div className="w-full border text-right border-[#8A8A8A] h-[60px] rounded-lg relative">
-        <span className="bg-white px-[20px] py-[12] text-center text-[#737373] absolute left-5 top-0 -translate-y-[50%]">
-          Password
-        </span>
-        <input
-          onChange={handleChange}
-          value={formData.password}
-          name="password"
-          className="w-full h-full  rounded-lg px-5 mb-1"
-          type="password"
-        />
-        <img
-          className="absolute right-3 top-1/2 -translate-y-1/2"
-          src={EyeBtn}
-          alt=""
-        />
-        <span className="text-[#737373] text-[17px] font-medium">
-          Forgot Password ?
-        </span>
-      </div>
+          <span className="bg-white px-[20px] py-[12] text-center text-[#737373] absolute left-5 top-0 -translate-y-[50%]">
+            Password
+          </span>
+          <input
+            onChange={handleChange}
+            value={formData.password}
+            name="password"
+            className="w-full h-full rounded-lg  px-5 mb-1"
+            type={showPassword?"text":"password"}
+          />
+          <i
+            className={`far fa-${showPassword?"eye-slash":"eye"} absolute right-3 top-1/2 -translate-y-1/2`}
+            onClick={() => setShowPassword((prev) => !prev)}
+          />
+          <span className="text-[#737373] text-[17px] font-medium">
+            Forgot Password ?
+          </span>
+        </div>
 
       <button
         type="submit"
