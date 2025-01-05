@@ -24,7 +24,7 @@ function WalletPage() {
 
     return formated;
   }
-  
+
   function getAmount(history) {
     if (history.type === "Credit") {
       return "+" + Math.round(history.amount);
@@ -36,13 +36,13 @@ function WalletPage() {
   return (
     <div className="pt-[200px] flex justify-center">
       <Header />
-      <main className="w-[70%] flex gap-10">
-        <div className="w-[340px] h-full">
+      <main className="2xl:w-[70%] w-[87%] flex gap-10">
+        <div className="xl:w-[340px] w-[280px] h-full">
           <UserProfileAside />
         </div>
-        <div className="flex flex-col items-center gap-11 border px-10 py-5 flex-1">
+        <div className="flex flex-col items-center gap-11 border xl:px-10 px-5 py-5 flex-1">
           <h2 className="text-[20px] font-bold uppercase">my wallet</h2>
-          <div className="w-full flex gap-20 max-w-[90%]">
+          <div className="w-full flex gap-20 xl:max-w-[90%] max-w-full">
             <div className="flex-1 flex flex-col items-center gap-10">
               <div>
                 <img src={walletImage} alt="" />
@@ -50,7 +50,7 @@ function WalletPage() {
               <div className="w-full shadow-lg border p-3 flex flex-col items-center gap-5">
                 <h3 className="text-[20px] font-semibold">My Balance</h3>
                 <h1 className="text-[44px] text-green-500 font-bold">
-                  ₹ {wallet && Math.round(wallet.balance) || 0}
+                  ₹ {(wallet && Math.round(wallet.balance)) || 0}
                 </h1>
               </div>
             </div>
@@ -81,26 +81,33 @@ function WalletPage() {
                 </button>
               </div>
             </div>
-            
           </div>
-          <div className="w-full flex flex-col gap-5 bg-[#e4e4e4] rounded-lg p-5">
-                  {wallet &&
-                    wallet.histories.map((history) => (
-                      <div key={history._id} className="w-full flex items-center justify-between">
-                        <div className="flex flex-col">
-                          <span>{history.remark}</span>
-                          <span className="text-[#4a4a4a] text-[14px]">{createDate(history.date)}</span>
-                        </div>
-                        <span
-                          className={`text-${
-                            history.type === "Credit" ? "green" : "red"
-                          }-500`}
-                        >
-                          {getAmount(history)}
-                        </span>
-                      </div>
-                    ))}
+          <div className="w-full flex flex-col gap-5 bg-[#e4e4e4] rounded-lg p-5 text-center">
+            {wallet?.histories?.length ? (
+              wallet.histories.map((history) => (
+                <div
+                  key={history._id}
+                  className="w-full flex items-center justify-between"
+                >
+                  <div className="flex flex-col">
+                    <span>{history.remark}</span>
+                    <span className="text-[#4a4a4a] text-[14px]">
+                      {createDate(history.date)}
+                    </span>
+                  </div>
+                  <span
+                    className={`text-${
+                      history.type === "Credit" ? "green" : "red"
+                    }-500`}
+                  >
+                    {getAmount(history)}
+                  </span>
                 </div>
+              ))
+            ) : (
+              <h2 className="text-[16px] font-medium ">No History !</h2>
+            )}
+          </div>
         </div>
       </main>
     </div>

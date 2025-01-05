@@ -5,7 +5,7 @@ function UserProfileAside() {
   const navigate = useNavigate();
   const location = useLocation();
   return (
-    <div className="flex flex-col fixed gap-10">
+    <div className="flex flex-col gap-10">
       <div className="w-full border flex gap-5 px-5 py-2 rounded-lg">
         <div className="px-4 py-3 rounded-full  bg-[#eaeaea]">
           <i className="far fa-user text-xl"></i>
@@ -22,7 +22,7 @@ function UserProfileAside() {
           style={{color:location.pathname === '/profile' && "black"}}
         >
           <i className="fas fa-user text-xl text-black"></i>
-          <span className="font-semibold text-[20px]">Account Settings</span>
+          <span className="font-semibold xl:xl:text-[20px] ">Account Settings</span>
         </button>
         <button
           onClick={() => navigate("/profile/address")}
@@ -30,7 +30,7 @@ function UserProfileAside() {
           style={{color:location.pathname === '/profile/address' && "black"}}
         >
           <i className="fas fa-address-book text-xl text-black"></i>
-          <span className="font-semibold text-[20px]">Manage Addresses</span>
+          <span className="font-semibold xl:text-[20px]">Manage Addresses</span>
         </button>
         <button
           onClick={() => navigate("/profile/orders")}
@@ -38,7 +38,7 @@ function UserProfileAside() {
           style={{color:location.pathname === '/profile/orders' && "black"}}
         >
           <i className="fas fa-bag-shopping text-xl text-black"></i>
-          <span className="font-semibold text-[20px]">My Orders</span>
+          <span className="font-semibold xl:text-[20px]">My Orders</span>
         </button>
         <button
           onClick={() => navigate("/wallet")}
@@ -46,11 +46,11 @@ function UserProfileAside() {
           style={{color:location.pathname === '/wallet' && "black"}}
         >
           <i className="fas fa-wallet text-xl text-black"></i>
-          <span className="font-semibold text-[20px]">My Wallet</span>
+          <span className="font-semibold xl:text-[20px]">My Wallet</span>
         </button>
         <button className="w-full flex items-center gap-8 cursor-pointer py-5">
           <i className="fas fa-right-from-bracket text-xl text-black"></i>
-          <span className="font-semibold text-[20px]">Logout</span>
+          <span className="font-semibold xl:text-[20px]">Logout</span>
         </button>
       </div>
     </div>

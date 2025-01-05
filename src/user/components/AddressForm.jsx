@@ -71,7 +71,7 @@ function AddressForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full px-10 flex flex-col gap-9 ">
+    <form onSubmit={handleSubmit} className="w-full xl:px-10 px-5 flex flex-col gap-9 ">
       <div className="flex gap-3">
         <div className="w-full border border-[#8A8A8A] rounded-lg h-[55px] relative">
           <span className="bg-white px-[20px] text-center text-[#737373] absolute left-5 top-0 -translate-y-[50%]">

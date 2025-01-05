@@ -19,6 +19,8 @@ function ProfileForm() {
     email: "",
   });
 
+  const [isPasswordVisible,setIsPasswordVisible] = useState(true);
+
   useEffect(() => {
     setFormData({
       firstName: user?.firstName,
@@ -26,6 +28,7 @@ function ProfileForm() {
       phone: user?.phone,
       email: user?.email,
     });
+    setIsPasswordVisible(!user?.googleId);
   }, [user]);
 
   const handleChange = (e) => {
@@ -105,7 +108,7 @@ function ProfileForm() {
         onChange={handleChange}
       />
       <label className="text-18px font-semibold">Password</label>
-      <div className="w-full border text-right  border-[#8A8A8A] h-[50px] rounded relative">
+      {isPasswordVisible && <div className="w-full border text-right  border-[#8A8A8A] h-[50px] rounded relative">
         <input
           name="password"
           value="********"
@@ -117,7 +120,7 @@ function ProfileForm() {
           <i className="fas fa-pen text-[14px] "></i>
           <span>Edit</span>
         </button>
-      </div>
+      </div>}
       <button
         type="submit"
         className="w-full h-[55px] rounded-lg bg-black text-[27px] text-white"
