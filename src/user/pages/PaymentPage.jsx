@@ -14,7 +14,7 @@ import CheckoutAddress from "../components/CheckoutAddress";
 
 function PaymentPage() {
   const { data, refetch } = useGetAddressesQuery();
-  const { data: cart } = useGetCartQuery();
+  const { data: cart, refetch: cartRefetch } = useGetCartQuery();
   const [verifyOrder] = useVerifyOrderMutation();
   const [applyCoupon] = useApplyCouponMutation();
   const { data: couponsData } = useUserGetCouponsQuery();
@@ -31,7 +31,7 @@ function PaymentPage() {
   const [totalPriceAfterDiscount, setTotalPriceAfterDiscount] = useState("");
   const [couponDiscount, setCouponDiscount] = useState("");
   const [isCouponApplied, setIsCouponApplied] = useState(false);
-  const [editingAddress,setEdittingAddress] = useState(null);
+  const [editingAddress, setEdittingAddress] = useState(null);
 
   const navigate = useNavigate();
 
@@ -54,17 +54,25 @@ function PaymentPage() {
 
   async function handleOrder() {
     try {
+      if (!selectedAddress)
+        return toast.error("Please select an address", {
+          position: "top-right",
+          theme: "dark",
+        });
       if (!paymentMethod)
         return toast.error("Payment Method is Required", {
           position: "top-right",
           theme: "dark",
         });
-        if(paymentMethod === "COD" && totalPriceAfterDiscount >= 1000){
-          return toast.error("Cash On Delivery is only available for payment uner 1000 RS", {
+      if (paymentMethod === "COD" && totalPriceAfterDiscount >= 1000) {
+        return toast.error(
+          "Cash On Delivery is only available for payment uner 1000 RS",
+          {
             position: "top-right",
             theme: "dark",
-          });
-        }
+          }
+        );
+      }
       const updatedItems = products.map((product) => {
         const originalPrice = product.price;
         console.log(product.productId);
@@ -107,15 +115,15 @@ function PaymentPage() {
                 }).unwrap();
 
                 if (response) {
+                  cartRefetch();
                   navigate("/success");
                 }
               } catch (error) {
-                
                 toast.error("Payment Verification Failed", {
                   position: "top-right",
                   theme: "dark",
                 });
-                navigate('/profile/orders');
+                navigate("/profile/orders");
               }
             },
             prefill: {
@@ -132,19 +140,20 @@ function PaymentPage() {
                   position: "top-right",
                   theme: "dark",
                 });
-                navigate('/profile/orders');
+                navigate("/profile/orders");
               },
             },
           };
           const rzp = new Razorpay(options);
           rzp.open();
         } else {
+          cartRefetch();
           navigate("/success");
         }
       }
     } catch (error) {
       console.log(error);
-      navigate('/profile/orders');
+      navigate("/profile/orders");
       toast.error("Payment Failed", {
         position: "top-right",
         theme: "dark",
@@ -273,10 +282,13 @@ function PaymentPage() {
                         address.state +
                         "," +
                         address.pincode}
-                      <i onClick={() => {
-                        setIsModalOpen(true)
-                        setEdittingAddress(address)
-                        }} className="fas fa-pen pl-3 text-[15px] cursor-pointer" />
+                      <i
+                        onClick={() => {
+                          setIsModalOpen(true);
+                          setEdittingAddress(address);
+                        }}
+                        className="fas fa-pen pl-3 text-[15px] cursor-pointer"
+                      />
                       {/* <span className="underline text-black cursor-pointer pl-2">Edit Address</span> */}
                     </span>
                   </div>
@@ -385,7 +397,12 @@ function PaymentPage() {
                   Apply
                 </button>
               </div>
-              <span onClick={() => setShowCoupons(!showCoupons)} className="underline font-semibold cursor-pointer">Show All Coupons</span>
+              <span
+                onClick={() => setShowCoupons(!showCoupons)}
+                className="underline font-semibold cursor-pointer"
+              >
+                Show All Coupons
+              </span>
               {showCoupons && (
                 <table className="absolut w-full flex flex-col gap-3 bottom-0 border bg-white py-5 px-5">
                   <tr className="w-full flex justify-between uppercase font-bold">
@@ -394,24 +411,36 @@ function PaymentPage() {
                     <td className="break-words max-w-[80px]">minimum amount</td>
                     <td>Discount Value</td>
                   </tr>
-                  {coupons.map((cpn) => (
-                    <tr className="w-full flex justify-between px-3">
-                      <td>
-                        <input
-                          onChange={(e) => {
-                            setShowCoupons(false)
-                            setCoupon(e.target.value)}}
-                          type="radio"
-                          name="coupon"
-                          checked={coupon === cpn.couponCode}
-                          value={cpn.couponCode}
-                        />
+                  {coupons?.length ? (
+                    coupons.map((cpn) => (
+                      <tr className="w-full flex justify-between px-3">
+                        <td>
+                          <input
+                            onChange={(e) => {
+                              setShowCoupons(false);
+                              setCoupon(e.target.value);
+                            }}
+                            type="radio"
+                            name="coupon"
+                            checked={coupon === cpn.couponCode}
+                            value={cpn.couponCode}
+                          />
+                        </td>
+                        <td>{cpn.couponCode}</td>
+                        <td>{cpn.minPurchaseAmount}RS</td>
+                        <td>{cpn.discountValue}% -OFF</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        className="w-full flex justify-between px-3 text-center"
+                        colSpan="4"
+                      >
+                        No coupons available
                       </td>
-                      <td>{cpn.couponCode}</td>
-                      <td>{cpn.minPurchaseAmount}RS</td>
-                      <td>{cpn.discountValue}% -OFF</td>
                     </tr>
-                  ))}
+                  )}
                 </table>
               )}
             </div>
@@ -442,8 +471,8 @@ function PaymentPage() {
         {isModalOpen && (
           <CheckoutAddress
             closeModal={() => {
-              setIsModalOpen(false)
-              setEdittingAddress(null)
+              setIsModalOpen(false);
+              setEdittingAddress(null);
             }}
             editingAddress={editingAddress}
             refetch={refetch}

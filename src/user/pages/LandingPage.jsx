@@ -112,9 +112,10 @@ function LandingPage() {
                 Deals Of The Day
               </h2>
               <span className="text-[15px] text-[#8A8A8A]">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Scelerisque duis ultrices sollicitudin aliquam sem. Scelerisque
-                duis ultrices sollicitudin{" "}
+                Shop our Deals of the Day and enjoy amazing discounts on your
+                favorite styles. From trendy dresses to wardrobe essentials,
+                grab them at unbeatable prices. Hurry, these offers won't last
+                long!
               </span>
               <button className="uppercase px-[70px] py-3 max-w-fit text-white text-[13px] bg-black rounded-lg">
                 Buy Now
@@ -186,9 +187,9 @@ function LandingPage() {
             New Arrivals
           </h2>
           <span className="text-[#8A8A8A]">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Scelerisque
-            duis ultrices sollicitudin aliquam sem. Scelerisque duis ultrices
-            sollicitudin
+            Discover our New Arrivals and refresh your wardrobe with the latest
+            styles. From elegant dresses to everyday must-haves, find your
+            perfect look. Shop now and stay ahead of the trends!
           </span>
         </div>
         <div className="xl:w-[70%] w-[80%]">
