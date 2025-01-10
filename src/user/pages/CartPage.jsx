@@ -90,6 +90,13 @@ function CartPage() {
   async function handleCheckout() {
     try {
       await refetch();
+      if(!cart.data.products.length){
+        console.log("working")
+        return toast.error("No products in the cart", {
+          position: "top-right",
+          theme: "dark",
+        });
+      }
       const invalidProducts = cart.data.products.filter(
         (product) => product.quantityLeft === 0
       );

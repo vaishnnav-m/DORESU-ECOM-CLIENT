@@ -322,19 +322,21 @@ function PaymentPage() {
                 </div> */}
                 <div className="px-5 py-2 flex gap-5 font-semibold">
                   <input
+                    id="onlinePayment"
                     type="radio"
                     name="paymentMethod"
                     onChange={() => setPaymentMethod("online")}
                   />
-                  Online Payment
+                  <label htmlFor="onlinePayment">Online Payment</label>
                 </div>
                 <div className="px-5 py-2 flex gap-5 font-semibold">
                   <input
+                    id="cod"
                     type="radio"
                     name="paymentMethod"
                     onChange={() => setPaymentMethod("COD")}
                   />
-                  Cash On Delivery
+                  <label htmlFor="cod">Cash On Delivery</label>
                 </div>
               </div>
             </div>

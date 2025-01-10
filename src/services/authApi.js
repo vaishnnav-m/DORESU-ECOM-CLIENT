@@ -45,6 +45,34 @@ const authApi = api.injectEndpoints({
         body:credentials
       })
     }),
+
+    // mutation to for get otp for forgot password
+    getOtp:builder.mutation({
+      query:(email) => ({
+        url:'/api/sendForgotOtp',
+        method:'POST',
+        body:email
+      })
+    }),
+
+    // mutation to for verify forgot password
+    verifyForgotOtp:builder.mutation({
+      query:(credentials) => ({
+        url:'/api/verifyForgotOtp',
+        method:'POST',
+        body:credentials
+      }) 
+    }),
+
+    // mutation to for reset the password for forgot password
+    forgotPassword:builder.mutation({
+      query:(credentials) => ({
+        url:'/api/forgotPassword',
+        method:'POST',
+        body:credentials
+      })
+    }),
+
     // query to get accesstoken
     refreshToken:builder.query({
       query:() => 'api/refresh',
@@ -78,5 +106,8 @@ export const {
   useResendOtpMutation,
   useLogoutUserMutation,
   useRefreshTokenQuery,
-  useGoogleAuthMutation
+  useGoogleAuthMutation,
+  useGetOtpMutation,
+  useVerifyForgotOtpMutation,
+  useForgotPasswordMutation
 } = authApi;

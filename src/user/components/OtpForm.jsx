@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { setCredentials } from "../../store/authSlice";
 import {
   useVerifyOtpMutation,
   useResendOtpMutation,
+  useVerifyForgotOtpMutation,
 } from "../../services/authApi";
 
 function OtpForm() {
@@ -14,6 +15,10 @@ function OtpForm() {
   const [timer, setTimer] = useState(59);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
+
+  // verify OTP for forgot password
+  const [verifyForgotOtp,{isLoading:isVerifyForgot}] = useVerifyForgotOtpMutation();
 
   // verify OTP mutation
   const [
@@ -24,11 +29,7 @@ function OtpForm() {
   // resend OTP mutation
   const [
     resendOtp,
-    {
-      isSuccess: isResendSuccess,
-      isError: isResendError,
-      error: resendError,
-    },
+    { isSuccess: isResendSuccess, isError: isResendError, error: resendError },
   ] = useResendOtpMutation();
 
   // useffect for otp timer
@@ -48,15 +49,25 @@ function OtpForm() {
       return;
     }
     try {
-      const response = await verifyOtp({ userId, otp }).unwrap();
-      if (response && response.accessToken) {
-        if(response.status === 200){
+      if (location.pathname.startsWith("/verifyForgotOtp")) {
+        const response = await verifyForgotOtp({ userId, otp }).unwrap();
+        console.log(response)
+        if (response) {
           setOtp("");
           setError("");
-          localStorage.setItem('userToken',response.accessToken);
-          dispatch(setCredentials(response.accessToken));
+          navigate(`/forgotPasswordReset/${userId}`);
         }
-        return navigate("/");
+      } else {
+        const response = await verifyOtp({ userId, otp }).unwrap();
+        if (response && response.accessToken) {
+          if (response.status === 200) {
+            setOtp("");
+            setError("");
+            localStorage.setItem("userToken", response.accessToken);
+            dispatch(setCredentials(response.accessToken));
+          }
+          return navigate("/");
+        }
       }
     } catch (error) {
       setError(error.response.data.message);
@@ -80,9 +91,9 @@ function OtpForm() {
           OTP
         </span>
         <input
-          onChange={(e) =>{
-            setError("") 
-            setOtp(e.target.value)
+          onChange={(e) => {
+            setError("");
+            setOtp(e.target.value);
           }}
           value={otp}
           name="text"
@@ -108,7 +119,7 @@ function OtpForm() {
         onClick={handleSubmit}
         className="w-full h-[60px] rounded-lg bg-black text-[27px] text-white"
       >
-        {isVerifyLoading ? "Submiting..." : "Submit"}
+        {(isVerifyLoading || isVerifyForgot) ? "Submiting..." : "Submit"}
       </button>
       {error && <span className="text-red-500">{error}</span>}
       {isVerifyError && (

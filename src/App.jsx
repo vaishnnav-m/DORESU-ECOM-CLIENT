@@ -36,6 +36,7 @@ import WishList from "./user/pages/WishList";
 import WalletPage from "./user/pages/WalletPage";
 import Context from "./user/store/context";
 import AdminSalesReportPage from "./admin/pages/AdminSalesReportPage";
+import ForgotPasswordReset from "./user/pages/ForgotPasswordReset";
 
 function App() {
   return (
@@ -54,6 +55,8 @@ function App() {
               }
             />
             <Route path="/verifyOtp/:userId" element={<OTPverify />} />
+            <Route path="/verifyForgotOtp/:userId" element={<OTPverify />} />
+            <Route path="/forgotPasswordReset/:userId" element={<ForgotPasswordReset />} />
             <Route
               path="/login"
               element={

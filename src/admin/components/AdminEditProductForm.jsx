@@ -12,10 +12,10 @@ import * as Yup from "yup";
 import { useParams } from "react-router-dom";
 
 function EditProductForm() {
-
-   const { productId } = useParams();
-   const { data: productData, isSuccess:isProductFetchSuccess } = useGetProductQuery(productId);
-   // States
+  const { productId } = useParams();
+  const { data: productData, isSuccess: isProductFetchSuccess } =
+    useGetProductQuery(productId);
+  // States
   const [profileImage, setProfileImage] = useState(null); // to display image
   const [thumbnail, setThumbnail] = useState([]); // for small images
   // variant adding
@@ -23,25 +23,23 @@ function EditProductForm() {
     { size: "", stock: "", price: "" },
   ]);
 
-   useEffect(() => {
+  useEffect(() => {
     const convertUrlToFile = async (url, fileName) => {
-      console.log('url :>> ', url);
+      console.log("url :>> ", url);
       const response = await fetch(url);
       const blob = await response.blob();
       return new File([blob], fileName, { type: blob.type });
     };
-  
+
     const setupFormData = async () => {
       if (isProductFetchSuccess && productData) {
         const product = productData.data;
-  
+
         // Convert gallery URLs to File objects
         const galleryFiles = await Promise.all(
-          product.gallery.map((item) =>
-            convertUrlToFile(item.url, item.file)
-          )
+          product.gallery.map((item) => convertUrlToFile(item.url, item.file))
         );
-  
+
         setFormData({
           productName: product.productName,
           description: product.description,
@@ -51,19 +49,19 @@ function EditProductForm() {
         });
         setVariants(product.variants);
         setThumbnail(product.gallery);
-        setProfileImage(product.gallery[0]);
+        setProfileImage(product.gallery[0].url);
       }
     };
-  
+
     setupFormData();
-    }, [isProductFetchSuccess, productData]);
- 
+  }, [isProductFetchSuccess, productData]);
+
   //--------------> Image drop zone <-------------------//
-  
+
   const handleChangeVariant = (index, e) => {
     const { name, value } = e.target;
     const updatedVariants = [...variants];
-    const updatedVariant = { ...updatedVariants[index], [name]: value }
+    const updatedVariant = { ...updatedVariants[index], [name]: value };
     updatedVariants[index] = updatedVariant;
 
     // update variants
@@ -71,7 +69,7 @@ function EditProductForm() {
     // update form data
     setFormData((prev) => ({
       ...prev,
-      variants: updatedVariants
+      variants: updatedVariants,
     }));
   };
 
@@ -147,8 +145,6 @@ function EditProductForm() {
       .required("variant is Required"),
   });
 
-  console.log('formData :>> ', formData);
-
   // function handle submit
   async function handdleSubmit(e) {
     try {
@@ -156,7 +152,7 @@ function EditProductForm() {
       formData.variants = [...variants];
       await validateSchema.validate(formData, { abortEarly: false });
       const payload = new FormData();
-      payload.append('productId',productData.data._id);
+      payload.append("productId", productData.data._id);
       payload.append("productName", formData.productName);
       payload.append("description", formData.description);
       payload.append("category", formData.category);
@@ -166,7 +162,6 @@ function EditProductForm() {
         payload.append(`variants[${index}][price]`, variant.price);
       });
       formData.image.forEach((file) => {
-        console.log('file :>> ', file);
         payload.append("file", file);
       });
       const response = await editProduct(payload).unwrap();
@@ -177,7 +172,7 @@ function EditProductForm() {
           theme: "dark",
         });
       }
-      
+
       setFormData({
         productName: productData.productName,
         description: productData.description,
@@ -195,10 +190,10 @@ function EditProductForm() {
         });
         return setFormError(newErrors);
       }
-        toast.error("Product Updation failed !", {
-          position: "top-right",
-          theme: "dark",
-        });      
+      toast.error("Product Updation failed !", {
+        position: "top-right",
+        theme: "dark",
+      });
       setFormError({});
     }
   }
@@ -219,17 +214,17 @@ function EditProductForm() {
 
   // function to handle remove
   function handleRemove(index) {
-    const formFiltered = formData.image.filter((val,ind) => ind !== index);
+    const formFiltered = formData.image.filter((val, ind) => ind !== index);
     const filtered = thumbnail.filter((val, ind) => ind !== index);
     setFormData((prev) => ({
       ...prev,
-      image:formFiltered
-    }))
+      image: formFiltered,
+    }));
     setThumbnail(filtered);
   }
 
   // function to set cropped images
-  function setCropedImage(croppedFile) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+  function setCropedImage(croppedFile) {
     const imageUrl = URL.createObjectURL(croppedFile);
     setProfileImage(imageUrl);
 
