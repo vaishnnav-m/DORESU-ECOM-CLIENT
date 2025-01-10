@@ -11,7 +11,7 @@ function ResetPassword() {
           <UserProfileAside />
         </div>
         <div className="flex flex-col items-center border px-10 py-5 flex-1">
-          <h2 className="text-[20px] font-bold ">C</h2>
+          <h2 className="text-[20px] font-bold ">Change Password</h2>
           <ResetPasswordForm />
         </div>
       </main>
