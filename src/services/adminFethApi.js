@@ -110,7 +110,7 @@ const adminFetchApi = adminApi.injectEndpoints({
       query: ({ filter, startDate, endDate, page, limit }) => ({
         url: `/getOrderHistories?startDate=${
           startDate ? startDate : ""
-        }&endDate=${endDate ? startDate : ""}&filter=${
+        }&endDate=${endDate ? endDate : ""}&filter=${
           filter ? filter : ""
         }&page=${page}&limit=${limit}`,
       }),
@@ -199,11 +199,14 @@ const adminFetchApi = adminApi.injectEndpoints({
       }),
     }),
     downloadExcelReport: builder.query({
-      query: ({ filter, startDate, endDate }) => ({
+      query: ({ filter, startDate, endDate }) =>{ 
+        console.log("in the services",startDate,endDate)
+        return ({
         url: `salesReportExcel/?startDate=${startDate}&endDate=${endDate}&filter=${filter}`,
         method: "GET",
         responseHandler: (response) => response.blob(),
-      }),
+      })
+    }
     }),
     getDashboardData: builder.query({
       query: () => ({

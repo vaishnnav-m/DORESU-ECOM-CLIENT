@@ -137,7 +137,7 @@ function AdminDashboard() {
               </span>
             </div>
             <div className="flex-1 bg-white p-3 rounded-lg shadow-lg flex flex-col gap-3 items-center">
-              <h2 className="text-[20px] font-bold">Total Products</h2>
+              <h2 className="text-[20px] font-bold">Total Products Sold</h2>
               <span className="text-[40px] font-extrabold">
                 {formatNumers(totalProductsSold)}
               </span>

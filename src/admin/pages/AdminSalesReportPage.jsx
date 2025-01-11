@@ -21,6 +21,7 @@ function AdminSalesReportPage() {
   const limit = 10;
 
   async function fetchOrders() {
+    console.log(startDate,endDate);
     try {
       const response = await getOrderHistories({
         filter,
@@ -94,9 +95,9 @@ function AdminSalesReportPage() {
   async function handleXLDownload (){
     try {
       const response = await excelDownload({
-        filter,
         startDate,
         endDate,
+        filter,
       }).unwrap();
 
       const blob = new Blob([response],{
