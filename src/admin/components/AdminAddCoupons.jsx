@@ -40,6 +40,7 @@ function AdminAddCoupons({ closeModal, editing }) {
 
   // function to validate form
   function validate() {
+    const date = new Date().toISOString().split('T')[0];
     if (!coupon?.couponCode.trim() || coupon.couponCode.length === 0) {
       setValidateError("coupon code is needed");
       return false;
@@ -67,8 +68,17 @@ function AdminAddCoupons({ closeModal, editing }) {
       setValidateError("startDate is needed");
       return false;
     }
+
+    if (coupon?.startDate < date) {
+      setValidateError("Coupon start date canot be in past");
+      return false;
+    }
     if (!coupon?.endDate || coupon.endDate.length === 0) {
       setValidateError("endDate is needed");
+      return false;
+    }
+    if (coupon?.endDate < date) {
+      setValidateError("Coupon end date canot be in past");
       return false;
     }
     setValidateError("");

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import EyeBtn from "../assets/Group.svg";
 import { useLoginAdminMutation } from "../../services/adminFethApi";
 import { useDispatch } from "react-redux";
 import { setAdminCredentials } from "../../store/authSlice";

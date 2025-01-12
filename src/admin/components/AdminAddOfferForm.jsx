@@ -4,6 +4,8 @@ import {
   useGetCategoriesQuery,
   useLazyGetProdutsQuery,
 } from "../../services/adminFethApi";
+import { toast } from "react-toastify";
+
 
 function AdminAddOfferForm({ closeModal, isEditing, setIsEditing }) {
   // ---- Mutations ---- //
@@ -33,6 +35,7 @@ function AdminAddOfferForm({ closeModal, isEditing, setIsEditing }) {
 
   // function to validate form
   function validate() {
+    const date = new Date().toISOString().split('T')[0];
     if (!offer?.offerName.trim() || offer.offerName.length === 0) {
       setValidateError("offer name is needed");
       return false;
@@ -49,6 +52,10 @@ function AdminAddOfferForm({ closeModal, isEditing, setIsEditing }) {
       setValidateError("Offer start date is needed");
       return false;
     }
+    if (offer.startDate < date) {
+      setValidateError("Offer start date cannot be in the past.");
+      return false;
+    }
     if (!offer?.startDate || offer.startDate.length === 0) {
       setValidateError("Offer start date is needed");
       return false;
@@ -57,10 +64,14 @@ function AdminAddOfferForm({ closeModal, isEditing, setIsEditing }) {
       setValidateError("Offer end date is needed");
       return false;
     }
+    if (offer.endDate < date) {
+      setValidateError("Offer end date cannot be in the past.");
+      return false;
+    }
     setValidateError("");
     return true;
   }
-
+   
   // function to handdle form change
   function handleChange(e) {
     setOffer({
@@ -68,7 +79,7 @@ function AdminAddOfferForm({ closeModal, isEditing, setIsEditing }) {
       [e.target.name]: e.target.value,
     });
   }
-
+  // console.log(offer.startDate)
   // function to handle submit of the form
   async function handleSubmit(e) {
     e.preventDefault();
@@ -90,11 +101,22 @@ function AdminAddOfferForm({ closeModal, isEditing, setIsEditing }) {
       } else {
         const response = await addOffer(offer).unwrap();
         if (response) {
-          setOffer({ categoryName: "", description: "" });
+          setOffer({
+            offerName: "",
+            offerType: "",
+            offerValue: "",
+            targetId: "",
+            startDate: "",
+            endDate: "",
+          });
         }
       }
     } catch (error) {
       console.log(error);
+      toast.error(error.data.message, {
+        position: "top-right",
+        theme: "dark",
+      });
     }
   }
 
