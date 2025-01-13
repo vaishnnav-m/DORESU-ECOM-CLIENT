@@ -174,6 +174,7 @@ function AdminOrderList() {
               address={createAddress(selected.shippingAddress)}
               date={createDate(selected.createdAt)}
               handleModal={() => setIsModalOpen(false)}
+              fetchOrders={() => fetchOrders()}
             />
           </div>
         )}

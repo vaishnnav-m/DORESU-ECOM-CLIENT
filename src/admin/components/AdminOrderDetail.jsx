@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import ConfirmModal from "./ConfirmModal";
 import { useState } from "react";
 
-function AdminOrderDetail({ order, date, address, handleModal }) {
+function AdminOrderDetail({ order, date, address, handleModal, fetchOrders }) {
   const statuses = ["Pending", "Shipped", "Delivered", "Cancelled"];
   const [updateOrderStatus] = useUpdateOrderStatusMutation();
 
@@ -42,6 +42,7 @@ function AdminOrderDetail({ order, date, address, handleModal }) {
           position: "top-right",
           theme: "dark",
         });
+        fetchOrders();
         handleModal();
       }
     } catch (error) {
