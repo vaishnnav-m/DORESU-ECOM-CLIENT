@@ -93,7 +93,7 @@ function AdminOrderDetail({ order, date, address, handleModal, fetchOrders }) {
             <h2 className="font-semibold">Date: </h2>
           </div>
           <div className="flex flex-col">
-            <span className="font-normal">{order._id}</span>
+            <span className="font-normal">{order.orderId || order._id}</span>
             <span className="font-normal">{order.shippingAddress.name}</span>
             <span className="font-normal">{address}</span>
             <span className="font-normal">{date}</span>

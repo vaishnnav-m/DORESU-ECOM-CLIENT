@@ -73,7 +73,7 @@ function UserOrders() {
                 <div className="w-full" key={order._id}>
                   <div className="w-full px-5 py-2 bg-[#f0f0f0] flex justify-between">
                     <div>
-                      <h2 className="font-semibold">OrderId: {order._id}</h2>
+                      <h2 className="font-semibold">OrderId: {order.orderId || order._id}</h2>
                       <span>Date: {createDate(order.createdAt)}</span>
                     </div>
                     <div>

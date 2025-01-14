@@ -125,7 +125,7 @@ function AdminOrderList() {
                 histories.map((history) => (
                   <tr key={history._id} className="px-6 py-4 ">
                     <td className="px-6 py-4 whitespace-nowrap  max-w-[100px] truncate">
-                      {history._id}
+                      {history.orderId||history._id}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap  max-w-[100px] truncate">
                       {history.shippingAddress.name}

@@ -197,7 +197,7 @@ function UserOrderDetails() {
                       </span>
                     </div>
                     <div>
-                      <span>Order Id: {orderData?._id} </span>
+                      <span>Order Id: {orderData.orderId||orderData?._id} </span>
                     </div>
                   </div>
                   <div className="flex justify-between gap-5 px-3">
