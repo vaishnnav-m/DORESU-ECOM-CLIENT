@@ -1,11 +1,16 @@
+import { useDispatch } from "react-redux";
+import { useLogoutAdminMutation } from "../../services/adminFethApi";
 import { adminLogOut } from "../../store/authSlice";
 
 function Header() {
 
+  const [logoutAdmin] = useLogoutAdminMutation();
+  const dispatch = useDispatch();
+
   function handleLogout() {
       dispatch(adminLogOut());
-      return logoutUser();
-    }
+      return logoutAdmin();
+  }
 
   return (
     <header className="h-[96px] fixed z-40 top-0 inset-0 max-w-full bg-white flex-1 flex justify-end items-center">
@@ -26,7 +31,7 @@ function Header() {
             <i className="fa-solid fa-angle-down ml-3"></i>
           </span>
           <div className="absolute bottom-0 translate-y-12 bg-white shadow-lg">
-            <button onClick={() => ""} className="px-5 py-2 text-[20px]">Logout</button>
+            <button onClick={() => handleLogout()} className="px-5 py-2 text-[20px]">Logout</button>
           </div>
         </li>
       </ul>

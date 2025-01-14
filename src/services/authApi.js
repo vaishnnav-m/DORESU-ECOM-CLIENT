@@ -87,7 +87,6 @@ const authApi = api.injectEndpoints({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           const data = await queryFulfilled;
-          console.log(data);
           dispatch(logOut());
           dispatch(api.util.resetApiState());
         } catch (error) {

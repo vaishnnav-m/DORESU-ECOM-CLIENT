@@ -9,10 +9,11 @@ import {
 } from "../../services/adminFethApi";
 import ImageCroper from "./ImageCroper";
 import * as Yup from "yup";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 function EditProductForm() {
   const { productId } = useParams();
+  const navigate = useNavigate()
   const { data: productData, isSuccess: isProductFetchSuccess } =
     useGetProductQuery(productId);
   // States
@@ -22,6 +23,13 @@ function EditProductForm() {
   const [variants, setVariants] = useState([
     { size: "", stock: "", price: "" },
   ]);
+  const [formData, setFormData] = useState({
+    productName: "",
+    description: "",
+    category: "",
+    variants: [],
+    image: [],
+  });
 
   useEffect(() => {
     const convertUrlToFile = async (url, fileName) => {
@@ -117,13 +125,7 @@ function EditProductForm() {
   const { data: categoryData } = useGetCategoriesQuery();
 
   // States
-  const [formData, setFormData] = useState({
-    productName: "",
-    description: "",
-    category: "",
-    variants: [],
-    image: [],
-  });
+ 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [formError, setFormError] = useState({});
@@ -154,6 +156,9 @@ function EditProductForm() {
      };
      return true;
    }
+
+   console.log("formData",formData);
+   console.log("thumbnails",thumbnail);
 
   // validate schema
   const validateSchema = Yup.object({
@@ -212,6 +217,7 @@ function EditProductForm() {
         });
         return setFormError(newErrors);
       }
+      console.log(errors)
       toast.error("Product Updation failed !", {
         position: "top-right",
         theme: "dark",
@@ -232,6 +238,7 @@ function EditProductForm() {
       variants: [],
       image: [],
     });
+    navigate('/admin/products')
   }
 
   // function to handle remove

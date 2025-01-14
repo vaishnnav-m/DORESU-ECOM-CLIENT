@@ -8,8 +8,10 @@ import {
 } from "../../services/adminFethApi";
 import ImageCroper from "./ImageCroper";
 import * as Yup from "yup";
+import { useNavigate } from "react-router-dom";
 
 function AddProductForm() {
+  const navigate = useNavigate();
   //--------------> Image drop zone <-------------------//
   // States
   const [profileImage, setProfileImage] = useState(null); // to display image
@@ -192,6 +194,7 @@ function AddProductForm() {
       variants: [],
       image: [],
     });
+    navigate('/admin/products')
   }
 
   // function to handle remove

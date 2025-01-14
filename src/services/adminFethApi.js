@@ -1,4 +1,6 @@
+import { adminLogOut } from "../store/authSlice";
 import adminApi from "./adminApi";
+import api from "./api";
 
 const adminFetchApi = adminApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -219,6 +221,22 @@ const adminFetchApi = adminApi.injectEndpoints({
         method: "GET",
       }),
     }),
+    // mutation for logut admin
+    logoutAdmin: builder.mutation({
+      query: () => ({
+        url: "/logout",
+        method: "POST",
+      }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const data = await queryFulfilled;
+          dispatch(adminLogOut());
+          dispatch(api.util.resetApiState());
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -250,5 +268,6 @@ export const {
   useLazyDownloadPDFReportQuery,
   useLazyDownloadExcelReportQuery,
   useGetDashboardDataQuery,
-  useLazyGetChartDataQuery
+  useLazyGetChartDataQuery,
+  useLogoutAdminMutation
 } = adminFetchApi;
