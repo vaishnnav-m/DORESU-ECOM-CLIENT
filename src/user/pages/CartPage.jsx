@@ -91,7 +91,6 @@ function CartPage() {
     try {
       await refetch();
       if(!cart.data.products.length){
-        console.log("working")
         return toast.error("No products in the cart", {
           position: "top-right",
           theme: "dark",

@@ -7,15 +7,13 @@ import Table from "../components/Table";
 
 function AdminUsers() {
   const { data } = useGetUsersQuery();
-  console.log(data);
   const headings = [
-    "User Id",
     "User Name",
     " Phone",
     " Email",
     "IsActive",
   ];
-  const columns = ["_id", "firstName", "phone", "email"];
+  const columns = ["firstName", "phone", "email"];
   const buttonConfigs = [
     {
       label: "Toggle",

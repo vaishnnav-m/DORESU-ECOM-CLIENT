@@ -15,7 +15,7 @@ function AdminOrderList() {
   const [page,setPage] = useState(1);
   const [totalPages,setTotalPages] = useState(0);
 
-  const limit = 10;
+  const limit = 9;
 
 
   async function fetchOrders() {
@@ -49,13 +49,15 @@ function AdminOrderList() {
   function getStyle(status) {
     switch (status) {
       case "Pending":
-        return "bg-red-300 text-red-800";
+        return "bg-orange-300 text-orange-800";
       case "Shipped":
         return "bg-blue-300 text-blue-800";
       case "Delivered":
         return "bg-green-300 text-green-800";
       case "Cancelled":
-        return "bg-orange-300 text-orange-800";
+        return "bg-red-300 text-red-800";
+      case "Returned":
+        return "bg-gray-300 text-gray-800";
     }
   }
 
