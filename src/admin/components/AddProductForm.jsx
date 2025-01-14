@@ -14,14 +14,17 @@ function AddProductForm() {
   // States
   const [profileImage, setProfileImage] = useState(null); // to display image
   const [thumbnail, setThumbnail] = useState([]); // for small images
-
-  // variant adding
   const [variants, setVariants] = useState([
     { size: "", stock: "", price: "" },
   ]);
+
+  // variant adding
+  // function to add variant
   const handleChangeVariant = (index, e) => {
     const { name, value } = e.target;
+
     const updatedVariants = [...variants];
+
     updatedVariants[index][name] = value;
     setVariants(updatedVariants);
   };
@@ -79,6 +82,7 @@ function AddProductForm() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [formError, setFormError] = useState({});
+  const [varientError, setVariantError] = useState([]);
   // function to handdle form change
   function handleChange(e) {
     setFormData({
@@ -86,26 +90,6 @@ function AddProductForm() {
       [e.target.name]: e.target.value.trim(),
     });
   }
-
-
-  // const varientsValidateSchema = Yup.array().of(
-  //   Yup.object({
-  //     size: Yup.string().required("Size is required"),
-  //     stock: Yup.string()
-  //       .required("Stock is required")
-  //       .min(0, "Stock cannot be negative"),
-  //     price: Yup.string().required("Price is required"),
-  //   })
-  // );
-
-  // const validateVarients = (variant) => {
-  //   if(!variant.size)
-  //     return false
-  //   if(!variant.stock || variant.stock < 0)
-  //     return false
-  //   if(!variant.price)
-  //     return false
-  // }
 
   // validate schema
   const validateSchema = Yup.object({
@@ -115,17 +99,36 @@ function AddProductForm() {
     image: Yup.array()
       .min(3, "At least Three image is required")
       .required("Image is Required"),
-    // variants:varientsValidateSchema
   });
 
-
+  function validateVarients() {
+   for(let index = 0;index<variants.length;index++){
+    let variant = variants[index];
+      if (!variant.size) {
+        setFormError({variants: `Size of the variant ${index+1} is not provided`});
+        return false
+      }
+      if (!variant.stock || variant.stock < 0) {
+        setFormError({variants:`Stock of the variant ${index+1} is can not  be negative`});
+        return false
+      }
+      if (!variant.price || variant.price <= 0) {
+        setFormError({variants:`Price of the variant ${index+1} is not a positive number`});
+        return false
+      }
+    };
+    return true;
+  }
+ 
   // function handle submit
   async function handdleSubmit(e) {
     try {
       e.preventDefault();
-
-      formData.variants = [...variants];
       await validateSchema.validate(formData, { abortEarly: false });
+      if(!validateVarients()){
+        return;
+      }
+      formData.variants = [...variants];
 
       const payload = new FormData();
       payload.append("productName", formData.productName);
@@ -326,7 +329,7 @@ function AddProductForm() {
                 <input
                   className="border border-black rounded-md px-5 py-2 placeholder:text-[16px] placeholder:text-[#79767C] placeholder:font-thin"
                   placeholder="Type Price here"
-                  type="text"
+                  type="number"
                   name="price"
                   onChange={(e) => handleChangeVariant(index, e)}
                   value={variant.price}

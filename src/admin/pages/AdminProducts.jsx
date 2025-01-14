@@ -141,6 +141,7 @@ function AdminProducts() {
           position: "top-right",
           theme: "dark",
         });
+        fetchProducts();
         return true;
       }
     } catch (error) {

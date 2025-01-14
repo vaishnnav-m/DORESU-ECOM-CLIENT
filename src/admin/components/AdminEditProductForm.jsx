@@ -135,22 +135,44 @@ function EditProductForm() {
     });
   }
 
+
+  function validateVarients() {
+    for(let index = 0;index<variants.length;index++){
+     let variant = variants[index];
+       if (!variant.size) {
+         setFormError({variants: `Size of the variant ${index+1} is not provided`});
+         return false
+       }
+       if (!variant.stock || variant.stock < 0) {
+         setFormError({variants:`Stock of the variant ${index+1} is cannot be negative`});
+         return false
+       }
+       if (!variant.price || variant.price <= 0) {
+         setFormError({variants:`Price of the variant ${index+1} is not a positive number`});
+         return false
+       }
+     };
+     return true;
+   }
+
   // validate schema
   const validateSchema = Yup.object({
     productName: Yup.string().required("Product Name is Required"),
     description: Yup.string().required("Descritption is Required"),
-    category: Yup.string().required("category is Required"),
-    variants: Yup.array()
-      .min(2, "At least one variant is required")
-      .required("variant is Required"),
+    category: Yup.string().required("category is Required")
   });
 
   // function handle submit
   async function handdleSubmit(e) {
     try {
       e.preventDefault();
-      formData.variants = [...variants];
       await validateSchema.validate(formData, { abortEarly: false });
+
+      formData.variants = [...variants];
+      if(!validateVarients()){
+        return;
+      }
+
       const payload = new FormData();
       payload.append("productId", productData.data._id);
       payload.append("productName", formData.productName);
