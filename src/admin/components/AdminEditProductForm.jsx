@@ -87,7 +87,7 @@ function EditProductForm() {
 
       setFormData((prev) => ({
         ...prev,
-        image: [...prev.image, ...acceptedFiles], // for formdata
+        image: [...(prev.image || []), ...acceptedFiles], // for formdata
       }));
 
       setThumbnail((prev) => [...(prev || []), ...imageUrls]); // to set thumbnail

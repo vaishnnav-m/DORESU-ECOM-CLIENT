@@ -82,7 +82,6 @@ function AddProductForm() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [formError, setFormError] = useState({});
-  const [varientError, setVariantError] = useState([]);
   // function to handdle form change
   function handleChange(e) {
     setFormData({
