@@ -42,70 +42,98 @@ function LoginForm() {
     });
   };
   return (
-    <div className="min-w-[630px]">
-      <form onSubmit={handleSubmit} className=" flex flex-col gap-9">
-        <div className="w-full border border-[#8A8A8A] rounded-lg h-[60px] relative">
-          <span className="bg-white px-[20px] py-[12] text-center text-[#737373] absolute left-5 top-0 -translate-y-[50%]">
+    <div className="w-full">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+        <div className="w-full border border-gray-300 rounded-lg relative focus-within:border-black transition-colors">
+          <label className="bg-white px-2 text-xs font-medium text-gray-500 absolute left-3 -top-2">
             Email
-          </span>
+          </label>
           <input
             onChange={handleChange}
             value={formData.email}
             name="email"
-            className="w-full h-full rounded-lg px-5"
+            className="w-full h-12 rounded-lg px-4 outline-none text-gray-900 bg-transparent"
             type="email"
+            placeholder="Enter your email"
           />
         </div>
 
-        <div className="w-full border text-right border-[#8A8A8A] h-[60px] rounded-lg relative">
-          <span className="bg-white px-[20px] py-[12] text-center text-[#737373] absolute left-5 top-0 -translate-y-[50%]">
-            Password
-          </span>
-          <input
-            onChange={handleChange}
-            value={formData.password}
-            name="password"
-            className="w-full h-full rounded-lg  px-5 mb-1"
-            type={showPassword ? "text" : "password"}
-          />
-          <i
-            className={`far fa-${
-              showPassword ? "eye-slash" : "eye"
-            } absolute right-3 top-1/2 -translate-y-1/2`}
-            onClick={() => setShowPassword((prev) => !prev)}
-          />
-          <span
-            onClick={() => setIsModalVisibile(true)}
-            className="text-[#737373] text-[17px] font-medium cursor-pointer"
-          >
-            Forgot Password ?
-          </span>
+        <div className="w-full">
+            <div className="w-full border border-gray-300 rounded-lg relative focus-within:border-black transition-colors">
+              <label className="bg-white px-2 text-xs font-medium text-gray-500 absolute left-3 -top-2">
+                Password
+              </label>
+              <input
+                onChange={handleChange}
+                value={formData.password}
+                name="password"
+                className="w-full h-12 rounded-lg px-4 outline-none text-gray-900 bg-transparent pr-10"
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter your password"
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                  <i className={`far fa-${showPassword ? "eye-slash" : "eye"}`}></i>
+              </button>
+            </div>
+            <div className="text-right mt-2">
+                 <button
+                    type="button"
+                    onClick={() => setIsModalVisibile(true)}
+                    className="text-sm font-medium text-gray-500 hover:text-black transition-colors"
+                  >
+                    Forgot Password?
+                  </button>
+            </div>
         </div>
 
         <button
           type="submit"
-          className="w-full h-[60px] rounded-lg bg-black text-[27px] text-white"
+          className="w-full h-12 rounded-lg bg-black text-white font-bold text-lg hover:bg-gray-800 transition-all active:scale-95 shadow-md flex items-center justify-center gap-2"
           disabled={isLoading}
         >
-          {isLoading ? "Logging in..." : "Login"}
+          {isLoading ? (
+             <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+          ) : (
+            "Login"
+          )}
         </button>
+        
         {isError && (
-          <span className="text-red-500">
+          <div className="p-3 bg-red-50 text-red-500 text-sm rounded-md border border-red-100 text-center">
             {authError?.data?.message || "Login failed"}
-          </span>
+          </div>
         )}
 
-        {isSuccess && <span className="text-green-500">Login successful!</span>}
+        {isSuccess && <div className="p-3 bg-green-50 text-green-500 text-sm rounded-md border border-green-100 text-center">Login successful!</div>}
       </form>
-      <div className="bg-[#bbbbbb] h-[1px] relative my-10">
-        <span className="text-[#8A8A8A] font-semibold absolute left-1/2 -translate-y-1/2 bg-white p-2">
-          OR
-        </span>
+      
+      <div className="relative my-8">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-200"></div>
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-2 bg-white text-gray-500">Or continue with</span>
+        </div>
       </div>
+      
       <GoogleAuth />
+      
       {isModalVisibile && (
-        <div className="absolute inset-0 bg-[#00000094] flex items-center justify-center">
-          <ForgotPassworEmail closeModal ={() => setIsModalVisibile(false)}/>
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+           <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden animate-in fade-in zoom-in duration-200">
+               <div className="p-4 flex justify-end">
+                    <button onClick={() => setIsModalVisibile(false)} className="text-gray-400 hover:text-black p-2">
+                        <i className="fas fa-times text-lg"></i>
+                    </button>
+               </div>
+               <div className="px-6 pb-8">
+                  <ForgotPassworEmail closeModal ={() => setIsModalVisibile(false)}/>
+               </div>
+           </div>
         </div>
       )}
     </div>

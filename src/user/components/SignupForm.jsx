@@ -79,130 +79,156 @@ function SignupForm() {
   };
 
   return (
-    <div className="min-w-[630px]">
+    <div className="w-full">
       <form
         onSubmit={handleSubmit}
-        className="min-w-[700px] flex flex-col gap-9 "
+        className="w-full flex flex-col gap-5"
       >
-        <div className="flex gap-3">
-          <div className="w-full border border-[#8A8A8A] rounded-lg h-[55px] relative">
-            <span className="bg-white px-[20px] text-center text-[#737373] absolute left-5 top-0 -translate-y-[50%]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="w-full border border-gray-300 rounded-lg relative focus-within:border-black transition-colors">
+            <label className="bg-white px-2 text-xs font-medium text-gray-500 absolute left-3 -top-2">
               First Name
-            </span>
+            </label>
             <input
               name="firstName"
               value={formData.firstName}
-              className="w-full h-full rounded-lg px-5"
+              className="w-full h-12 rounded-lg px-4 outline-none text-gray-900 bg-transparent"
               type="text"
               onChange={onChange}
+              placeholder="First Name"
             />
             {error.firstName && (
-              <span className="text-red-600">{error.firstName}</span>
+              <span className="absolute -bottom-5 left-1 text-xs text-red-500">{error.firstName}</span>
             )}
           </div>
-          <div className="w-full border border-[#8A8A8A] rounded-lg h-[55px] relative">
-            <span className="bg-white px-[20px] text-center text-[#737373] absolute left-5 top-0 -translate-y-[50%]">
+          <div className="w-full border border-gray-300 rounded-lg relative focus-within:border-black transition-colors">
+            <label className="bg-white px-2 text-xs font-medium text-gray-500 absolute left-3 -top-2">
               Last Name
-            </span>
+            </label>
             <input
               name="lastName"
               value={formData.lastName}
-              className="w-full h-full rounded-lg px-5"
+              className="w-full h-12 rounded-lg px-4 outline-none text-gray-900 bg-transparent"
               type="text"
               onChange={onChange}
+              placeholder="Last Name"
             />
             {error.lastName && (
-              <span className="text-red-600">{error.lastName}</span>
+              <span className="absolute -bottom-5 left-1 text-xs text-red-500">{error.lastName}</span>
             )}
           </div>
         </div>
 
-        <div className="w-full border border-[#8A8A8A] rounded-lg h-[55px] relative">
-          <span className="bg-white px-[20px] text-center text-[#737373] absolute left-5 top-0 -translate-y-[50%]">
+        <div className="w-full border border-gray-300 rounded-lg relative focus-within:border-black transition-colors">
+          <label className="bg-white px-2 text-xs font-medium text-gray-500 absolute left-3 -top-2">
             Email
-          </span>
+          </label>
           <input
             name="email"
             value={formData.email}
-            className="w-full h-full rounded-lg px-5"
+            className="w-full h-12 rounded-lg px-4 outline-none text-gray-900 bg-transparent"
             type="email"
             onChange={onChange}
+            placeholder="example@mail.com"
           />
-          {error.email && <span className="text-red-600">{error.email}</span>}
+          {error.email && <span className="absolute -bottom-5 left-1 text-xs text-red-500">{error.email}</span>}
         </div>
-        <div className="w-full border border-[#8A8A8A] rounded-lg h-[55px] relative">
-          <span className="bg-white px-[20px] text-center text-[#737373] absolute left-5 top-0 -translate-y-[50%]">
+
+        <div className="w-full border border-gray-300 rounded-lg relative focus-within:border-black transition-colors">
+          <label className="bg-white px-2 text-xs font-medium text-gray-500 absolute left-3 -top-2">
             Phone
-          </span>
+          </label>
           <input
             name="phone"
             value={formData.phone}
-            className="w-full h-full rounded-lg px-5 "
-            type="phone"
+            className="w-full h-12 rounded-lg px-4 outline-none text-gray-900 bg-transparent"
+            type="tel"
             onChange={onChange}
+            placeholder="10 digit mobile number"
           />
-          {error.phone && <span className="text-red-600">{error.phone}</span>}
+          {error.phone && <span className="absolute -bottom-5 left-1 text-xs text-red-500">{error.phone}</span>}
         </div>
-        <div className="w-full border text-right  border-[#8A8A8A] h-[55px] rounded-lg relative">
-          <span className="bg-white px-[20px] text-center text-[#737373] absolute left-5 top-0 -translate-y-[50%]">
+
+        <div className="w-full border border-gray-300 rounded-lg relative focus-within:border-black transition-colors">
+          <label className="bg-white px-2 text-xs font-medium text-gray-500 absolute left-3 -top-2">
             Password
-          </span>
+          </label>
           <input
             name="password"
             value={formData.password}
-            className="w-full h-full rounded-lg px-5"
-            type={showPassword?"text":"password"}
+            className="w-full h-12 rounded-lg px-4 outline-none text-gray-900 bg-transparent pr-10"
+            type={showPassword ? "text" : "password"}
             onChange={onChange}
+            placeholder="Create a password"
           />
-          {error.password && (
-            <span className="text-red-600">{error.password}</span>
-          )}
-          <i
-            className={`far fa-${showPassword?"eye-slash":"eye"} absolute right-3 top-1/2 -translate-y-1/2`}
+          <button
+             type="button"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
             onClick={() => setShowPassword((prev) => !prev)}
-          />
+          >
+             <i className={`far fa-${showPassword ? "eye-slash" : "eye"}`}></i>
+          </button>
+           {error.password && (
+            <span className="absolute -bottom-5 left-1 text-xs text-red-500">{error.password}</span>
+          )}
         </div>
-        <div className="w-full border text-right  border-[#8A8A8A] h-[55px] rounded-lg relative">
-          <span className="bg-white px-[20px] text-center text-[#737373] absolute left-5 top-0 -translate-y-[50%]">
+
+        <div className="w-full border border-gray-300 rounded-lg relative focus-within:border-black transition-colors">
+          <label className="bg-white px-2 text-xs font-medium text-gray-500 absolute left-3 -top-2">
             Confirm Password
-          </span>
+          </label>
           <input
             name="confirmPassword"
             value={formData.confirmPassword}
-            className="w-full h-full rounded-lg px-5"
-            type={showCPassword?"text":"password"}
+            className="w-full h-12 rounded-lg px-4 outline-none text-gray-900 bg-transparent pr-10"
+            type={showCPassword ? "text" : "password"}
             onChange={onChange}
+            placeholder="Re-enter password"
           />
-          {error.confirmPassword && (
-            <span className="text-red-600">{error.confirmPassword}</span>
-          )}
-          <i
-            className={`far fa-${showCPassword?"eye-slash":"eye"} absolute right-3 top-1/2 -translate-y-1/2`}
+          <button
+             type="button"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
             onClick={() => setShowCPassword((prev) => !prev)}
-          />
+          >
+             <i className={`far fa-${showCPassword ? "eye-slash" : "eye"}`}></i>
+          </button>
+           {error.confirmPassword && (
+            <span className="absolute -bottom-5 left-1 text-xs text-red-500">{error.confirmPassword}</span>
+          )}
         </div>
 
         <button
           type="submit"
-          className="w-full h-[55px] rounded-lg bg-black text-[27px] text-white"
+          className="w-full h-12 mt-4 rounded-lg bg-black text-white font-bold text-lg hover:bg-gray-800 transition-all active:scale-95 shadow-md flex items-center justify-center"
+          disabled={isLoading}
         >
-          {isLoading ? "Singning up..." : "Signup"}
+           {isLoading ? (
+             <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+          ) : (
+            "Create Account"
+          )}
         </button>
+        
         {isError && (
-          <span className="text-red-500">
+          <div className="p-3 bg-red-50 text-red-500 text-sm rounded-md border border-red-100 text-center">
             {authError?.data?.message || "Signup failed"}
-          </span>
+          </div>
         )}
 
         {isSuccess && (
-          <span className="text-green-500">Signup successful!</span>
+          <div className="p-3 bg-green-50 text-green-500 text-sm rounded-md border border-green-100 text-center">Signup successful!</div>
         )}
       </form>
-      <div className="bg-[#bbbbbb] h-[1px] relative my-10">
-        <span className="text-[#8A8A8A] font-semibold absolute left-1/2 -translate-y-1/2 bg-white p-2">
-          OR
-        </span>
+      
+      <div className="relative my-8">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-200"></div>
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-2 bg-white text-gray-500">Or continue with</span>
+        </div>
       </div>
+      
       <GoogleAuth />
     </div>
   );
