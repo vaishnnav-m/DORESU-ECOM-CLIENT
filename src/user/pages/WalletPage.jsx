@@ -34,82 +34,95 @@ function WalletPage() {
   }
 
   return (
-    <div className="pt-[200px] flex justify-center">
+    <div className="min-h-screen bg-gray-50 pt-32 md:pt-40 pb-20">
       <Header />
-      <main className="2xl:w-[70%] w-[87%] flex gap-10">
-        <div className="xl:w-[340px] w-[280px] h-full">
-          <UserProfileAside />
-        </div>
-        <div className="flex flex-col items-center gap-11 border xl:px-10 px-5 py-5 flex-1">
-          <h2 className="text-[20px] font-bold uppercase">my wallet</h2>
-          <div className="w-full flex gap-20 xl:max-w-[90%] max-w-full">
-            <div className="flex-1 flex flex-col items-center gap-10">
-              <div>
-                <img src={walletImage} alt="" />
-              </div>
-              <div className="w-full shadow-lg border p-3 flex flex-col items-center gap-5">
-                <h3 className="text-[20px] font-semibold">My Balance</h3>
-                <h1 className="text-[44px] text-green-500 font-bold">
-                  ₹ {(wallet && Math.round(wallet.balance)) || 0}
-                </h1>
-              </div>
-            </div>
-            <div className="border shadow-lg p-5 flex flex-col gap-3">
-              <div>
-                <h3 className="text-[20px] font-bold text-[#3C3633]">
-                  Payment Method
-                </h3>
-                <span className="text-[#3C3633] font-medium">
-                  Select any payment method
-                </span>
-              </div>
-              <div className="flex flex-col items-start gap-3 mt-3">
-                <div>
-                  <input name="payment" type="radio" />
-                  <label className="ml-3">Debit Card / Credit card</label>
-                </div>
-                <div>
-                  <input name="payment" type="radio" />
-                  <label className="ml-3">UPI Method</label>
-                </div>
-                <div>
-                  <input name="payment" type="radio" />
-                  <label className="ml-3">Internet Banking</label>
-                </div>
-                <button className="w-full mt-3 py-2 rounded-lg bg-black text-white">
-                  Add
-                </button>
-              </div>
-            </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Sidebar */}
+          <div className="lg:col-span-3 xl:col-span-3 sticky top-32 z-10">
+             <UserProfileAside />
           </div>
-          <div className="w-full flex flex-col gap-5 bg-[#e4e4e4] rounded-lg p-5 text-center">
-            {wallet?.histories?.length ? (
-              wallet.histories.map((history) => (
-                <div
-                  key={history._id}
-                  className="w-full flex items-center justify-between"
-                >
-                  <div className="flex flex-col">
-                    <span>{history.remark}</span>
-                    <span className="text-[#4a4a4a] text-[14px]">
-                      {createDate(history.date)}
-                    </span>
+
+          {/* Main Content */}
+          <div className="lg:col-span-9 xl:col-span-9">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 min-h-[600px]">
+               <h2 className="text-2xl font-bold text-gray-900 mb-8 border-b border-gray-100 pb-4">
+                  My Wallet
+               </h2>
+
+               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+                  {/* Balance Card */}
+                  <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-8 flex flex-col justify-between text-white shadow-xl min-h-[220px] relative overflow-hidden group">
+                      <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors"></div>
+                      <div className="relative z-10">
+                          <span className="text-gray-400 text-sm font-medium uppercase tracking-widest mb-2 block">Total Balance</span>
+                          <h1 className="text-4xl lg:text-5xl font-bold tracking-tight">
+                             ₹ {(wallet && Math.round(wallet.balance)) || 0}
+                          </h1>
+                      </div>
+                      <div className="relative z-10 flex justify-between items-end">
+                          <div className="flex flex-col">
+                             <span className="text-gray-400 text-xs uppercase tracking-widest mb-1">Holder</span>
+                             <span className="font-semibold tracking-wide">User Account</span>
+                          </div>
+                          <i className="fas fa-wallet text-white/20 text-4xl"></i>
+                      </div>
                   </div>
-                  <span
-                    className={`text-${
-                      history.type === "Credit" ? "green" : "red"
-                    }-500`}
-                  >
-                    {getAmount(history)}
-                  </span>
-                </div>
-              ))
-            ) : (
-              <h2 className="text-[16px] font-medium ">No History !</h2>
-            )}
+
+                  {/* Add Money Section */}
+                  <div className="border border-gray-200 rounded-2xl p-6 bg-gray-50 flex flex-col justify-between">
+                      <div>
+                          <h3 className="font-bold text-gray-900 mb-4">Add Money</h3>
+                          <div className="space-y-3">
+                              <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-xl bg-white cursor-pointer hover:border-black transition-colors">
+                                  <input name="payment" type="radio" className="accent-black h-4 w-4" />
+                                  <span className="text-sm font-medium text-gray-700">Credit / Debit Card</span>
+                              </label>
+                              <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-xl bg-white cursor-pointer hover:border-black transition-colors">
+                                  <input name="payment" type="radio" className="accent-black h-4 w-4" />
+                                  <span className="text-sm font-medium text-gray-700">UPI / Net Banking</span>
+                              </label>
+                          </div>
+                      </div>
+                      <button className="w-full mt-6 py-3 rounded-xl bg-black text-white font-bold hover:bg-gray-800 active:scale-95 transition-all shadow-md">
+                          Add Funds
+                      </button>
+                  </div>
+               </div>
+
+               {/* Transaction History */}
+               <div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-4">Transaction History</h3>
+                  <div className="flex flex-col gap-3">
+                     {wallet?.histories?.length ? (
+                        wallet.histories.map((history) => (
+                           <div key={history._id} className="flex items-center justify-between p-4 border border-gray-100 rounded-xl bg-white hover:border-gray-200 transition-colors">
+                              <div className="flex items-center gap-4">
+                                  <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${history.type === 'Credit' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
+                                      <i className={`fas fa-arrow-${history.type === 'Credit' ? 'down' : 'up'}`}></i>
+                                  </div>
+                                  <div className="flex flex-col">
+                                      <span className="font-medium text-gray-900">{history.remark}</span>
+                                      <span className="text-xs text-gray-500">{createDate(history.date)}</span>
+                                  </div>
+                              </div>
+                              <span className={`font-bold text-lg ${history.type === 'Credit' ? 'text-green-600' : 'text-gray-900'}`}>
+                                  {getAmount(history)}
+                              </span>
+                           </div>
+                        ))
+                     ) : (
+                        <div className="flex flex-col items-center justify-center py-10 text-gray-400 border border-dashed border-gray-200 rounded-xl">
+                            <i className="fas fa-history text-2xl mb-2 opacity-50"></i>
+                            <span className="text-sm">No transaction history found</span>
+                        </div>
+                     )}
+                  </div>
+               </div>
+            </div>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

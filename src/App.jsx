@@ -171,7 +171,7 @@ function App() {
               }
             />
             <Route
-              path="/wallet"
+              path="/profile/wallet"
               element={
                 <ProtectedRoutes>
                   <WalletPage />

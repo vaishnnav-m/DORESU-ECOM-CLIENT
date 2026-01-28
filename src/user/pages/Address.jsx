@@ -95,79 +95,87 @@ function Address() {
   };
 
   return (
-    <div className="pt-[200px] flex justify-center">
+    <div className="min-h-screen bg-gray-50 pt-32 md:pt-40 pb-20">
       <Header />
-      <main className="2xl:w-[70%] w-[87%] flex gap-10">
-        <div className="xl:w-[340px] w-[280px] h-full">
-          <UserProfileAside />
-        </div>
-        <div className="flex flex-col items-center border rounded-lg gap-10 xl:px-10 px-5 py-5 flex-1">
-          <h2 className="text-[20px] font-bold">Manage Addresses</h2>
-          <div className="w-full">
-            <button
-              onClick={() => navigate("/profile/addAddress")}
-              className="w-full rounded-lg border-2  px-10 py-5 text-[18px] uppercase font-semibold text-start"
-            >
-              <i className="fas fa-plus mr-3"></i>Add a new address
-            </button>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Sidebar */}
+          <div className="lg:col-span-3 xl:col-span-3 sticky top-32 z-10">
+             <UserProfileAside />
           </div>
-          {addresses.map((address) => (
-            <div
-              key={address._id}
-              className="w-full px-10 py-5 border-2 rounded-lg flex flex-col gap-5"
-            >
-              {address.isDefault && (
-                <h2 className="text-[18px] font-semibold">Default Address</h2>
-              )}
-              <div className="text-[17px] font-semibold text-[#484848]">
-                <span className="mr-5">{address.name}</span>
-                <span>{address.mobile}</span>
-                <div className="text-[16px] text-[#8A8A8A]">
-                  <span>
-                    {address.houseName +
-                      "," +
-                      address.street +
-                      "," +
-                      address.city +
-                      "," +
-                      address.district +
-                      "," +
-                      address.state +
-                      "," +
-                      address.pincode}
-                  </span>
+
+          {/* Main Content */}
+          <div className="lg:col-span-9 xl:col-span-9">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8">
+              <div className="flex flex-col gap-6">
+                 <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+                     <h2 className="text-2xl font-bold text-gray-900">Manage Addresses</h2>
+                 </div>
+                 
+                <button
+                  onClick={() => navigate("/profile/addAddress")}
+                  className="w-full rounded-xl border-2 border-dashed border-gray-300 hover:border-black hover:bg-gray-50 transition-all px-8 py-6 text-lg font-bold text-gray-500 hover:text-black flex items-center justify-center gap-3"
+                >
+                  <i className="fas fa-plus"></i>
+                  Add A New Address
+                </button>
+
+                <div className="flex flex-col gap-4">
+                  {addresses.map((address) => (
+                    <div
+                      key={address._id}
+                      className="w-full p-6 border border-gray-200 rounded-xl hover:border-black transition-colors bg-white relative group"
+                    >
+                      {address.isDefault && (
+                        <div className="absolute top-4 right-4">
+                            <span className="bg-black text-white text-[10px] uppercase font-bold px-2 py-1 rounded">Default</span>
+                        </div>
+                      )}
+                      
+                      <div className="flex flex-col gap-1 mb-4">
+                          <div className="flex items-center gap-3">
+                             <h3 className="font-bold text-lg text-gray-900">{address.name}</h3>
+                             <span className="text-sm text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md font-medium">{address.mobile}</span>
+                          </div>
+                      </div>
+
+                      <p className="text-gray-600 text-sm leading-relaxed max-w-2xl mb-6">
+                          {[address.houseName, address.street, address.city, address.district, address.state, address.pincode].filter(Boolean).join(", ")}
+                      </p>
+
+                      <div className="flex flex-wrap gap-3 pt-4 border-t border-gray-100">
+                        <button
+                          onClick={() => navigate(`/profile/editAddress/${address._id}`)}
+                          className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 rounded-lg hover:bg-black hover:text-white transition-colors"
+                        >
+                          Edit
+                        </button>
+                        
+                        {!address.isDefault && (
+                          <>
+                            <button
+                                onClick={() => handleIsDefault(address._id)}
+                                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:border-black hover:text-black transition-colors"
+                            >
+                                Set as Default
+                            </button>
+                            <button
+                                onClick={() => handleModalOpen(address._id)}
+                                className="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-600 hover:text-white transition-colors ml-auto sm:ml-0"
+                            >
+                                Delete
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-              <div className="flex gap-5 justify-end">
-                {!address.isDefault && (
-                  <button
-                    onClick={() => handleIsDefault(address._id)}
-                    className="px-5 py-3 border rounded-lg"
-                  >
-                    Set As Default
-                  </button>
-                )}
-                <button
-                  onClick={() =>
-                    navigate(`/profile/editAddress/${address._id}`)
-                  }
-                  className="px-5 py-3 border rounded-lg"
-                >
-                  Edit
-                </button>
-                {!address.isDefault && (
-                  <button
-                    onClick={() => handleModalOpen(address._id)}
-                    className="px-5 py-3 bg-black rounded-lg text-white"
-                  >
-                    Delete
-                  </button>
-                )}
-              </div>
             </div>
-          ))}
+          </div>
         </div>
-      </main>
+      </div>
       {modal && (
         <UserConfirmModal
           text={modalText}

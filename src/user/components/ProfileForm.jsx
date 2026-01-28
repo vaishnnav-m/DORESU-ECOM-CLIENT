@@ -103,69 +103,97 @@ function ProfileForm() {
 
   return (
     <>
-      <form className="flex flex-col gap-5 w-full">
-        <label className="text-18px font-semibold">Name</label>
-        <div className="flex gap-5">
-          <input
-            className="rounded border border-[#8a8a8a] px-5 py-3 w-full"
-            type="text"
-            name="firstName"
-            value={formData?.firstName}
-            onChange={handleChange}
-          />
-          <input
-            className="rounded border border-[#8a8a8a] px-5 py-3 w-full"
-            type="text"
-            name="lastName"
-            value={formData?.lastName}
-            onChange={handleChange}
-          />
+      <form className="flex flex-col gap-6 w-full">
+        {/* Name Fields */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex flex-col gap-2">
+                <label className="text-sm font-bold text-gray-700">First Name</label>
+                <input
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-black transition-colors bg-white"
+                    type="text"
+                    name="firstName"
+                    placeholder="First Name"
+                    value={formData?.firstName}
+                    onChange={handleChange}
+                />
+            </div>
+            <div className="flex flex-col gap-2">
+                <label className="text-sm font-bold text-gray-700">Last Name</label>
+                <input
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-black transition-colors bg-white"
+                    type="text"
+                    name="lastName"
+                    placeholder="Last Name"
+                    value={formData?.lastName}
+                    onChange={handleChange}
+                />
+            </div>
         </div>
-        <label className="text-18px font-semibold">Email</label>
-        <input
-          className="rounded border border-[#8a8a8a] px-5 py-3 w-full"
-          type="email"
-          name="email"
-          defaultValue={formData?.email}
-          disabled
-        />
-        <label className="text-18px font-semibold">Phone</label>
-        <input
-          className="rounded border border-[#8a8a8a] px-5 py-3 w-full"
-          type="text"
-          name="phone"
-          value={formData?.phone}
-          onChange={handleChange}
-        />
+
+        {/* Contact Info */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex flex-col gap-2">
+                <label className="text-sm font-bold text-gray-700">Email Address</label>
+                <input
+                    className="w-full rounded-lg border border-gray-200 px-4 py-3 bg-gray-50 text-gray-500 cursor-not-allowed"
+                    type="email"
+                    name="email"
+                    defaultValue={formData?.email}
+                    disabled
+                />
+            </div>
+            <div className="flex flex-col gap-2">
+                <label className="text-sm font-bold text-gray-700">Phone Number</label>
+                <input
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-black transition-colors bg-white"
+                    type="text"
+                    name="phone"
+                    placeholder="Phone Number"
+                    value={formData?.phone}
+                    onChange={handleChange}
+                />
+            </div>
+        </div>
+
+        {/* Password Section */}
         {isPasswordVisible && (
-          <>
-            <label className="text-18px font-semibold">Password</label>
-            <div className="w-full border text-right  border-[#8A8A8A] h-[50px] rounded relative">
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-bold text-gray-700">Password</label>
+            <div className="relative w-full">
               <input
                 name="password"
                 value="********"
-                className="w-full h-full rounded px-5"
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 bg-white pr-20"
                 type="password"
-                onChange={handleChange}
+                disabled
               />
               <button
                 type="button"
                 onClick={() => navigate(`/profile/resetPassword/${user._id}`)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-2 items-center cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 px-3 py-1 text-sm font-medium text-black bg-gray-100 rounded hover:bg-black hover:text-white transition-colors flex items-center gap-2"
               >
-                <i className="fas fa-pen text-[14px] "></i>
+                <i className="fas fa-pen text-xs"></i>
                 <span>Edit</span>
               </button>
             </div>
-          </>
+          </div>
         )}
-        <button
-          type="button"
-          onClick={handleModalOpen}
-          className="w-full h-[55px] rounded-lg bg-black text-[27px] text-white"
-        >
-          {isFormSubmitting ? "Updating..." : "Update"}
-        </button>
+
+        {/* Action Button */}
+        <div className="mt-4">
+            <button
+            type="button"
+            onClick={handleModalOpen}
+            className="w-full md:w-auto px-8 h-12 rounded-lg bg-black text-white font-bold text-lg hover:bg-gray-800 transition-all active:scale-95 shadow-md flex items-center justify-center gap-2"
+            >
+            {isFormSubmitting ? (
+                 <>
+                    <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                    <span>Updating...</span>
+                 </>
+            ) : "Update Profile"}
+            </button>
+        </div>
       </form>
       {modal && (
         <UserConfirmModal
