@@ -79,7 +79,7 @@ function Products({ filters, sortOption = '', productLimit, query = '', load }) 
     } catch (error) {
       setHasMore(false);
     } finally {
-      setIsLoading(false); // Reset loading state after fetch is complete
+      setIsLoading(false);
     }
   }
 
@@ -233,9 +233,9 @@ function Products({ filters, sortOption = '', productLimit, query = '', load }) 
               </Link>
             );
           })}
-          
+
           {isLoading && (
-             Array(products.length === 0 ? 8 : 4).fill(0).map((_, i) => <ProductSkeleton key={`skeleton-${i}`} />)
+             Array(products.length === 0 ? limit : 4).fill(0).map((_, i) => <ProductSkeleton key={`skeleton-${i}`} />)
           )}
 
           {!isLoading && products.length === 0 && (

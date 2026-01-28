@@ -75,147 +75,146 @@ function LandingPage() {
   const sortOption = useMemo(() => "", []);
   const query = useMemo(() => "", []);
   return (
-    <div>
+    <div className="w-full bg-white overflow-x-hidden pt-20">
       <Header />
-      <main className="md:px-[15%] px-[10%] md:py-28 pt-24 flex flex-col items-center md:gap-20 gap-5">
-        <div className="grid grid-cols-3 md:gap-10 gap-4 w-full">
-          <div>
-            <img className="w-full" src={card1} alt="" />
-          </div>
-          <div className="flex flex-col justify-between">
-            <img className="w-full" src={card3} alt="" />
-            <div className="flex flex-col md:gap-5 gap-2 items-center">
-              <img className="md:w-[370px] banner-txt" src={cardTxt} alt="" />
-              <button
-                onClick={() => navigate("/all")}
-                className="uppercase lg:px-[4.3rem] md:px-[2.3rem] px-[0.7rem] md:py-3 py-[0.3rem] text-white lg:text-[13px] md:text-[10px] text-[6px] bg-black md:rounded-lg rounded-[5px]"
-              >
-                Shop Now
-              </button>
+      
+      {/* Hero Section - Professional & Compact */}
+      <main className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 lg:gap-6 h-auto md:h-[600px]">
+          
+          {/* Left Hero - Slimmer */}
+          <div className="hidden md:block md:col-span-3 h-full">
+            <div className="w-full h-full rounded-2xl overflow-hidden relative group cursor-pointer">
+               <img className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src={card1} alt="Fashion Model" />
+               <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors" />
             </div>
-            <img className="w-full" src={card4} alt="" />
           </div>
-          <div>
-            <img className="w-full object-contain" src={card2} alt="" />
+
+          {/* Center Content - Focused */}
+          <div className="col-span-1 md:col-span-6 flex flex-col gap-4 h-full">
+            <div className="flex-1 rounded-2xl overflow-hidden relative group shadow-sm">
+              <img className="w-full h-full object-cover" src={card3} alt="Main Fashion" />
+              {/* Overlay Text - Professional Typography */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-end items-center pb-10 text-white text-center p-6">
+                  <h1 className="text-3xl md:text-5xl font-bold tracking-tight mb-2 leading-tight font-serif">Ultimate Spring Sale</h1>
+                  <p className="text-gray-200 text-sm md:text-base font-medium mb-6 opacity-90 max-w-sm">
+                    Discover the season's finest collection. Elevate your wardrobe with premium essentials.
+                  </p>
+                  <button
+                    onClick={() => navigate("/all")}
+                    className="px-8 py-3 bg-white text-black rounded-full text-xs md:text-sm font-bold uppercase tracking-widest hover:bg-gray-100 transition-colors shadow-lg"
+                  >
+                    Shop Collection
+                  </button>
+              </div>
+            </div>
+            
+            {/* Secondary Banner for MD */}
+            <div className="h-1/3 hidden md:block rounded-2xl relative overflow-hidden">
+                <img className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" src={card4} alt="Collection" />
+                <div className="absolute bottom-4 left-4">
+                     <span className="text-white font-bold text-lg tracking-wide drop-shadow-md">New Arrivals</span>
+                </div>
+            </div>
+          </div>
+
+          {/* Right Hero - Slimmer */}
+          <div className="hidden md:block md:col-span-3 h-full pt-12">
+             <div className="w-full h-full rounded-2xl overflow-hidden relative group cursor-pointer">
+                <img className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src={card2} alt="Style" />
+                <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors" />
+             </div>
           </div>
         </div>
-        <div className="w-full h-[60px] bg-white shadow-lg shadow-[#f0f0f0] flex justify-center ">
-          <img src={logos} alt="" />
+
+        {/* Brand Logos - Minimalist Bar */}
+        <div className="w-full mt-12 border-y border-gray-100 py-6 flex justify-center opacity-50 hover:opacity-100 transition-opacity duration-300">
+          <img src={logos} alt="Brands" className="h-5 md:h-7 grayscale filter" />
         </div>
       </main>
 
-      <section className="bg-gradient-to-t from-[#E2E2E2] to-white w-full flex justify-center">
-        <div className="2xl:max-w-[60%] xl:max-w-[70%] max-w-[83%] flex justify-between md:flex-row flex-col-reverse gap-5 py-5 lg:px-16">
-          <div className="flex-1 flex flex-col justify-between lg:gap-5 gap-5 2xl:py-10 xl:py-5 lg:py-3 md:py-3">
-            <div className="flex flex-col xl:gap-[30px] lg:gap-6 gap-3 xl:py-3">
-              <h2 className="text-[40px] font-volkhov text-[#484848]">
-                Deals Of The Day
-              </h2>
-              <span className="text-[15px] text-[#8A8A8A]">
-                Shop our Deals of the Day and enjoy amazing discounts on your
-                favorite styles. From trendy dresses to wardrobe essentials,
-                grab them at unbeatable prices. Hurry, these offers won't last
-                long!
-              </span>
-              <button className="uppercase px-[70px] py-3 max-w-fit text-white text-[13px] bg-black rounded-lg">
-                Buy Now
-              </button>
-            </div>
+      {/* Deals Section - Clean & Sophisticated */}
+      <section className="bg-gray-50/50 py-16 border-t border-gray-100">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="flex flex-col lg:flex-row h-full">
+                {/* Content */}
+                <div className="p-8 lg:p-12 flex-1 flex flex-col justify-center gap-6">
+                   <div>
+                      <div className="flex items-center gap-2 mb-3">
+                          <span className="w-8 h-[2px] bg-red-500 block"></span>
+                          <span className="text-xs font-bold uppercase tracking-widest text-red-500">Deal of the Day</span>
+                      </div>
+                      <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4 font-serif leading-tight">Exclusive Spring Offer</h2>
+                      <p className="text-gray-500 text-sm leading-relaxed max-w-md">
+                        Get 30% off on our latest spring collection. Premium quality meets unbeatable prices. Offer valid for a limited time.
+                      </p>
+                   </div>
 
-            <div className="flex gap-5">
-              <div className="text-center flex flex-col gap-3">
-                <div className="xl:px-3 xl:min-w-[60px] xl:h-[70px] lg:min-w-[55px] lg:min-h-[65px] min-h-[60px] min-w-[50px] rounded-lg flex  justify-center items-center bg-white shadow-lg">
-                  <span className="font-digital text-[#484848] xl:text-[40px] lg:text-[35px] text-[30px]">
-                    {String(time.days).padStart(2, "0")}
-                  </span>
+                   {/* Timer - Professional Mono Look */}
+                   <div className="flex gap-4">
+                      {[
+                        { val: time.days, label: "Days" },
+                        { val: time.hours, label: "Hours" },
+                        { val: time.minutes, label: "Mins" },
+                        { val: time.seconds, label: "Secs" }
+                      ].map((item, idx) => (
+                        <div key={idx} className="flex flex-col gap-1">
+                           <div className="text-3xl font-mono font-medium text-gray-900">
+                              {String(item.val).padStart(2, "0")}
+                              <span className="text-gray-300 mx-1 font-light text-xl">:</span>
+                           </div>
+                           <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">{item.label}</span>
+                        </div>
+                      ))}
+                   </div>
+                   
+                   <div className="pt-2">
+                       <button className="px-8 py-3 bg-black text-white rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-gray-800 transition-colors shadow-lg">
+                        Buy Now
+                      </button>
+                   </div>
                 </div>
-                <span className="text-[14px]">Days</span>
-              </div>
-              <div className="text-center flex flex-col gap-3">
-                <div className="xl:px-3 xl:min-w-[60px] xl:h-[70px] lg:min-w-[55px] lg:min-h-[65px] min-h-[60px] min-w-[50px] rounded-lg flex  justify-center items-center bg-white shadow-lg">
-                  <span className="font-digital text-[#484848] xl:text-[40px] lg:text-[35px] text-[30px]">
-                    {String(time.hours).padStart(2, "0")}
-                  </span>
-                </div>
-                <span className="text-[14px]">Hr</span>
-              </div>
-              <div className="text-center flex flex-col gap-3">
-                <div className="xl:px-3 xl:min-w-[60px] xl:h-[70px] lg:min-w-[55px] lg:min-h-[65px] min-h-[60px] min-w-[50px] rounded-lg flex  justify-center items-center bg-white shadow-lg">
-                  <span className="font-digital text-[#484848] xl:text-[40px] lg:text-[35px] text-[30px]">
-                    {String(time.minutes).padStart(2, "0")}
-                  </span>
-                </div>
-                <span className="text-[14px]">Min</span>
-              </div>
 
-              <div className="text-center flex flex-col gap-3">
-                <div className="xl:px-3 xl:min-w-[60px] xl:h-[70px] lg:min-w-[55px] lg:min-h-[65px] min-h-[60px] min-w-[50px]  rounded-lg flex  justify-center items-center bg-white shadow-lg">
-                  <span className="font-digital text-[#484848] xl:text-[40px] lg:text-[35px] text-[30px]">
-                    {String(time.seconds).padStart(2, "0")}
-                  </span>
+                {/* Image */}
+                <div className="relative h-64 lg:h-auto lg:w-1/2 overflow-hidden">
+                   <img className="absolute inset-0 w-full h-full object-cover" src={banner2img} alt="Deal Banner" />
+                   <div className="absolute top-6 left-6 bg-white/90 backdrop-blur px-4 py-2 rounded shadow-sm border border-gray-100">
+                      <span className="font-bold text-sm tracking-widest text-gray-900">30% OFF</span>
+                   </div>
                 </div>
-                <span className="text-[14px]">Sec</span>
               </div>
-            </div>
-          </div>
-
-          <div className="flex-1 flex flex-col md:items-end items-center">
-            <div className="rounded-xl overflow-hidden relative xl:w-[84%] lg:w-[90%]">
-              <img className="w-full h-full" src={banner2img} alt="" />
-              <div className="lg:w-[137px] lg:h-[78px] md:w-[110px] md:h-[65px] bg-white absolute left-5 bottom-5 text-center flex flex-col justify-between py-3">
-                <span className="lg:text-[12px] text-[9px]">
-                  01{" "}
-                  <hr className="w-[20px] h-[2px] bg-black inline-block -translate-y-[4px]" />{" "}
-                  Spring Sale
-                </span>
-                <span className="lg:text-[20px] text-[17px]">30% OFF</span>
-              </div>
-            </div>
-            <div className="flex gap-5 w-full py-3 justify-center">
-              <img src={paginationActive} alt="" />
-              <img src={paginationNonActive} alt="" />
-              <img src={paginationNonActive} alt="" />
-              <img src={paginationNonActive} alt="" />
-            </div>
-          </div>
+           </div>
         </div>
       </section>
 
-      <section className="pt-[79px] flex flex-col items-center ">
-        <div className="text-center xl:max-w-[30%] lg:max-w-[41%] md:max-w-[70%] max-w-[83%]">
-          <h2 className="text-[40px] font-volkhov text-[#484848] xl:mb-[45px] lg:mb-[24px]">
-            New Arrivals
-          </h2>
-          <span className="text-[#8A8A8A]">
-            Discover our New Arrivals and refresh your wardrobe with the latest
-            styles. From elegant dresses to everyday must-haves, find your
-            perfect look. Shop now and stay ahead of the trends!
-          </span>
+      {/* New Arrivals - Tighter Layout */}
+      <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col items-center mb-12 text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2 font-serif">New Arrivals</h2>
+          <div className="w-12 h-1 bg-black mb-4"></div>
+          <p className="text-gray-500 text-sm max-w-lg">
+             Explore our latest additions. Curated styles for the modern wardrobe.
+          </p>
         </div>
-        <div className="xl:w-[70%] w-[80%]">
-          <div className="hide-scroll w-full flex  gap-5 pt-14 2xl:px-[50px] xl:px-[40px] lg:px-[30px] overflow-hidden overflow-x-auto">
-            <button className="flex-1 uppercase 2xl:px-[70px] xl:px-[50px] px-[8px] py-3 min-w-fit text-white text-[13px] bg-black rounded-lg">
-              Men's Fashion
-            </button>
-            <button className="flex-1 uppercase 2xl:px-[70px] xl:px-[50px] px-[8px] py-3 min-w-fit text-[#8A8A8A] text-[13px] bg-[#FAFAFA] rounded-lg">
-              T-shirts
-            </button>
-            <button className="flex-1 uppercase 2xl:px-[70px] xl:px-[50px] px-[8px] py-3 min-w-fit text-[#8A8A8A] text-[13px] bg-[#FAFAFA] rounded-lg">
-              Shirts
-            </button>
-            <button className="flex-1 uppercase 2xl:px-[70px] xl:px-[50px] px-[8px] py-3 min-w-fit text-[#8A8A8A] text-[13px] bg-[#FAFAFA] rounded-lg">
-              Hoodies
-            </button>
-            <button className="flex-1 uppercase 2xl:px-[70px] xl:px-[50px] px-[8px] py-3 min-w-fit text-[#8A8A8A] text-[13px] bg-[#FAFAFA] rounded-lg">
-              Hoodies
+
+        <div className="flex flex-col gap-10">
+          <div className="min-h-[400px]">
+            <Products
+                filters={filters}
+                load={false}
+                sortOption={sortOption}
+                query={query}
+                productLimit={4}
+            />
+          </div>
+
+          <div className="flex justify-center mt-4">
+            <button onClick={() => navigate("/all")} className="group flex items-center gap-2 text-xs font-bold uppercase tracking-widest border border-black px-8 py-3 hover:bg-black hover:text-white transition-all rounded">
+                View All Products
+                <i className="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
             </button>
           </div>
-          <Products
-            filters={filters}
-            load={true}
-            sortOption={sortOption}
-            query={query}
-          />
         </div>
       </section>
     </div>
