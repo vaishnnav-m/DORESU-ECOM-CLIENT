@@ -1,18 +1,21 @@
-import Header from "../components/Header";
-import UserProfileAside from "../components/UserProfileAside";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   useUpdateOrderStatusMutation,
   useGetOneOrderQuery,
   useLazyDownloadInvoiceQuery,
 } from "../../services/userProfile";
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import UserConfirmModal from "../components/UserConfirmModal";
 import { useVerifyOrderMutation } from "../../services/userProductsApi";
+
+import Header from "../components/Header";
+import UserProfileAside from "../components/UserProfileAside";
+import UserConfirmModal from "../components/UserConfirmModal";
 
 function UserOrderDetails() {
   const { orderId } = useParams();
+  const navigate = useNavigate();
+
   const { data, refetch } = useGetOneOrderQuery(orderId);
   const [updateOrderStatus] = useUpdateOrderStatusMutation();
   const [verifyOrder] = useVerifyOrderMutation();
@@ -23,9 +26,9 @@ function UserOrderDetails() {
   const [modal, setModal] = useState(false);
   const [modalHeading, setModalHeading] = useState("");
   const [modalText, setModalText] = useState("");
-  const [buttonConfigsModal, setButtonCofigsModal] = useState([]);
+  const [buttonConfigsModal, setButtonConfigsModal] = useState([]);
 
-  const mainIcon = <i className="fas fa-question text-3xl"></i>;
+  const mainIcon = <i className="fas fa-question text-3xl text-gray-400"></i>;
 
   useEffect(() => {
     if (data) setOrderData(data.data);
@@ -33,15 +36,13 @@ function UserOrderDetails() {
 
   // function to create date
   function createDate(timeStamp) {
+    if (!timeStamp) return "";
     const date = new Date(timeStamp);
-
-    const formated = date.toLocaleDateString("en-US", {
+    return date.toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
     });
-
-    return formated;
   }
 
   // function to handle update status
@@ -53,75 +54,75 @@ function UserOrderDetails() {
         status,
       }).unwrap();
       if (response) {
-        toast.success("Order Cancelled", {
+        toast.success(`Order ${status === "Cancelled" ? "Cancelled" : "Return Initiated"}`, {
           position: "top-right",
           theme: "dark",
         });
         refetch();
       }
     } catch (error) {
-      toast.error(error.data.message, {
+      toast.error(error?.data?.message || "Something went wrong", {
         position: "top-right",
         theme: "dark",
       });
     }
   }
 
-  // function to set style
-  function getStyle(status) {
+  // STATUS STYLING
+  function getStatusStyle(status) {
     switch (status) {
       case "Pending":
-        return "text-red-500";
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
       case "Shipped":
-        return "text-blue-500";
+        return "bg-blue-100 text-blue-800 border-blue-200";
       case "Delivered":
-        return "text-green-500";
+        return "bg-green-100 text-green-800 border-green-200";
       case "Cancelled":
-        return "text-orange-500";
+        return "bg-red-100 text-red-800 border-red-200";
+      case "Returned":
+        return "bg-orange-100 text-orange-800 border-orange-200";
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-200";
     }
   }
 
   // function to handle modal
   const handleModalOpen = (orderId, itemId, status) => {
-    setModalHeading(
-      `${status === "Cancelled" ? "Cancel" : "Return"} Order Status`
-    );
-    setModalText(
-      `Are you sure to ${
-        status === "Cancelled" ? "Cancel" : "Return"
-      } the order`
-    );
-    setButtonCofigsModal([
+    const actionType = status === "Cancelled" ? "Cancel" : "Return";
+
+    setModalHeading(`${actionType} Order Item`);
+    setModalText(`Are you sure you want to ${actionType.toLowerCase()} this item?`);
+
+    setButtonConfigsModal([
       {
-        name: "Cancel",
+        name: "Go Back",
         action: () => setModal(false),
-        styles: "px-4 py-2  bg-gray-200 text-sm mr-4 rounded-lg",
+        styles: "px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 text-sm font-medium rounded-lg transition-colors",
       },
       {
-        name: "Continue",
+        name: `Yes, ${actionType}`,
         action: () => {
           handleUpdateStatus(orderId, itemId, status);
           setModal(false);
         },
-        styles: "px-4 py-2 text-sm mr-4 rounded-lg border",
+        styles: "px-4 py-2 bg-black text-white hover:bg-gray-800 text-sm font-medium rounded-lg transition-colors",
       },
     ]);
     setModal(true);
   };
 
   async function repayment() {
+    if (!orderData) return;
     const { razorpayOrderId, totalPrice } = orderData;
     const options = {
       key: "rzp_test_fbT8KO8CYacXGs",
       amount: totalPrice * 100,
       currency: "INR",
       name: "DORESU",
-      description: "Order Payment",
+      description: "Retry Order Payment",
       order_id: razorpayOrderId,
       handler: async (paymentResponse) => {
-        // to verify payment
         try {
-          console.log("payment response ", paymentResponse);
           const response = await verifyOrder({
             razorpay_order_id: paymentResponse.razorpay_order_id,
             razorpay_payment_id: paymentResponse.razorpay_payment_id,
@@ -139,206 +140,194 @@ function UserOrderDetails() {
         }
       },
       prefill: {
-        name: "Customer Name",
-        email: "customer@example.com",
-        contact: "9999999999",
+        name: orderData?.shippingAddress?.name || "Customer",
+        contact: orderData?.shippingAddress?.mobile || "9999999999",
       },
       theme: {
-        color: "#3399cc",
+        color: "#000000",
       },
     };
-    const rzp = new Razorpay(options);
+    const rzp = new window.Razorpay(options);
     rzp.open();
   }
 
-  async function handleDdownloadInvoice() {
+  async function handleDownloadInvoice() {
     try {
       const response = await downloadInvoice(orderId).unwrap();
-      const blob = new Blob([response], {
-        type: "application/pdf",
-      });
+      const blob = new Blob([response], { type: "application/pdf" });
       const url = window.URL.createObjectURL(blob);
-
       const link = document.createElement("a");
       link.href = url;
-      link.download = `invoice-${orderId}.pdf `;
+      link.download = `invoice-${orderId}.pdf`;
       link.click();
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      toast.error("Failed to download invoice");
     }
   }
 
   return (
-    <div className="pt-[200px] flex justify-center">
+    <div className="pt-[100px] min-h-screen bg-gray-50/50 pb-12">
       <Header />
-      <main className="2xl:w-[70%] w-[87%] flex gap-10">
-        <div className="xl:w-[340px] w-[280px] h-full">
-          <UserProfileAside />
+
+      <main className="container mx-auto px-4 max-w-7xl">
+        {/* Breadcrumb / Title Area - Mobile Only if needed, otherwise spacing */}
+        <div className="lg:hidden mb-6">
+          <h1 className="text-2xl font-bold text-gray-900">Order Details</h1>
+          <p className="text-sm text-gray-500">ID: {orderData?.orderId || orderData?._id}</p>
         </div>
-        <div className="flex flex-col items-center gap-11 border px-10 py-5 flex-1">
-          <h2 className="text-[20px] font-bold ">Order Dtails</h2>
-          {orderData ? (
-            <div className="w-full border-b">
-              {orderData?.items.map((item) => (
-                <div
-                  key={item._id}
-                  className="w-full flex flex-col gap-4 px-5 py-7"
-                >
-                  <div className="w-full px-5 py-2 bg-[#f0f0f0] flex justify-between">
-                    <div className="flex gap-2">
-                      <span>Order Status: </span>
-                      <span
-                        className={`${getStyle(
-                          item.status
-                        )} flex items-center justify-end gap-1`}
-                      >
-                        <i className="fas fa-circle text-[5px]" /> {item.status}
-                      </span>
-                    </div>
-                    <div>
-                      <span>Order Id: {orderData.orderId||orderData?._id} </span>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Sidebar */}
+          <div className="lg:col-span-3 xl:col-span-3 sticky top-32 z-10">
+            <UserProfileAside />
+          </div>
+
+          {/* Main Content */}
+          <div className="lg:col-span-9 xl:col-span-9 flex flex-col gap-6">
+            {!orderData ? (
+              <div className="flex items-center justify-center p-20 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                <span className="text-gray-400">Loading order details...</span>
+              </div>
+            ) : (
+              <>
+                {/* Header Card */}
+                <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                  <div className="flex flex-col gap-1">
+                    <h2 className="text-xl font-bold text-gray-900 hidden lg:block">Order Details</h2>
+                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-500">
+                      <span>Placed on <span className="font-medium text-gray-900">{createDate(orderData.createdAt)}</span></span>
+                      <span className="hidden sm:inline">•</span>
+                      <span>Order ID: <span className="font-medium text-gray-900">{orderData.orderId || orderData._id}</span></span>
                     </div>
                   </div>
-                  <div className="flex justify-between gap-5 px-3">
-                    <div className="h-[100px] border">
-                      <img
-                        className="w-full h-full object-contain"
-                        src={item.gallery[0]}
-                        alt="product image"
-                      />
-                    </div>
-                    <div className="flex flex-col max-w-[350px]">
-                      <span className="text-[17px] font-medium">
-                        {item.productId.productName}
-                      </span>
-                      <span className="text-[15px]">Size: {item.size}</span>
-                    </div>
-                    <div>
-                      <span>Quantity: {item.quantity}</span>
-                    </div>
-                    <div className="flex flex-col justify-between">
-                      <span className="font-semibold text-[20px]">
-                        ₹{item.price}
-                      </span>
-                      <div>
-                        {item.status === "Delivered" ? (
-                          <button
-                            onClick={() =>
-                              handleModalOpen(
-                                orderData._id,
-                                item._id,
-                                "Returned"
+
+                  <button
+                    onClick={handleDownloadInvoice}
+                    className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-black transition-colors shadow-sm"
+                  >
+                    <i className="fas fa-download text-xs"></i>
+                    <span>Invoice</span>
+                  </button>
+                </div>
+
+                {/* Items List */}
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                  <div className="p-4 sm:p-6 border-b border-gray-100 bg-gray-50/30">
+                    <h3 className="font-bold text-gray-900">Items in this Order</h3>
+                  </div>
+
+                  <div className="divide-y divide-gray-100">
+                    {orderData.items.map((item) => (
+                      <div key={item._id} className="p-4 sm:p-6 flex flex-col sm:flex-row gap-6">
+                        {/* Image */}
+                        <div className="w-full sm:w-28 h-28 sm:h-32 bg-gray-50 rounded-xl overflow-hidden border border-gray-100 flex-shrink-0">
+                          <img
+                            src={item.gallery[0]}
+                            alt={item.productId.productName}
+                            className="w-full h-full object-contain mix-blend-multiply p-2"
+                          />
+                        </div>
+
+                        {/* Content */}
+                        <div className="flex-1 flex flex-col gap-4">
+                          <div className="flex flex-col sm:flex-row justify-between gap-2">
+                            <div>
+                              <h4 className="font-bold text-gray-900 text-base sm:text-lg line-clamp-2">
+                                {item.productId.productName}
+                              </h4>
+                              <p className="text-sm text-gray-500 mt-1">Size: <span className="font-medium text-gray-900">{item.size}</span></p>
+                              <p className="text-sm text-gray-500">Qty: <span className="font-medium text-gray-900">{item.quantity}</span></p>
+                            </div>
+                            <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-2">
+                              <span className="font-bold text-lg text-gray-900">₹{item.price}</span>
+                              <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold border ${getStatusStyle(item.status)}`}>
+                                {item.status}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Actions */}
+                          <div className="flex justify-end pt-2">
+                            {item.status === "Delivered" ? (
+                              <button
+                                onClick={() => handleModalOpen(orderData._id, item._id, "Returned")}
+                                className="px-4 py-2 rounded-lg bg-orange-100 text-orange-700 text-sm font-semibold hover:bg-orange-200 transition-colors"
+                              >
+                                Return Item
+                              </button>
+                            ) : (
+                              !["Cancelled", "Returned"].includes(item.status) && (
+                                <button
+                                  onClick={() => handleModalOpen(orderData._id, item._id, "Cancelled")}
+                                  className="px-4 py-2 rounded-lg bg-red-50 text-red-600 text-sm font-medium border border-red-100 hover:bg-red-100 transition-colors"
+                                >
+                                  Cancel Item
+                                </button>
                               )
-                            }
-                            className="px-5 py-2 rounded-lg bg-orange-300"
-                          >
-                            Return Order
-                          </button>
-                        ) : (
-                          item.status !== "Cancelled" &&
-                          item.status !== "Returned" && (
-                            <button
-                              onClick={() =>
-                                handleModalOpen(
-                                  orderData._id,
-                                  item._id,
-                                  "Cancelled"
-                                )
-                              }
-                              className="px-5 py-2 rounded-lg bg-orange-300"
-                            >
-                              Cancel Order
-                            </button>
-                          )
-                        )}
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Info Grid (Shipping & Payment) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Shipping */}
+                  <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col gap-4">
+                    <h3 className="font-bold text-gray-900 border-b border-gray-100 pb-2">Shipping Address</h3>
+                    <div className="text-sm text-gray-600 flex flex-col gap-1 leading-relaxed">
+                      <span className="font-bold text-gray-900 text-base">{orderData.shippingAddress.name}</span>
+                      <span>{orderData.shippingAddress.street}</span>
+                      <span>{orderData.shippingAddress.district}, {orderData.shippingAddress.state} - {orderData.shippingAddress.pincode}</span>
+                      <span>India</span>
+                      <span className="mt-2 font-medium text-gray-900">Phone: {orderData.shippingAddress.mobile}</span>
+                    </div>
+                  </div>
+
+                  {/* Payment & Summary */}
+                  <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col gap-4">
+                    <h3 className="font-bold text-gray-900 border-b border-gray-100 pb-2">Payment Summary</h3>
+                    <div className="flex flex-col gap-3 text-sm">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-500">Payment Method</span>
+                        <span className="font-medium text-gray-900 capitalize">{orderData.paymentMethod}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-500">Payment Status</span>
+                        <span className={`font-semibold ${orderData.paymentStatus === 'Paid' ? 'text-green-600' : 'text-red-500'}`}>
+                          {orderData.paymentStatus}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-500">Total Items</span>
+                        <span className="font-medium text-gray-900">{orderData.totalQuantity}</span>
+                      </div>
+                      <div className="pt-3 border-t border-gray-100 flex justify-between items-center mt-1">
+                        <span className="font-bold text-gray-900 text-base">Grand Total</span>
+                        <span className="font-bold text-gray-900 text-lg">₹{orderData.totalPrice}</span>
                       </div>
                     </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <span>Could'nt find order</span>
-          )}
 
-          {orderData && (
-            <>
-              <div className="w-full flex px-5 justify-between">
-                <div className="flex flex-col gap-3">
-                  <span className="text-[#737373]">
-                    Order Date: {createDate(orderData?.createdAt)}
-                  </span>
-                  <span>Payment Method: {orderData?.paymentMethod}</span>
-                  <span
-                    className={`text-${
-                      orderData?.paymentStatus === "Paid" ? "green" : "red"
-                    }-500`}
-                  >
-                    Payment Status: {orderData?.paymentStatus}
-                  </span>
-                  {/* for future order tracking */}
-                  {/* <span className="flex flex-col px-4 gap-2 text-green-400">
-                  <i className="far fa-circle text-[8px]" />
-                  <i className="far fa-circle text-[8px]" />
-                  <i className="far fa-circle text-[8px]" />
-                  <span>
-                    <i className="far fa-circle-check text-[16px] -translate-x-1" />
-                    <span className="text-black">
-                      <span>Delivered On Aug 13</span>
-                      <span className="block text-[15px] pl-4">
-                        Your Item has Delivered
-                      </span>
-                    </span>
-                  </span>
-                </span> */}
-                </div>
-                <div className="min-h-full flex flex-col justify-between ">
-                  <span>item(s) Subtotal: {orderData?.totalQuantity} </span>
-                  <span className="font-semibold">
-                    Total For this Order: ₹{orderData?.totalPrice}{" "}
-                  </span>
-                  {orderData?.paymentStatus !== "Paid" &&
-                    orderData?.paymentMethod === "online" && (
+                    {orderData.paymentStatus !== "Paid" && orderData.paymentMethod === "online" && (
                       <button
                         onClick={repayment}
-                        className="px-4 py-2 bg-black text-white"
+                        className="w-full mt-2 py-3 bg-black text-white font-bold rounded-xl shadow-lg shadow-black/10 hover:bg-gray-800 active:scale-95 transition-all"
                       >
                         Retry Payment
                       </button>
                     )}
-                </div>
-              </div>
-              <div className="w-full flex flex-col items-center gap-5">
-                <h2 className="font-semibold text-[20px]">Shipping Details</h2>
-                <div className="flex gap-10">
-                  <div className="flex flex-col font-semibold text-[#484848]">
-                    <span>{orderData?.shippingAddress.name}</span>
-                    <span>{orderData?.shippingAddress.mobile}</span>
-                  </div>
-                  <div className="flex flex-col font-medium text-[#8A8A8A]">
-                    <span>{orderData?.shippingAddress.street}</span>
-                    <span>
-                      {orderData?.shippingAddress.district} -{" "}
-                      {orderData?.shippingAddress.pincode}
-                    </span>
-                    <span>{orderData?.shippingAddress.state}</span>
-                    <span>India</span>
                   </div>
                 </div>
-              </div>
-              <div className="w-full flex justify-center">
-                <button
-                  onClick={handleDdownloadInvoice}
-                  className="px-4 py-2 bg-black text-white rounded-lg"
-                >
-                  Download Invoice
-                </button>
-              </div>
-            </>
-          )}
+              </>
+            )}
+          </div>
         </div>
       </main>
+
       {modal && (
         <UserConfirmModal
           text={modalText}

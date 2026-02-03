@@ -48,8 +48,8 @@ const ImageModal = ({ src, onClose }) => {
           src={src}
           alt="Zoomed Product"
           className={`transition-all duration-300 ease-out select-none ${isZoomed
-              ? "min-w-[150vw] min-h-[150vh] object-contain max-w-none"
-              : "w-full h-full object-contain p-4 lg:p-10"
+            ? "min-w-[150vw] min-h-[150vh] object-contain max-w-none"
+            : "w-full h-full object-contain p-4 lg:p-10"
             }`}
           style={isZoomed ? { transform: 'scale(1)' } : {}}
         />
@@ -153,7 +153,13 @@ function ProductDetail() {
               Home
             </Link>
             <i className="fas fa-chevron-right text-[10px]"></i>
-            <span className="text-gray-900 truncate max-w-[200px] sm:max-w-none">{productData?.productName}</span>
+            <Link to="/all" className="hover:text-black transition-colors">
+              Products
+            </Link>
+            <i className="fas fa-chevron-right text-[10px]"></i>
+            <span className="text-gray-900 truncate max-w-[150px] md:max-w-[300px]" title={productData?.productName}>
+              {productData?.productName}
+            </span>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
@@ -167,8 +173,8 @@ function ProductDetail() {
                     onClick={() => setMainImage(img.url)}
                     onMouseEnter={() => setMainImage(img.url)}
                     className={`relative min-w-[70px] w-[70px] h-[70px] lg:w-[80px] lg:h-[100px] rounded-lg overflow-hidden border-2 flex-shrink-0 transition-all duration-200 ${mainImage === img.url
-                        ? "border-black ring-1 ring-black/10 opacity-100"
-                        : "border-transparent hover:border-gray-300 opacity-70 hover:opacity-100"
+                      ? "border-black ring-1 ring-black/10 opacity-100"
+                      : "border-transparent hover:border-gray-300 opacity-70 hover:opacity-100"
                       }`}
                   >
                     <img
@@ -257,9 +263,6 @@ function ProductDetail() {
               <div className="flex flex-col gap-4">
                 <div className="flex justify-between items-center">
                   <span className="text-base font-semibold text-gray-900">Select Size</span>
-                  <button className="text-xs font-semibold text-gray-500 underline hover:text-black transition-colors">
-                    Size Chart
-                  </button>
                 </div>
                 <div className="flex flex-wrap gap-3">
                   {productData?.variants.map((variant, index) => {
@@ -321,16 +324,24 @@ function ProductDetail() {
               <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm mt-4">
                 <h3 className="font-bold text-lg mb-4 text-gray-900 border-b border-gray-100 pb-3">Product Details</h3>
                 <div className="space-y-4 text-sm text-gray-600">
-                  <div className="grid grid-cols-[100px_1fr] md:grid-cols-[120px_1fr] gap-2">
-                    <span className="font-medium text-gray-900">Material</span>
-                    <span>Premium Cotton Blend</span>
+                  <div className="grid grid-cols-[140px_1fr] gap-2">
+                    <span className="font-medium text-gray-900">Name</span>
+                    <span>{productData?.productName}</span>
                   </div>
-                  <div className="grid grid-cols-[100px_1fr] md:grid-cols-[120px_1fr] gap-2">
-                    <span className="font-medium text-gray-900">Pattern</span>
-                    <span>Solid</span>
+                  <div className="grid grid-cols-[140px_1fr] gap-2">
+                    <span className="font-medium text-gray-900">Net Quantity (N)</span>
+                    <span>1</span>
                   </div>
-                  <div className="grid grid-cols-[100px_1fr] md:grid-cols-[120px_1fr] gap-2">
-                    <span className="font-medium text-gray-900">Country</span>
+                  <div className="grid grid-cols-[140px_1fr] gap-2">
+                    <span className="font-medium text-gray-900">Sizes</span>
+                    <span>
+                      {productData?.variants
+                        .map((variant) => getShortenedSize(variant.size))
+                        .join(" ")}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-[140px_1fr] gap-2">
+                    <span className="font-medium text-gray-900">Country of Origin</span>
                     <span>India</span>
                   </div>
                   <div className="pt-2 leading-relaxed border-t border-gray-100 mt-2">

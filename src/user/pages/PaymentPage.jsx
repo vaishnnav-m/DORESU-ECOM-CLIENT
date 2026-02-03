@@ -66,7 +66,7 @@ function PaymentPage() {
         });
       if (paymentMethod === "COD" && totalPriceAfterDiscount >= 1000) {
         return toast.error(
-          "Cash On Delivery is only available for payment uner 1000 RS",
+          "Cash On Delivery is only available for payment under 1000 RS",
           {
             position: "top-right",
             theme: "dark",
@@ -75,7 +75,6 @@ function PaymentPage() {
       }
       const updatedItems = products.map((product) => {
         const originalPrice = product.price;
-        console.log(product.productId);
         const offerValue = product.productId?.offer?.offerValue || 0;
         const priceAfterDiscount = calculatePrice(originalPrice, offerValue);
 
@@ -144,7 +143,7 @@ function PaymentPage() {
               },
             },
           };
-          const rzp = new Razorpay(options);
+          const rzp = new window.Razorpay(options);
           rzp.open();
         } else {
           cartRefetch();
@@ -183,9 +182,10 @@ function PaymentPage() {
         setIsCouponApplied(true);
         setCouponDiscount(response.data.discount);
         setTotalPriceAfterDiscount(response.data.totalPriceAfterDiscount);
+        toast.success("Coupon Applied Successfully!");
       }
     } catch (error) {
-      toast.error(error.data.message, {
+      toast.error(error?.data?.message || "Invalid Coupon", {
         position: "top-right",
         theme: "dark",
       });
@@ -195,281 +195,274 @@ function PaymentPage() {
   function calculatePrice(originalPrice, offerValue) {
     return Math.floor(originalPrice - (originalPrice * offerValue) / 100);
   }
+
   return (
-    <div className="min-h-screen w-full flex flex-col items-center pt-[200px]">
+    <div className="min-h-screen bg-gray-50 pt-[100px] md:pt-[120px] pb-20">
       <Header />
-      <main className="w-[70%] flex flex-col items-center gap-10 shadow-xl px-10">
-        <div className="w-full flex gap-10 pb-10">
-          <div className="flex-1 flex flex-col gap-5">
-            <div className="border border-[#8A8A8A] rounded-xl px-8 py-2">
-              <table className="w-full">
-                <tbody>
-                  {products.map((product) => (
-                    <tr
-                      key={product._id}
-                      className="text-center border-b border-gray-300"
+      <div className="container mx-auto px-4 max-w-7xl">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* LEFT COLUMN - Address, Items, Payment Method */}
+          <div className="lg:col-span-8 flex flex-col gap-6">
+
+            {/* Delivery Address Section */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold text-gray-900">Delivery Address</h2>
+                <button
+                  onClick={() => {
+                    setEdittingAddress(null);
+                    setIsModalOpen(true);
+                  }}
+                  className="text-sm font-bold text-black underline flex items-center gap-2"
+                >
+                  <i className="fas fa-plus" /> Add New
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                {data && addresses.length > 0 ? (
+                  addresses.map((address) => (
+                    <label
+                      key={address._id}
+                      className={`relative flex items-start gap-4 p-4 rounded-xl border-2 transition-all cursor-pointer ${selectedAddress?._id === address._id
+                        ? "border-black bg-gray-50"
+                        : "border-gray-100 hover:border-gray-200"
+                        }`}
                     >
-                      <td className="px-2 py-4">
-                        <div className="flex gap-10">
-                          <div className="w-[85px] h-[78px] flex-shrink-0">
-                            <img
-                              className="w-full h-full"
-                              src={product.productId.gallery}
-                              alt="product Image"
-                            />
-                          </div>
-                          <div className=" flex flex-col justify-between text-start">
-                            <span className="truncate max-w-[230px]">
-                              {product.productId.productName}
-                            </span>
-                            <div className="flex items-center">
-                              <span className="text-[25px] font-bold mr-3">
-                                ₹{" "}
-                                {product.productId?.offer
-                                  ? calculatePrice(
-                                      product.price,
-                                      product?.productId?.offer.offerValue
-                                    )
-                                  : product.price}
-                              </span>
-                              {product.productId?.offer && (
-                                <span>
-                                  <span className="text-[#8A8A8A] text-[18px] line-through">
-                                    ₹{product?.price}
-                                  </span>
-                                  <span className="text-green-600 ml-2">
-                                    {product?.productId?.offer.offerValue}% off
-                                  </span>
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="py-4">
-                        <div className="h-full flex items-center">
-                          <span className="px-4 py-2 bg-[#D9D9D9] rounded-full">
-                            {product.quantity}
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="border border-[#8A8A8A] rounded-xl flex flex-col items-start gap-5 px-5 py-2">
-              <h2 className="text-[20px] font-semibold">Delivery Address</h2>
-              {data &&
-                addresses.map((address) => (
-                  <div
-                    key={address._id}
-                    className="bg-[#F5F5F5] rounded-lg px-5 py-2 flex gap-5 font-semibold"
-                  >
-                    <input
-                      type="radio"
-                      onChange={() => setSelectedAddress(address)}
-                      name="addressRadio"
-                      checked={selectedAddress?._id === address._id}
-                    />
-                    <span className="text-[#8A8A8A] ">
-                      {address.name +
-                        "," +
-                        address.street +
-                        "," +
-                        address.district +
-                        "," +
-                        address.state +
-                        "," +
-                        address.pincode}
-                      <i
-                        onClick={() => {
-                          setIsModalOpen(true);
-                          setEdittingAddress(address);
-                        }}
-                        className="fas fa-pen pl-3 text-[15px] cursor-pointer"
+                      <input
+                        type="radio"
+                        onChange={() => setSelectedAddress(address)}
+                        name="addressRadio"
+                        checked={selectedAddress?._id === address._id}
+                        className="mt-1"
                       />
-                      {/* <span className="underline text-black cursor-pointer pl-2">Edit Address</span> */}
-                    </span>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-bold text-gray-900">{address.name}</span>
+                          <span className="text-xs bg-gray-200 px-2 py-0.5 rounded text-gray-700">{address.mobile}</span>
+                        </div>
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                          {[address.street, address.district, address.state, address.pincode].filter(Boolean).join(", ")}
+                        </p>
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setEdittingAddress(address);
+                          setIsModalOpen(true);
+                        }}
+                        className="p-2 text-gray-400 hover:text-black transition-colors"
+                      >
+                        <i className="fas fa-pen text-sm" />
+                      </button>
+                    </label>
+                  ))
+                ) : (
+                  <div className="text-center py-6 text-gray-500">
+                    No addresses found. Please add one.
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Order Items Section */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Order Items</h2>
+              <div className="divide-y divide-gray-100">
+                {products.map((product) => (
+                  <div key={product._id} className="py-4 flex gap-4">
+                    <div className="w-20 h-24 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0 border border-gray-100">
+                      <img
+                        className="w-full h-full object-contain mix-blend-multiply"
+                        src={product.productId.gallery[0]?.url || product.productId.gallery}
+                        alt={product.productId.productName}
+                      />
+                    </div>
+                    <div className="flex-1 flex flex-col justify-between">
+                      <div className="flex justify-between items-start gap-4">
+                        <div>
+                          <h3 className="font-semibold text-gray-900 line-clamp-2">{product.productId.productName}</h3>
+                          {product.productId?.offer && (
+                            <span className="text-xs text-green-600 font-bold bg-green-50 px-2 py-0.5 rounded mt-1 inline-block">
+                              {product.productId.offer.offerValue}% OFF
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-right">
+                          <div className="font-bold text-gray-900 text-lg">
+                            ₹{product.productId?.offer
+                              ? calculatePrice(product.price, product.productId.offer.offerValue)
+                              : product.price}
+                          </div>
+                          {product.productId?.offer && (
+                            <div className="text-sm text-gray-400 line-through">₹{product.price}</div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-gray-500">Qty:</span>
+                        <span className="font-medium text-gray-900 bg-gray-100 px-2 py-0.5 rounded">{product.quantity}</span>
+                      </div>
+                    </div>
                   </div>
                 ))}
+              </div>
+            </div>
+
+            {/* Payment Method Section */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Payment Method</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <label className={`cursor-pointer border-2 rounded-xl p-4 flex items-center gap-3 transition-all ${paymentMethod === 'online' ? 'border-black bg-gray-50' : 'border-gray-100 hover:border-gray-200'}`}>
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="online"
+                    checked={paymentMethod === 'online'}
+                    onChange={() => setPaymentMethod('online')}
+                    className="w-4 h-4 text-black focus:ring-black"
+                  />
+                  <div className="flex flex-col">
+                    <span className="font-bold text-gray-900">Online Payment</span>
+                    <span className="text-xs text-gray-500">UPI, Cards, Net Banking</span>
+                  </div>
+                  <i className="fas fa-credit-card ml-auto text-gray-400 text-xl"></i>
+                </label>
+
+                <label className={`cursor-pointer border-2 rounded-xl p-4 flex items-center gap-3 transition-all ${paymentMethod === 'COD' ? 'border-black bg-gray-50' : 'border-gray-100 hover:border-gray-200'}`}>
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="COD"
+                    checked={paymentMethod === 'COD'}
+                    onChange={() => setPaymentMethod('COD')}
+                    className="w-4 h-4 text-black focus:ring-black"
+                  />
+                  <div className="flex flex-col">
+                    <span className="font-bold text-gray-900">Cash on Delivery</span>
+                    <span className="text-xs text-gray-500">Pay when you receive</span>
+                  </div>
+                  <i className="fas fa-money-bill-wave ml-auto text-gray-400 text-xl"></i>
+                </label>
+              </div>
+            </div>
+
+          </div>
+
+          {/* RIGHT COLUMN - Summary */}
+          <div className="lg:col-span-4 flex flex-col gap-6 sticky top-32">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-6">Order Summary</h2>
+
+              <div className="flex flex-col gap-3 text-sm text-gray-600 mb-6">
+                <div className="flex justify-between">
+                  <span>Subtotal ({cart?.data?.products?.length || 0} items)</span>
+                  <span className="font-medium text-gray-900">₹ {cart?.data.totalPrice}</span>
+                </div>
+                <div className="flex justify-between text-green-600">
+                  <span>Discount</span>
+                  <span className="font-medium">- ₹ {cart?.data.totalPrice - totalPriceAfterDiscount}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Delivery Fee</span>
+                  <span className="font-medium text-green-600">Free</span>
+                </div>
+                <div className="border-t border-gray-100 pt-3 mt-1 flex justify-between items-center bg-gray-50 p-3 rounded-lg">
+                  <span className="font-bold text-gray-900 text-base">Total Amount</span>
+                  <span className="font-bold text-gray-900 text-xl">₹ {totalPriceAfterDiscount}</span>
+                </div>
+              </div>
+
+              {/* Coupon Section */}
+              <div className="mb-6">
+                <div className="relative flex items-center mb-2">
+                  <input
+                    type="text"
+                    placeholder="Enter Coupon Code"
+                    value={coupon}
+                    onChange={(e) => setCoupon(e.target.value)}
+                    className="w-full pl-4 pr-20 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-black transition-colors"
+                  />
+                  <button
+                    onClick={handleCouponSubmit}
+                    disabled={isCouponApplied || !coupon}
+                    className="absolute right-1 top-1 bottom-1 px-4 bg-black text-white text-sm font-bold rounded-lg hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                  >
+                    Apply
+                  </button>
+                </div>
+
+                <button
+                  onClick={() => setShowCoupons(!showCoupons)}
+                  className="text-xs font-bold text-black underline hover:text-gray-600"
+                >
+                  View Available Coupons
+                </button>
+
+                {/* Coupons Dropdown */}
+                {showCoupons && (
+                  <div className="mt-3 bg-white border border-gray-200 rounded-xl shadow-lg p-2 max-h-60 overflow-y-auto">
+                    {coupons?.length > 0 ? (
+                      coupons.map((cpn) => (
+                        <div
+                          key={cpn._id}
+                          onClick={() => {
+                            setCoupon(cpn.couponCode);
+                            setShowCoupons(false);
+                          }}
+                          className="p-3 hover:bg-gray-50 rounded-lg cursor-pointer border-b border-gray-50 last:border-0"
+                        >
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="font-bold text-gray-900">{cpn.couponCode}</span>
+                            <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded">{cpn.discountValue}% OFF</span>
+                          </div>
+                          <div className="text-xs text-gray-500">Min purchase: ₹{cpn.minPurchaseAmount}</div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="p-4 text-center text-sm text-gray-500">No coupons available</div>
+                    )}
+                  </div>
+                )}
+              </div>
 
               <button
-                onClick={() => setIsModalOpen(true)}
-                className="font-semibold"
+                onClick={handleOrder}
+                className="hidden lg:block w-full py-4 bg-black text-white font-bold text-lg rounded-xl shadow-lg shadow-black/10 hover:bg-gray-900 active:scale-95 transition-all"
               >
-                <i className="fas fa-plus" />
-                Add a new adress
+                Place Order
               </button>
             </div>
 
-            <div className="border border-[#8A8A8A] rounded-xl flex flex-col items-start gap-5 px-8 py-2 font-semibold">
-              <div>
-                <h2 className="text-[20px]">Payment Method</h2>
-                <span className="text-[#8A8A8A]">
-                  Select any payment method
-                </span>
-              </div>
-              <div>
-                {/* Wallet payment if need uncommant it */}
-                {/* <div className="px-5 py-2 flex gap-5 font-semibold">
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    onChange={() => setPaymentMethod("wallet")}
-                  />
-                  Wallet
-                </div> */}
-                <div className="px-5 py-2 flex gap-5 font-semibold">
-                  <input
-                    id="onlinePayment"
-                    type="radio"
-                    name="paymentMethod"
-                    onChange={() => setPaymentMethod("online")}
-                  />
-                  <label htmlFor="onlinePayment">Online Payment</label>
-                </div>
-                <div className="px-5 py-2 flex gap-5 font-semibold">
-                  <input
-                    id="cod"
-                    type="radio"
-                    name="paymentMethod"
-                    onChange={() => setPaymentMethod("COD")}
-                  />
-                  <label htmlFor="cod">Cash On Delivery</label>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="flex-1 flex flex-col gap-10">
-            <div className="relative border border-[#8A8A8A] rounded-xl flex flex-col items-start gap-5 px-8 py-2">
-              <h2 className="text-[20px] font-semibold">Order Summary</h2>
-              <div className="w-full flex flex-col gap-3">
-                <div className="w-full flex justify-between">
-                  <span className="text-[#8A8A8A]">Subtotal</span>
-                  <span className="font-semibold">
-                    ₹ {cart?.data.totalPrice}
-                  </span>
-                </div>
-                <div className="w-full flex justify-between">
-                  <span className="text-[#8A8A8A]">Discount</span>
-                  <span className="font-semibold text-red-500">
-                    - ₹ {cart?.data.totalPrice - totalPriceAfterDiscount}
-                  </span>
-                </div>
-                <div className="w-full flex justify-between">
-                  <span className="text-[#8A8A8A]">Delivery Fee</span>
-                  <span className="font-semibold">₹ 0 </span>
-                </div>
-                <div className="w-full flex justify-between">
-                  <span className="text-[#8A8A8A]">Items</span>
-                  <span className="font-semibold">3</span>
-                </div>
-              </div>
-              <div className="w-full border-t flex justify-between pt-3">
-                <span className="font-semibold">Total</span>
-                <span className="font-semibold text-[20px]">
-                  ₹ {totalPriceAfterDiscount}
-                </span>
-              </div>
-              <div className="w-full flex gap-5 relative">
-                <div className="flex-1 flex rounded-full bg-[#F5F5F5]">
-                  <input
-                    className="w-full px-5 h-full bg-transparent focus:outline-none peer"
-                    type="text"
-                    name="coupon"
-                    id="coupon"
-                    value={coupon}
-                    onChange={(e) => setCoupon(e.target.value)}
-                  />
-                  {!coupon && (
-                    <label
-                      htmlFor="coupon"
-                      className="absolute left-5 top-1/2 -translate-y-1/2 flex gap-3 items-center text-[12px] text-[#8A8A8A] peer-focus:hidden"
-                    >
-                      <i className="fas fa-tag text-[16px]" />
-                      Do you have a coupon code ?
-                    </label>
-                  )}
+            {/* Mobile Sticky Place Order Button */}
+            <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-50 lg:hidden safe-area-bottom">
+              <div className="flex items-center gap-4">
+                <div className="flex flex-col">
+                  <span className="text-sm text-gray-500 font-medium">Total</span>
+                  <span className="text-xl font-bold text-gray-900">₹{totalPriceAfterDiscount}</span>
                 </div>
                 <button
-                  onClick={handleCouponSubmit}
-                  className="py-2 px-5 bg-black text-white rounded-full"
+                  onClick={handleOrder}
+                  className="flex-1 py-3 bg-black text-white font-bold text-lg rounded-xl shadow-lg shadow-black/10 active:scale-95 transition-all"
                 >
-                  Apply
+                  Place Order
                 </button>
-              </div>
-              <span
-                onClick={() => setShowCoupons(!showCoupons)}
-                className="underline font-semibold cursor-pointer"
-              >
-                Show All Coupons
-              </span>
-              {showCoupons && (
-                <table className="absolut w-full flex flex-col gap-3 bottom-0 border bg-white py-5 px-5">
-                  <tr className="w-full flex justify-between uppercase font-bold">
-                    <td>Select</td>
-                    <td>Coupon Code</td>
-                    <td className="break-words max-w-[80px]">minimum amount</td>
-                    <td>Discount Value</td>
-                  </tr>
-                  {coupons?.length ? (
-                    coupons.map((cpn) => (
-                      <tr className="w-full flex justify-between px-3">
-                        <td>
-                          <input
-                            onChange={(e) => {
-                              setShowCoupons(false);
-                              setCoupon(e.target.value);
-                            }}
-                            type="radio"
-                            name="coupon"
-                            checked={coupon === cpn.couponCode}
-                            value={cpn.couponCode}
-                          />
-                        </td>
-                        <td>{cpn.couponCode}</td>
-                        <td>{cpn.minPurchaseAmount}RS</td>
-                        <td>{cpn.discountValue}% -OFF</td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td
-                        className="w-full flex justify-between px-3 text-center"
-                        colSpan="4"
-                      >
-                        No coupons available
-                      </td>
-                    </tr>
-                  )}
-                </table>
-              )}
-            </div>
-            <div className="border border-[#8A8A8A] rounded-xl flex flex-col items-start gap-5 px-8 py-2  font-semibold">
-              <div className="flex flex-col gap-2">
-                <span className="text-[#8A8A8A] underline">Contact Us</span>
-                <span className="text-[#8A8A8A] underline">Delivery</span>
-                <span className="text-[#8A8A8A] underline">
-                  Return & Refund
-                </span>
-                <span className="text-[#8A8A8A] underline">
-                  Promotion & Vouchers
-                </span>
-              </div>
-              <div>
-                <span className="text-[#8A8A8A]">Accepted Payment Methods</span>
               </div>
             </div>
 
-            <button
-              onClick={handleOrder}
-              className="py-3 text-[20px] w-full bg-black text-white rounded-full"
-            >
-              Place Order
-            </button>
+            {/* Security Badges */}
+            <div className="flex justify-center gap-6 text-2xl text-gray-300">
+              <i className="fab fa-cc-visa hover:text-gray-400 transition-colors"></i>
+              <i className="fab fa-cc-mastercard hover:text-gray-400 transition-colors"></i>
+              <i className="fab fa-cc-amex hover:text-gray-400 transition-colors"></i>
+              <i className="fas fa-shield-alt hover:text-gray-400 transition-colors"></i>
+            </div>
           </div>
         </div>
+
         {isModalOpen && (
           <CheckoutAddress
             closeModal={() => {
@@ -480,9 +473,9 @@ function PaymentPage() {
             refetch={refetch}
           />
         )}
-      </main>
+      </div>
       <ToastContainer />
-    </div>
+    </div >
   );
 }
 
