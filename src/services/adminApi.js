@@ -1,8 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { setAdminCredentials } from "../store/authSlice";
+const apiUrl = import.meta.env.VITE_API_URL
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "https://www.doresu.store/api/admin",
+  baseUrl: `${apiUrl}/api/admin`,
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const adminToken = getState().auth.adminToken;
@@ -24,7 +25,7 @@ const baseQueryWithReauth = async (arg, api, extraOptions) => {
     );
     if (adminRefresh?.data) {
       const token = adminRefresh.data.accessToken;
-      localStorage.setItem('adminToken',token);
+      localStorage.setItem('adminToken', token);
       api.dispatch(setAdminCredentials(token));
       result = await baseQuery(arg, api, extraOptions);
     } else {
@@ -40,7 +41,7 @@ const baseQueryWithReauth = async (arg, api, extraOptions) => {
 const adminApi = createApi({
   reducerPath: "adminApi",
   baseQuery: baseQueryWithReauth,
-  tagTypes:['getUsers'],
+  tagTypes: ['getUsers'],
   endpoints: () => ({}),
 });
 
