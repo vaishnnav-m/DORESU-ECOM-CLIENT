@@ -115,6 +115,7 @@ function ProductDetail() {
         navigate("/cart");
       }
     } catch (error) {
+      navigate("/login")
       console.log(error);
       toast.error(error?.data?.message || "Failed to add to cart", {
         position: "top-right",
