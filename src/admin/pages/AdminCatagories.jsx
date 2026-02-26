@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Aside from "../components/Aside";
 import Header from "../components/Header";
 import Table from "../components/Table";
+import { toast } from "react-toastify";
 import {
   useAddCategoryMutation,
   useGetCategoriesQuery,
@@ -56,9 +57,12 @@ function AdminCatagories() {
   // ---- Mutations ---- //
   const [
     addcategory,
-    { error: addError, isError, isLoading, data: addSuccess },
+    { error: addError, isError: isAddError, isLoading: isAdding },
   ] = useAddCategoryMutation(); // mutation for add new category
-  const [updateCategory, { data: editSuccess }] = useUpdateCategoryMutation(); // mutation for update category
+  const [
+    updateCategory,
+    { error: updateError, isError: isUpdateError, isLoading: isUpdating },
+  ] = useUpdateCategoryMutation(); // mutation for update category
 
   // ---- States ---- //
   const [category, setCategory] = useState({
@@ -67,6 +71,7 @@ function AdminCatagories() {
   });
   const [isEditing, setIsEditing] = useState(false);
   const [validateError, setValidateError] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // ---- Functions ---- //
 
@@ -90,10 +95,22 @@ function AdminCatagories() {
     try {
       setIsEditing(true);
       setCategory(category);
+      setIsModalOpen(true);
+      setValidateError("");
     } catch (error) {
       console.log(error);
     }
   }
+
+  const mainButton = {
+    name: "Add Category",
+    action: () => {
+      setIsEditing(false);
+      setCategory({ categoryName: "", description: "" });
+      setIsModalOpen(true);
+      setValidateError("");
+    },
+  };
 
   // function to handdle form change
   function handleChange(e) {
@@ -108,17 +125,21 @@ function AdminCatagories() {
     e.preventDefault();
     if (!validate()) return;
 
-    if (isEditing) {
-      await updateCategory(category).unwrap();
-      if (editSuccess) {
-        setCategory({ categoryName: "", description: "" });
+    try {
+      if (isEditing) {
+        await updateCategory(category).unwrap();
+        toast.success("Category updated successfully", { position: "top-right", theme: "dark" });
+        setIsModalOpen(false);
         setIsEditing(false);
+      } else {
+        await addcategory(category).unwrap();
+        toast.success("Category added successfully", { position: "top-right", theme: "dark" });
+        setIsModalOpen(false);
       }
-    } else {
-      await addcategory(category).unwrap();
-      if (addSuccess) {
-        setCategory({ categoryName: "", description: "" });
-      }
+      setCategory({ categoryName: "", description: "" });
+      setValidateError("");
+    } catch (err) {
+      console.log(err);
     }
   }
 
@@ -138,64 +159,79 @@ function AdminCatagories() {
         </div>
         <div className="p-10">
           <Table
-            pageName="Catagory Management"
+            pageName="Category Management"
             headings={headings}
             data={data}
             columns={columns}
             buttonConfigs={buttonConfigs}
+            mainButton={mainButton}
           />
         </div>
-
-        <div className="w-full flex justify-center">
-          <form
-            onSubmit={handleSubmit}
-            className="min-w-[700px] flex flex-col gap-9 p-20  justify-center"
-          >
-            <div className="w-full border border-[#8A8A8A] rounded-lg h-[60px] relative">
-              <span className="bg-[#e7e7e3] px-[20px] py-[12] text-center text-[#737373] absolute left-5 top-0 -translate-y-[50%]">
-                Category
-              </span>
-              <input
-                onChange={handleChange}
-                value={category.categoryName}
-                name="categoryName"
-                className="w-full h-full rounded-lg px-5 bg-transparent"
-                type="text"
-              />
-            </div>
-            <div className="w-full border border-[#8A8A8A] rounded-lg h-[60px] relative">
-              <span className="bg-[#e7e7e3] px-[20px] py-[12] text-center text-[#737373] absolute left-5 top-0 -translate-y-[50%]">
-                Description
-              </span>
-              <input
-                onChange={handleChange}
-                value={category.description}
-                name="description"
-                className="w-full h-full rounded-lg px-5 bg-transparent"
-                type="text"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full h-[60px] rounded-lg bg-black text-[27px] text-white"
-            >
-              {isEditing ? "Edit" : isLoading ? "Adding..." : "Add"}
-            </button>
-            {(validateError || isError) && (
-              <span className="text-red-500">
-                {validateError || addError?.data?.message || "Adding failed"}
-              </span>
-            )}
-            {editSuccess && (
-              <span className="text-green-500">{editSuccess.message}</span>
-            )}
-            {addSuccess && (
-              <span className="text-green-500">{addSuccess.message}</span>
-            )}
-          </form>
-        </div>
       </main>
+
+      {/* Modern Modal for Add/Edit Category */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8 relative animate-[fadeIn_0.2s_ease-out]">
+            <button
+              onClick={() => setIsModalOpen(false)}
+              type="button"
+              className="absolute top-4 right-4 text-gray-500 hover:text-red-500 transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50"
+            >
+              <i className="fas fa-times text-xl"></i>
+            </button>
+
+            <h3 className="text-2xl font-bold mb-6 text-gray-800">
+              {isEditing ? "Edit Category" : "Add New Category"}
+            </h3>
+
+            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-sm font-semibold text-gray-600 ml-1">Category Name</label>
+                <input
+                  onChange={handleChange}
+                  value={category.categoryName}
+                  name="categoryName"
+                  className="w-full h-12 rounded-xl border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-black transition-all bg-gray-50 hover:bg-white"
+                  type="text"
+                  placeholder="Enter category name"
+                />
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label className="text-sm font-semibold text-gray-600 ml-1">Description</label>
+                <textarea
+                  onChange={handleChange}
+                  value={category.description}
+                  name="description"
+                  className="w-full h-28 rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-black transition-all bg-gray-50 hover:bg-white resize-none"
+                  placeholder="Enter category description"
+                />
+              </div>
+
+              <div className="mt-2 text-center min-h-[20px] flex justify-center items-center">
+                {(validateError || isAddError || isUpdateError) && (
+                  <span className="text-red-500 text-sm font-medium">
+                    {validateError || addError?.data?.message || updateError?.data?.message || "Operation failed"}
+                  </span>
+                )}
+              </div>
+
+              <div className="mt-2">
+                <button
+                  type="submit"
+                  disabled={isAdding || isUpdating}
+                  className="w-full h-12 rounded-xl bg-black text-white font-semibold text-[17px] hover:bg-gray-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+                >
+                  {isEditing
+                    ? (isUpdating ? <><i className="fas fa-spinner fa-spin"></i> Saving...</> : "Save Changes")
+                    : (isAdding ? <><i className="fas fa-spinner fa-spin"></i> Creating...</> : "Create Category")}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
